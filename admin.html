@@ -142,6 +142,17 @@
             gap: 8px;
         }
 
+        /* Category Selector Layout */
+        .category-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .category-group select, .category-group input {
+            margin-bottom: 15px;
+        }
+
         /* Variant Builder Row */
         .variant-row {
             display: flex;
@@ -241,11 +252,14 @@
                 <input type="hidden" id="editProductId">
 
                 <label style="font-size: 0.8rem; color: var(--text-muted);">Product Category</label>
-                <select id="prodCategory" required>
+                <select id="prodCategory" onchange="toggleCustomCategory(this.value)">
                     <option value="Kitchen Appliances">Kitchen Appliances</option>
                     <option value="Electronics">Electronics</option>
                     <option value="Home & Office">Home & Office</option>
+                    <option value="__NEW__">+ Add Custom Category...</option>
                 </select>
+
+                <input type="text" id="customCategoryInput" placeholder="Enter new category name (e.g. Washing Machines)" style="display: none;">
 
                 <label style="font-size: 0.8rem; color: var(--text-muted);">Product Name</label>
                 <input type="text" id="prodName" placeholder="e.g., Nunix Glass Kettle or Hisense Washing Machine" required>
@@ -296,6 +310,7 @@
         const db = firebase.database();
 
         let currentProducts = {};
+        let existingCategories = new Set(["Kitchen Appliances", "Electronics", "Home & Office"]);
 
         // Passcode Unlock Function
         function unlockAdmin() {
@@ -315,6 +330,18 @@
                 unlockAdmin();
             }
         });
+
+        // Category Toggle
+        function toggleCustomCategory(val) {
+            const customInput = document.getElementById("customCategoryInput");
+            if (val === "__NEW__") {
+                customInput.style.display = "block";
+                customInput.focus();
+            } else {
+                customInput.style.display = "none";
+                customInput.value = "";
+            }
+        }
 
         // Automatic ImgBB Image Upload
         async function uploadImageToImgBB(event) {
@@ -361,11 +388,14 @@
             container.appendChild(div);
         }
 
-        // Load Products
+        // Load Products and Populate Dynamic Category Dropdown
         function loadProducts() {
             db.ref('products').on('value', snapshot => {
                 currentProducts = snapshot.val() || {};
                 const list = document.getElementById("productList");
+                
+                // Build Dynamic Categories
+                existingCategories = new Set(["Kitchen Appliances", "Electronics", "Home & Office"]);
                 
                 if (Object.keys(currentProducts).length === 0) {
                     list.innerHTML = "<p style='color:var(--text-muted);'>No products listed yet.</p>";
@@ -374,6 +404,8 @@
 
                 list.innerHTML = Object.keys(currentProducts).map(id => {
                     const p = currentProducts[id];
+                    if (p.category) existingCategories.add(p.category);
+
                     return `
                         <div class="product-item">
                             <img src="${p.imageUrl || 'https://via.placeholder.com/60'}" alt="">
@@ -389,7 +421,31 @@
                         </div>
                     `;
                 }).join('');
+
+                refreshCategoryDropdown();
             });
+        }
+
+        function refreshCategoryDropdown() {
+            const select = document.getElementById("prodCategory");
+            const currentSelected = select.value;
+            
+            select.innerHTML = '';
+            existingCategories.forEach(cat => {
+                const opt = document.createElement("option");
+                opt.value = cat;
+                opt.innerText = cat;
+                select.appendChild(opt);
+            });
+
+            const newOpt = document.createElement("option");
+            newOpt.value = "__NEW__";
+            newOpt.innerText = "+ Add Custom Category...";
+            select.appendChild(newOpt);
+
+            if (existingCategories.has(currentSelected)) {
+                select.value = currentSelected;
+            }
         }
 
         // Save/Update Product
@@ -397,7 +453,18 @@
             event.preventDefault();
 
             const productId = document.getElementById("editProductId").value;
-            const category = document.getElementById("prodCategory").value;
+            const selectVal = document.getElementById("prodCategory").value;
+            const customVal = document.getElementById("customCategoryInput").value.trim();
+
+            let category = selectVal;
+            if (selectVal === "__NEW__") {
+                if (!customVal) {
+                    alert("Please enter a custom category name!");
+                    return;
+                }
+                category = customVal;
+            }
+
             const name = document.getElementById("prodName").value;
             const price = document.getElementById("prodPrice").value;
             const description = document.getElementById("prodDesc").value;
@@ -443,7 +510,16 @@
             const p = currentProducts[id];
             document.getElementById("editProductId").value = id;
             document.getElementById("formTitle").innerText = "Edit Product: " + p.name;
-            document.getElementById("prodCategory").value = p.category || 'Kitchen Appliances';
+            
+            if (p.category && existingCategories.has(p.category)) {
+                document.getElementById("prodCategory").value = p.category;
+                toggleCustomCategory(p.category);
+            } else if (p.category) {
+                document.getElementById("prodCategory").value = "__NEW__";
+                toggleCustomCategory("__NEW__");
+                document.getElementById("customCategoryInput").value = p.category;
+            }
+
             document.getElementById("prodName").value = p.name;
             document.getElementById("prodPrice").value = p.price || '';
             document.getElementById("prodDesc").value = p.description || '';
@@ -477,6 +553,7 @@
             document.getElementById("variantsContainer").innerHTML = '';
             document.getElementById("imagePreview").style.display = 'none';
             document.getElementById("uploadStatus").innerText = '';
+            toggleCustomCategory('');
         }
     </script>
 </body>
