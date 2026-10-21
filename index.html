@@ -16,10 +16,8 @@
         <i class="fa-solid fa-store text-emerald-400 text-2xl"></i>
         <h1 class="text-xl font-bold tracking-wide">Apex-Hub</h1>
       </div>
-      <div class="flex items-center gap-4">
-        <button id="adminBtn" onclick="openAdminModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-2">
-          <i class="fa-solid fa-lock text-xs"></i> Admin
-        </button>
+      <div class="flex items-center gap-4 text-xs text-slate-400 font-medium">
+        <i class="fa-solid fa-truck-fast text-emerald-400"></i> Fast Delivery Across Kenya
       </div>
     </div>
   </header>
@@ -49,56 +47,6 @@
   <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
     <p>&copy; 2026 Apex-Hub. All Rights Reserved. Kenya.</p>
   </footer>
-
-  <!-- ADMIN LOGIN MODAL -->
-  <div id="adminModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-slate-800 relative">
-      <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
-        <i class="fa-solid fa-xmark text-xl"></i>
-      </button>
-
-      <!-- LOGIN FORM -->
-      <div id="loginForm">
-        <h3 class="text-xl font-bold text-slate-900 mb-2">Admin Dashboard Login</h3>
-        <p class="text-sm text-slate-500 mb-4">Enter master password to manage inventory.</p>
-        <input type="password" id="adminPassword" placeholder="Enter password" class="w-full px-4 py-2 border rounded-lg mb-4 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-        <button onclick="loginAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 rounded-lg text-sm transition">Login</button>
-      </div>
-
-      <!-- DASHBOARD (Hidden until logged in) -->
-      <div id="dashboardView" class="hidden">
-        <div class="flex justify-between items-center mb-4 pb-2 border-b">
-          <h3 class="text-lg font-bold text-slate-900">Add New Product</h3>
-          <button onclick="logoutAdmin()" class="text-xs text-red-600 hover:underline font-medium">Logout</button>
-        </div>
-        <form id="addProductForm" onsubmit="handleAddProduct(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Product Title</label>
-            <input type="text" id="pTitle" required class="w-full px-3 py-1.5 border rounded-lg text-sm">
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Price (KES)</label>
-              <input type="number" id="pPrice" required class="w-full px-3 py-1.5 border rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Category</label>
-              <input type="text" id="pCategory" placeholder="Home Appliances" required class="w-full px-3 py-1.5 border rounded-lg text-sm">
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Image Filename / URL</label>
-            <input type="text" id="pImage" placeholder="IMG-20261021-WA0000.jpg" required class="w-full px-3 py-1.5 border rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Description</label>
-            <textarea id="pDesc" rows="2" class="w-full px-3 py-1.5 border rounded-lg text-sm"></textarea>
-          </div>
-          <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-2 rounded-lg text-sm font-semibold transition mt-2">Add Product</button>
-        </form>
-      </div>
-    </div>
-  </div>
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
@@ -145,7 +93,9 @@
             <p class="text-xs text-slate-500 mb-4 line-clamp-2 flex-grow">${p.description || ''}</p>
             <div class="flex items-center justify-between mt-auto pt-2 border-t border-slate-100">
               <span class="text-lg font-extrabold text-slate-900">KES ${Number(p.price).toLocaleString()}</span>
-              <a href="https://wa.me/254700000000?text=Hello%20Apex-Hub,%20I%20want%20to%20order:%20${encodeURIComponent(p.title)}" target="_blank" class="bg-emerald-600 text-white text-xs px-3 py-2 rounded-lg font-medium hover:bg-emerald-500 transition">Buy via WhatsApp</a>
+              <a href="https://wa.me/254700000000?text=Hello%20Apex-Hub,%20I%20want%20to%20order:%20${encodeURIComponent(p.title)}" target="_blank" class="bg-emerald-600 text-white text-xs px-3 py-2 rounded-lg font-medium hover:bg-emerald-500 transition flex items-center gap-1.5">
+                <i class="fa-brands fa-whatsapp text-sm"></i> Order
+              </a>
             </div>
           </div>
         `;
@@ -172,51 +122,6 @@
     function handleSearch() {
       searchQuery = document.getElementById("searchInput").value;
       renderProducts();
-    }
-
-    function openAdminModal() {
-      document.getElementById("adminModal").classList.remove("hidden");
-      document.getElementById("adminModal").classList.add("flex");
-    }
-
-    function closeAdminModal() {
-      document.getElementById("adminModal").classList.add("hidden");
-      document.getElementById("adminModal").classList.remove("flex");
-    }
-
-    function loginAdmin() {
-      const pass = document.getElementById("adminPassword").value;
-      if (pass === "admin123") {
-        document.getElementById("loginForm").classList.add("hidden");
-        document.getElementById("dashboardView").classList.remove("hidden");
-        document.getElementById("adminPassword").value = "";
-      } else {
-        alert("Incorrect password!");
-      }
-    }
-
-    function logoutAdmin() {
-      document.getElementById("dashboardView").classList.add("hidden");
-      document.getElementById("loginForm").classList.remove("hidden");
-      closeAdminModal();
-    }
-
-    function handleAddProduct(e) {
-      e.preventDefault();
-      const newP = {
-        id: Date.now().toString(),
-        title: document.getElementById("pTitle").value,
-        price: Number(document.getElementById("pPrice").value),
-        category: document.getElementById("pCategory").value,
-        image: document.getElementById("pImage").value,
-        description: document.getElementById("pDesc").value
-      };
-      products.push(newP);
-      localStorage.setItem('apex_products', JSON.stringify(products));
-      renderCategoryTabs();
-      renderProducts();
-      e.target.reset();
-      alert("Product added successfully!");
     }
 
     document.addEventListener("DOMContentLoaded", () => {
