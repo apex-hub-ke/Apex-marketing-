@@ -1,453 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apex-Hub | Premium Online Store Kenya</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex-Hub | E-Commerce Store</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #f8fafc;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="text-slate-800 flex flex-col min-h-screen">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-  <!-- TOP ANNOUNCEMENT BAR -->
-  <div class="bg-emerald-950 text-emerald-200 text-xs py-2 px-4 text-center font-medium tracking-wide">
-    🚀 Fast Delivery Across Kenya | Pay via M-Pesa | Need Help? Call/WhatsApp: <a href="https://wa.me/254707913881" target="_blank" class="underline hover:text-white font-bold">0707913881</a>
-  </div>
-
-  <!-- HEADER & NAVIGATION -->
-  <header class="sticky top-0 z-40 bg-emerald-900 text-white shadow-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
-      <!-- BRAND LOGO -->
-      <a href="#" onclick="filterCategory('All')" class="flex items-center gap-2 group">
-        <div class="w-10 h-10 rounded-xl bg-amber-400 text-emerald-950 flex items-center justify-between p-2 font-extrabold text-xl shadow-inner group-hover:scale-105 transition-transform">
-          <span>A</span>
-        </div>
-        <div>
-          <span class="text-2xl font-black tracking-tight text-white block leading-none">APEX<span class="text-amber-400">-HUB</span></span>
-          <span class="text-[10px] text-emerald-200 tracking-widest font-semibold uppercase">Official Store</span>
-        </div>
-      </a>
-
-      <!-- SEARCH BAR (DESKTOP) -->
-      <div class="hidden md:flex flex-1 max-w-lg relative">
-        <input 
-          type="text" 
-          id="searchInput" 
-          onkeyup="handleSearch()" 
-          placeholder="Search products (e.g. Hisense, Washing Machine, Phone)..." 
-          class="w-full bg-emerald-950/60 text-white placeholder-emerald-300/70 border border-emerald-700/60 rounded-full py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition-all"
-        />
-        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-emerald-300"></i>
-      </div>
-
-      <!-- ACTIONS -->
+  <!-- TOP HEADER / NAV -->
+  <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <a 
-          href="https://wa.me/254707913881" 
-          target="_blank" 
-          class="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm"
-        >
-          <i class="fa-brands fa-whatsapp text-sm"></i>
-          <span>WhatsApp Us</span>
-        </a>
-
-        <button 
-          onclick="toggleAdminModal()" 
-          class="bg-emerald-800 hover:bg-emerald-700 text-emerald-100 hover:text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-emerald-700"
-        >
-          <i class="fa-solid fa-user-lock"></i>
-          <span id="adminBtnText">Admin</span>
-        </button>
+        <i class="fa-solid fa-store text-emerald-400 text-2xl"></i>
+        <h1 class="text-xl font-bold tracking-wide">Apex-Hub</h1>
       </div>
-    </div>
-
-    <!-- MOBILE SEARCH BAR -->
-    <div class="md:hidden px-4 pb-3">
-      <div class="relative">
-        <input 
-          type="text" 
-          id="searchInputMobile" 
-          onkeyup="handleSearchMobile()" 
-          placeholder="Search items..." 
-          class="w-full bg-emerald-950/60 text-white placeholder-emerald-300/70 border border-emerald-700/60 rounded-full py-2 pl-10 pr-4 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400"
-        />
-        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-emerald-300 text-xs"></i>
+      <div class="flex items-center gap-4">
+        <button id="adminBtn" onclick="openAdminModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-2">
+          <i class="fa-solid fa-lock text-xs"></i> Admin
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- HERO BANNER -->
-  <section class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white py-10 px-4 sm:px-6 relative overflow-hidden shadow-inner">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
-      <div class="space-y-4 text-center md:text-left max-w-xl">
-        <span class="bg-amber-400/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-amber-400/30 uppercase tracking-wider">
-          Verified Quality & Instant Delivery
-        </span>
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-          Quality Products <br class="hidden sm:inline" /><span class="text-amber-400">Delivered Direct To You</span>
-        </h1>
-        <p class="text-emerald-100 text-sm sm:text-base font-normal leading-relaxed">
-          Discover original electronics, home appliances, and daily essentials at Apex-Hub Kenya. Fast countrywide dispatch & friendly customer support.
-        </p>
-        <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2">
-          <a href="#products-section" class="bg-amber-400 hover:bg-amber-300 text-emerald-950 font-extrabold text-sm px-6 py-3 rounded-xl shadow-lg hover:shadow-amber-400/20 transition-all flex items-center gap-2">
-            <span>Browse Products</span>
-            <i class="fa-solid fa-arrow-right text-xs"></i>
-          </a>
-        </div>
-      </div>
-      
-      <!-- HERO BADGES -->
-      <div class="grid grid-cols-2 gap-3 w-full md:w-auto">
-        <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-center">
-          <i class="fa-solid fa-truck-fast text-2xl text-amber-400 mb-1"></i>
-          <h4 class="font-bold text-xs uppercase tracking-wider text-white">Countrywide</h4>
-          <p class="text-[11px] text-emerald-200">Delivery in Kenya</p>
-        </div>
-        <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-center">
-          <i class="fa-solid fa-shield-halved text-2xl text-amber-400 mb-1"></i>
-          <h4 class="font-bold text-xs uppercase tracking-wider text-white">100% Genuine</h4>
-          <p class="text-[11px] text-emerald-200">Tested Quality</p>
-        </div>
-      </div>
-    </div>
+  <!-- HERO SECTION -->
+  <section class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white py-10 px-4 text-center">
+    <h2 class="text-3xl sm:text-4xl font-extrabold mb-2">Welcome to Apex-Hub</h2>
+    <p class="text-slate-300 max-w-xl mx-auto text-sm sm:text-base">Quality Home Appliances & Electronics Delivered Across Kenya.</p>
   </section>
 
-  <!-- MAIN CONTENT CONTAINER -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8" id="products-section">
-    
-    <!-- CATEGORY FILTER BUTTONS -->
-    <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
-      <div>
-        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Our Store Catalog</h2>
-        <p class="text-xs text-slate-500 font-medium">Click on any item to inquire or order immediately on WhatsApp</p>
-      </div>
-
-      <!-- FILTER TABS -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-2 w-full sm:w-auto" id="categoryTabs">
-        <!-- Dynamic Category Pills Rendered by JS -->
+  <!-- MAIN CONTENT -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+    <!-- SEARCH & FILTER BAR -->
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+      <div id="categoryTabs" class="flex flex-wrap gap-2"></div>
+      <div class="relative w-full sm:w-64">
+        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search products..." class="w-full pl-9 pr-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-sm"></i>
       </div>
     </div>
 
-    <!-- PRODUCT GRID -->
-    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <!-- Dynamic Products Rendered Here -->
-    </div>
-
-    <!-- EMPTY SEARCH STATE -->
-    <div id="emptyState" class="hidden text-center py-16 px-4 bg-white rounded-2xl border border-slate-200 shadow-sm mt-6">
-      <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-        <i class="fa-solid fa-box-open"></i>
-      </div>
-      <h3 class="text-lg font-bold text-slate-800">No products found</h3>
-      <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1">Try adjusting your search terms or clearing category filters to find what you are looking for.</p>
-      <button onclick="resetFilters()" class="mt-4 text-xs font-bold text-emerald-800 hover:text-emerald-900 underline">Show all products</button>
-    </div>
-
+    <!-- PRODUCTS GRID -->
+    <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
   </main>
 
   <!-- FOOTER -->
-  <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-2">
-        <div class="w-7 h-7 rounded-lg bg-amber-400 text-emerald-950 flex items-center justify-center font-extrabold text-sm">A</div>
-        <span class="text-base font-extrabold text-white">Apex-Hub Kenya</span>
-      </div>
-      <p class="text-center md:text-left">© <script>document.write(new Date().getFullYear())</script> Apex-Hub. All rights reserved. Order Hotline: 0707913881</p>
-      <div class="flex items-center gap-4 text-slate-300">
-        <a href="https://wa.me/254707913881" target="_blank" class="hover:text-amber-400 transition-colors"><i class="fa-brands fa-whatsapp text-lg"></i></a>
-      </div>
-    </div>
+  <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm mt-auto">
+    <p>&copy; 2026 Apex-Hub. All Rights Reserved. Kenya.</p>
   </footer>
 
-  <!-- ADMIN MODAL -->
-  <div id="adminModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-slate-100">
-      
-      <!-- MODAL HEADER -->
-      <div class="bg-emerald-900 text-white px-6 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-lock text-amber-400"></i>
-          <h3 class="font-bold text-base">Apex-Hub Admin Panel</h3>
-        </div>
-        <button onclick="toggleAdminModal()" class="text-emerald-200 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+  <!-- ADMIN LOGIN MODAL -->
+  <div id="adminModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-slate-800 relative">
+      <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+
+      <!-- LOGIN FORM -->
+      <div id="loginForm">
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Admin Dashboard Login</h3>
+        <p class="text-sm text-slate-500 mb-4">Enter master password to manage inventory.</p>
+        <input type="password" id="adminPassword" placeholder="Enter password" class="w-full px-4 py-2 border rounded-lg mb-4 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        <button onclick="loginAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 rounded-lg text-sm transition">Login</button>
       </div>
 
-      <!-- ADMIN LOGIN FORM -->
-      <div id="adminLoginForm" class="p-6 space-y-4">
-        <p class="text-xs text-slate-600">Enter the secret admin passcode to manage store inventory.</p>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Admin Passcode</label>
-          <input type="password" id="adminPassword" placeholder="Enter password (default: admin123)" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-800 focus:outline-none" />
+      <!-- DASHBOARD (Hidden until logged in) -->
+      <div id="dashboardView" class="hidden">
+        <div class="flex justify-between items-center mb-4 pb-2 border-b">
+          <h3 class="text-lg font-bold text-slate-900">Add New Product</h3>
+          <button onclick="logoutAdmin()" class="text-xs text-red-600 hover:underline font-medium">Logout</button>
         </div>
-        <button onclick="loginAdmin()" class="w-full bg-emerald-900 hover:bg-emerald-800 text-white py-2.5 rounded-lg text-xs font-bold transition-colors">
-          Unlock Dashboard
-        </button>
+        <form id="addProductForm" onsubmit="handleAddProduct(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Product Title</label>
+            <input type="text" id="pTitle" required class="w-full px-3 py-1.5 border rounded-lg text-sm">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Price (KES)</label>
+              <input type="number" id="pPrice" required class="w-full px-3 py-1.5 border rounded-lg text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Category</label>
+              <input type="text" id="pCategory" placeholder="Home Appliances" required class="w-full px-3 py-1.5 border rounded-lg text-sm">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Image Filename / URL</label>
+            <input type="text" id="pImage" placeholder="IMG-20261021-WA0000.jpg" required class="w-full px-3 py-1.5 border rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Description</label>
+            <textarea id="pDesc" rows="2" class="w-full px-3 py-1.5 border rounded-lg text-sm"></textarea>
+          </div>
+          <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-2 rounded-lg text-sm font-semibold transition mt-2">Add Product</button>
+        </form>
       </div>
+    </div>
+  </div>
 
-      <!-- ADMIN DASHBOARD (ADD PRODUCT) -->
-      <div id="adminDashboard" class="p-6 space-y-4 hidden max-h-[80vh] overflow-y-auto">
-        <div class="flex items-center justify-between border-b pb-3">
-          <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">Add New Product</span>
-          <button onclick="logoutAdmin()" class="text-xs text-red-600 font-bold hover:underline">Logout</button>
-        </div>
-
-        <div class="space-y-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Product Title</label>
-            <input type="text" id="newTitle" placeholder="e.g. Hisense 9Kg Top Load Washing Machine" class="w-full border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-emerald-800 focus:outline-none" />
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Price (KES)</label>
-              <input type="number" id="newPrice" placeholder="37500" class="w-full border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-emerald-800 focus:outline-none" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Category</label>
-              <select id="newCategory" class="w-full border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-emerald-800 focus:outline-none bg-white">
-                <option value="Home Appliances">Home Appliances</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Phones & Tablets">Phones & Tablets</option>
-                <option value="Fashion & Accessories">Fashion & Accessories</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Direct Image URL (ImgBB Direct Link)</label>
-            <input type="text" id="newImage" placeholder="https://i.ibb.co/...jpg" class="w-full border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-emerald-800 focus:outline-none" />
-            <span class="text-[10px] text-slate-400">Use direct `.jpg` or `.png` link for best presentation.</span>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Description</label>
-            <textare6isAdminLoggedIn = false;
-
-    // INITIALIZE STORE
-    document.addEventListener("DOMContentLoaded", () => {
-      // Load products stored in localStorage if available, else default
-      const savedProducts = localStorage.getItem("apex_products_v2");
-      if (savedProducts) {
-        try {
-          products = JSON.parse(savedProducts);
-        } catch(e) {
-          products = [...defaultCatalog];
-        }
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    const defaultCatalog = [
+      {
+        id: "1",
+        title: "Hisense 9Kg Top Load Fully Automatic Washing Machine",
+        price: 37500,
+        category: "Home Appliances",
+        image: "IMG-20261021-WA0000.jpg",
+        description: "Hisense 9Kg Top Load Fully Automatic Washing Machine with Smart Control and Extra Care technology."
       }
-      renderCategoryTabs();
-      renderProducts();
-    });
+    ];
 
-    // RENDER CATEGORY TAB BUTTONS
+    let products = JSON.parse(localStorage.getItem('apex_products')) || defaultCatalog;
+    let selectedCategory = "All";
+    let searchQuery = "";
+
+    function renderProducts() {
+      const grid = document.getElementById("productsGrid");
+      grid.innerHTML = "";
+
+      const filtered = products.filter(p => {
+        const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
+        const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No products found.</div>`;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition flex flex-col";
+        card.innerHTML = `
+          <div class="h-48 bg-slate-100 overflow-hidden flex items-center justify-center p-2">
+            <img src="${p.image}" alt="${p.title}" class="max-h-full max-w-full object-contain" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
+          </div>
+          <div class="p-4 flex flex-col flex-grow">
+            <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider mb-1">${p.category}</span>
+            <h3 class="font-bold text-slate-800 text-base mb-2 line-clamp-2">${p.title}</h3>
+            <p class="text-xs text-slate-500 mb-4 line-clamp-2 flex-grow">${p.description || ''}</p>
+            <div class="flex items-center justify-between mt-auto pt-2 border-t border-slate-100">
+              <span class="text-lg font-extrabold text-slate-900">KES ${Number(p.price).toLocaleString()}</span>
+              <a href="https://wa.me/254700000000?text=Hello%20Apex-Hub,%20I%20want%20to%20order:%20${encodeURIComponent(p.title)}" target="_blank" class="bg-emerald-600 text-white text-xs px-3 py-2 rounded-lg font-medium hover:bg-emerald-500 transition">Buy via WhatsApp</a>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
     function renderCategoryTabs() {
       const categories = ["All", ...new Set(products.map(p => p.category))];
-      const tabsContainer = document.getElementById("categoryTabs");
-      
-      tabsContainer.innerHTML = categories.map(cat => `
-        <button 
-          onclick="filterCategory('${cat}')"
-          class="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
-            selectedCategory === cat 
-              ? 'bg-emerald-900 text-amber-400 shadow-sm' 
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-          }"
-        >
+      const container = document.getElementById("categoryTabs");
+      container.innerHTML = categories.map(cat => `
+        <button onclick="filterCategory('${cat}')" class="px-3.5 py-1.5 rounded-full text-xs font-medium transition ${selectedCategory === cat ? 'bg-emerald-900 text-amber-400 font-bold' : 'bg-white text-slate-600 hover:bg-slate-200'}">
           ${cat}
         </button>
       `).join('');
     }
 
-    // FILTER BY CATEGORY
     function filterCategory(cat) {
       selectedCategory = cat;
       renderCategoryTabs();
       renderProducts();
     }
 
-    // HANDLE SEARCH INPUT
     function handleSearch() {
-      searchQuery = document.getElementById("searchInput").value.toLowerCase();
+      searchQuery = document.getElementById("searchInput").value;
       renderProducts();
     }
 
-    function handleSearchMobile() {
-      searchQuery = document.getElementById("searchInputMobile").value.toLowerCase();
-      renderProducts();
+    function openAdminModal() {
+      document.getElementById("adminModal").classList.remove("hidden");
+      document.getElementById("adminModal").classList.add("flex");
     }
 
-    function resetFilters() {
-      selectedCategory = "All";
-      searchQuery = "";
-      document.getElementById("searchInput").value = "";
-      document.getElementById("searchInputMobile").value = "";
-      renderCategoryTabs();
-      renderProducts();
+    function closeAdminModal() {
+      document.getElementById("adminModal").classList.add("hidden");
+      document.getElementById("adminModal").classList.remove("flex");
     }
 
-    // RENDER PRODUCTS GRID
-    function renderProducts() {
-      const grid = document.getElementById("productGrid");
-      const emptyState = document.getElementById("emptyState");
-
-      // Filter products based on Category & Search Query
-      const filtered = products.filter(p => {
-        const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
-        const matchesSearch = p.title.toLowerCase().includes(searchQuery) || 
-                              p.description.toLowerCase().includes(searchQuery) ||
-                              p.category.toLowerCase().includes(searchQuery);
-        return matchesCategory && matchesSearch;
-      });
-
-      if (filtered.length === 0) {
-        grid.innerHTML = "";
-        emptyState.classList.remove("hidden");
-        return;
-      }
-
-      emptyState.classList.add("hidden");
-
-      grid.innerHTML = filtered.map(product => {
-        const whatsappMsg = encodeURIComponent(`Hello Apex-Hub Kenya! I want to order the ${product.title} priced at KES ${product.price.toLocaleString()}. Please assist me with delivery.`);
-        
-        return `
-          <div class="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
-            
-            <!-- IMAGE CONTAINER -->
-            <div class="relative aspect-square bg-slate-100 overflow-hidden">
-              <img 
-                src="${product.image}" 
-                alt="${product.title}" 
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                onerror="this.onerror=null; this.src='https://placehold.co/600x600/f1f5f9/0f172a?text=Product+Image';"
-              />
-              <span class="absolute top-3 left-3 bg-emerald-950/80 backdrop-blur-md text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                ${product.category}
-              </span>
-              ${isAdminLoggedIn ? `
-                <button onclick="deleteProduct('${product.id}')" class="absolute top-3 right-3 bg-red-600 text-white w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center hover:bg-red-700 shadow">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              ` : ''}
-            </div>
-
-            <!-- DETAILS -->
-            <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
-              <div>
-                <h3 class="font-extrabold text-slate-900 text-base leading-snug line-clamp-2 group-hover:text-emerald-900 transition-colors">
-                  ${product.title}
-                </h3>
-                <p class="text-xs text-slate-500 line-clamp-2 mt-1.5 leading-relaxed">
-                  ${product.description}
-                </p>
-              </div>
-
-              <div class="pt-2 border-t border-slate-100">
-                <div class="flex items-baseline gap-1 mb-3">
-                  <span class="text-xs font-bold text-slate-400">KES</span>
-                  <span class="text-2xl font-black text-emerald-950">${Number(product.price).toLocaleString()}</span>
-                </div>
-
-                <!-- WHATSAPP ORDER BUTTON -->
-                <a 
-                  href="https://wa.me/254707913881?text=${whatsappMsg}" 
-                  target="_blank"
-                  class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-sm hover:shadow-emerald-600/20 transition-all"
-                >
-                  <i class="fa-brands fa-whatsapp text-base"></i>
-                  <span>Inquire on WhatsApp</span>
-                </a>
-              </div>
-            </div>
-
-          </div>
-        `;
-      }).join('');
-    }
-
-    // MODAL TOGGLE
-    function toggleAdminModal() {
-      const modal = document.getElementById("adminModal");
-      modal.classList.toggle("hidden");
-    }
-
-    // ADMIN LOGIN
     function loginAdmin() {
       const pass = document.getElementById("adminPassword").value;
       if (pass === "admin123") {
-        isAdminLoggedIn = true;
-        document.getElementById("adminLoginForm").classList.add("hidden");
-        document.getElementById("adminDashboard").classList.remove("hidden");
-        document.getElementById("adminBtnText").innerText = "Admin (Unlocked)";
-        renderProducts();
+        document.getElementById("loginForm").classList.add("hidden");
+        document.getElementById("dashboardView").classList.remove("hidden");
+        document.getElementById("adminPassword").value = "";
       } else {
-        alert("Incorrect Admin Passcode!");
+        alert("Incorrect password!");
       }
     }
 
     function logoutAdmin() {
-      isAdminLoggedIn = false;
-      document.getElementById("adminLoginForm").classList.remove("hidden");
-      document.getElementById("adminDashboard").classList.add("hidden");
-      document.getElementById("adminPassword").value = "";
-      document.getElementById("adminBtnText").innerText = "Admin";
-      renderProducts();
+      document.getElementById("dashboardView").classList.add("hidden");
+      document.getElementById("loginForm").classList.remove("hidden");
+      closeAdminModal();
     }
 
-    // ADD NEW PRODUCT
-    function addNewProduct() {
-      const title = document.getElementById("newTitle").value.trim();
-      const price = document.getElementById("newPrice").value;
-      const category = document.getElementById("newCategory").value;
-      const image = document.getElementById("newImage").value.trim();
-      const description = document.getElementById("newDescription").value.trim();
-
-      if (!title || !price || !image) {
-        alert("Please fill in the Product Title, Price, and Image URL!");
-        return;
-      }
-
-      const newProd = {
+    function handleAddProduct(e) {
+      e.preventDefault();
+      const newP = {
         id: Date.now().toString(),
-        title,
-        price: Number(price),
-        category,
-        image,
-        description: description || "No detailed description provided."
+        title: document.getElementById("pTitle").value,
+        price: Number(document.getElementById("pPrice").value),
+        category: document.getElementById("pCategory").value,
+        image: document.getElementById("pImage").value,
+        description: document.getElementById("pDesc").value
       };
-
-      products.unshift(newProd);
-      localStorage.setItem("apex_products_v2", JSON.stringify(products));
-      
-      // Clear Inputs
-      document.getElementById("newTitle").value = "";
-      document.getElementById("newPrice").value = "";
-      document.getElementById("newImage").value = "";
-      document.getElementById("newDescription").value = "";
-
+      products.push(newP);
+      localStorage.setItem('apex_products', JSON.stringify(products));
       renderCategoryTabs();
       renderProducts();
-      toggleAdminModal();
-      alert("Product published successfully!");
+      e.target.reset();
+      alert("Product added successfully!");
     }
 
-    // DELETE PRODUCT
-    function deleteProduct(id) {
-      if (confirm("Are you sure you want to remove this product from store?")) {
-        products = products.filter(p => p.id !== id);
-        localStorage.setItem("apex_products_v2", JSON.stringify(products));
-        renderCategoryTabs();
-        renderProducts();
-      }
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCategoryTabs();
+      renderProducts();
+    });
   </script>
 </body>
 </html>
