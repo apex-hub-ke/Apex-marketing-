@@ -61,7 +61,8 @@
       }
     ];
 
-    let products = JSON.parse(localStorage.getItem('apex_products')) || defaultCatalog;
+  let products = [];
+
     let selectedCategory = "All";
     let searchQuery = "";
 
@@ -123,11 +124,17 @@
       searchQuery = document.getElementById("searchInput").value;
       renderProducts();
     }
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const res = await fetch(`products.json?v=${Date.now()}`);
+        products = await res.json();
+    } catch (e) {
+        products = defaultCatalog;
+    }
+    renderCategoryTabs();
+    renderProducts();
+});
 
-    document.addEventListener("DOMContentLoaded", () => {
-      renderCategoryTabs();
-      renderProducts();
-    });
   </script>
 </body>
 </html>
