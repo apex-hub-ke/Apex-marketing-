@@ -1,150 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Prevent Browser Caching so clients always see updates -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex-Hub</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #f4f6f8; color: #1a1a1a; padding-bottom: 40px; }
+    header { background: #0f172a; color: #fff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 20px; font-weight: bold; color: #10b981; }
+    .tagline { background: #1e293b; color: #94a3b8; text-align: center; padding: 12px; font-size: 14px; }
+    .container { max-width: 1000px; margin: 20px auto; padding: 0 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; }
+    .card img { width: 100%; height: 220px; object-fit: cover; background: #e2e8f0; }
+    .card-body { padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .category { font-size: 12px; font-weight: bold; color: #059669; text-transform: uppercase; margin-bottom: 6px; }
+    .title { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: #0f172a; }
+    .desc { font-size: 13px; color: #64748b; margin-bottom: 12px; line-height: 1.4; }
+    .price-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+    .price { font-size: 18px; font-weight: bold; color: #0f172a; }
+    .btn-order { background: #10b981; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+    .empty { text-align: center; padding: 40px; color: #64748b; width: 100%; }
+  </style>
 
-    <title>Apex-Hub | E-Commerce Store</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Firebase App & Database SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+<body>
 
-    <!-- TOP HEADER / NAV -->
-    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-store text-emerald-400 text-2xl"></i>
-                <h1 class="text-xl font-bold tracking-wide">Apex-Hub</h1>
+  <header>
+    <h1>🛍️ Apex-Hub</h1>
+  </header>
+  <div class="tagline">Quality Home Appliances & Electronics Delivered Across Kenya</div>
+
+  <div class="container">
+    <div id="productGrid" class="grid">
+      <div class="empty">Loading products live...</div>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAHX1af6NlsfsPP9BYWHNPb6SmLTKQnqH8",
+      authDomain: "apex-hub-c6d50.firebaseapp.com",
+      databaseURL: "https://apex-hub-c6d50-default-rtdb.firebaseio.com",
+      projectId: "apex-hub-c6d50",
+      storageBucket: "apex-hub-c6d50.firebasestorage.app",
+      messagingSenderId: "508890619708",
+      appId: "1:508890619708:web:8a098b59c55b1e78ae483",
+      measurementId: "G-NDWZS5ZWTH"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    db.ref('products').on('value', (snapshot) => {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
+      const data = snapshot.val();
+
+      if (!data) {
+        grid.innerHTML = '<div class="empty">No products available yet. Add items via admin.html!</div>';
+        return;
+      }
+
+      Object.keys(data).reverse().forEach(key => {
+        const item = data[key];
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${item.image || 'https://via.placeholder.com/300'}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/300'">
+          <div class="card-body">
+            <div>
+              <div class="category">${item.category || 'General'}</div>
+              <div class="title">${item.title}</div>
+              <div class="desc">${item.description || ''}</div>
             </div>
-            <div class="flex items-center gap-4 text-xs text-slate-300">
-                <i class="fa-solid fa-truck-fast text-emerald-400"></i> Fast Delivery Across Kenya
+            <div class="price-row">
+              <div class="price">KES ${Number(item.price).toLocaleString()}</div>
+              <a class="btn-order" href="https://wa.me/254700000000?text=Hi%2C%20I%20want%20to%20order%20${encodeURIComponent(item.title)}" target="_blank">Order</a>
             </div>
-        </div>
-    </header>
-
-    <!-- HERO SECTION -->
-    <section class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-8 px-4 text-center">
-        <h2 class="text-3xl sm:text-4xl font-extrabold mb-2">Apex-Hub</h2>
-        <p class="text-slate-300 max-w-xl mx-auto text-sm sm:text-base">Quality Home Appliances & Electronics Delivered Across Kenya.</p>
-    </section>
-
-    <!-- MAIN CONTENT -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
-        
-        <!-- CATEGORY TABS & SEARCH -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            <div id="categoryTabsContainer" class="flex flex-wrap gap-2"></div>
-            <div class="relative w-full sm:w-64">
-                <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search products..." class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm" />
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-sm"></i>
-            </div>
-        </div>
-
-        <!-- PRODUCTS GRID -->
-        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs">
-        <p>&copy; 2026 Apex-Hub. All Rights Reserved. Kenya.</p>
-    </footer>
-
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        const defaultCatalog = [
-            {
-                id: "1",
-                title: "Hisense 9Kg Top Load Fully Automatic Washing Machine",
-                price: 37500,
-                category: "Home Appliances",
-                image: "IMG-20261021-WA0000.jpg",
-                description: "Hisense 9Kg Top Load Fully Automatic Washing Machine with Smart Control and Extra Care technology."
-            }
-        ];
-
-        let products = [];
-        let selectedCategory = "All";
-        let searchQuery = "";
-
-        function renderProducts() {
-            const grid = document.getElementById("productsGrid");
-            grid.innerHTML = "";
-
-            const filtered = products.filter(p => {
-                const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
-                const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
-                return matchesCategory && matchesSearch;
-            });
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">No products found.</div>`;
-                return;
-            }
-
-            filtered.forEach(p => {
-                const card = document.createElement("div");
-                card.className = "bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col hover:shadow-md transition-shadow";
-                card.innerHTML = `
-                    <div class="h-48 bg-slate-100 overflow-hidden relative">
-                        <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4 flex flex-col flex-grow">
-                        <span class="text-xs font-semibold text-emerald-600 mb-1">${p.category}</span>
-                        <h3 class="font-bold text-slate-800 text-base mb-1 line-clamp-1">${p.title}</h3>
-                        <p class="text-xs text-slate-500 mb-4 line-clamp-2">${p.description}</p>
-                        <div class="flex items-center justify-between mt-auto">
-                            <span class="text-lg font-extrabold text-slate-900">KES ${p.price.toLocaleString()}</span>
-                            <a href="https://wa.me/254700000000?text=Hi,%20I%20want%20to%20order%20${encodeURIComponent(p.title)}" target="_blank" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors">
-                                <i class="fa-brands fa-whatsapp text-sm"></i> Order
-                            </a>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function renderCategoryTabs() {
-            const categories = ["All", ...new Set(products.map(p => p.category))];
-            const container = document.getElementById("categoryTabsContainer");
-            container.innerHTML = categories.map(cat => `
-                <button onclick="filterCategory('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-semibold transition-colors ${selectedCategory === cat ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
-                    ${cat}
-                </button>
-            `).join('');
-        }
-
-        function filterCategory(cat) {
-            selectedCategory = cat;
-            renderCategoryTabs();
-            renderProducts();
-        }
-
-        function handleSearch() {
-            searchQuery = document.getElementById("searchInput").value;
-            renderProducts();
-        }
-
-        // Live sync fetch on page load
-        document.addEventListener("DOMContentLoaded", async () => {
-            try {
-                const res = await fetch(`products.json?v=${Date.now()}`);
-                if (res.ok) {
-                    products = await res.json();
-                } else {
-                    products = defaultCatalog;
-                }
-            } catch (e) {
-                products = defaultCatalog;
-            }
-            renderCategoryTabs();
-            renderProducts();
-        });
-    </script>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    });
+  </script>
 </body>
 </html>
