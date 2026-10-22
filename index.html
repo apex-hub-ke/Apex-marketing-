@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,17 +16,15 @@
 
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --bg-card-hover: #334155;
-            --primary: #0d9488;
-            --primary-hover: #0f766e;
+            --bg-dark: #130a21;
+            --bg-card: #ffffff;
+            --primary: #5C2D91;
+            --primary-hover: #4a2375;
             --whatsapp-green: #25d366;
             --whatsapp-hover: #1da851;
-            --accent-gold: #f59e0b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
+            --text-main: #1e1b2e;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
         }
 
         * {
@@ -33,10 +32,11 @@
             margin: 0;
             padding: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: #f8fafc;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -46,10 +46,10 @@
 
         /* Top Notification Bar */
         .top-banner {
-            background: linear-gradient(90deg, #0f766e, #0d9488);
+            background: linear-gradient(90deg, #5C2D91, #3b1961);
             color: #ffffff;
             text-align: center;
-            padding: 8px 15px;
+            padding: 10px 15px;
             font-size: 0.85rem;
             font-weight: 600;
             display: flex;
@@ -58,15 +58,15 @@
             gap: 10px;
         }
 
-        /* Sticky Navigation Header */
+        /* Sticky Header */
         header {
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
+            background: #ffffff;
             border-bottom: 1px solid var(--border-color);
-            padding: 15px 20px;
+            padding: 12px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         .header-container {
@@ -76,7 +76,24 @@
             justify-content: space-between;
             align-items: center;
             gap: 15px;
-            flex-wrap: wrap;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .hamburger-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .brand-logo {
@@ -84,38 +101,37 @@
             align-items: center;
             gap: 10px;
             text-decoration: none;
-            color: var(--text-main);
-            font-size: 1.5rem;
+            color: var(--primary);
+            font-size: 1.4rem;
             font-weight: 800;
             letter-spacing: -0.5px;
-        }
-
-        .brand-logo i {
-            color: var(--primary);
-            font-size: 1.8rem;
         }
 
         .search-box {
             position: relative;
             flex: 1;
-            max-width: 450px;
-            min-width: 240px;
+            max-width: 400px;
+            display: none;
+        }
+
+        @media(min-width: 768px) {
+            .search-box { display: block; }
         }
 
         .search-box input {
             width: 100%;
             padding: 10px 15px 10px 40px;
-            background-color: var(--bg-card);
+            background-color: #f1f5f9;
             border: 1px solid var(--border-color);
             border-radius: 25px;
             color: var(--text-main);
             font-size: 0.9rem;
             outline: none;
-            transition: border-color 0.2s;
         }
 
         .search-box input:focus {
             border-color: var(--primary);
+            background-color: #ffffff;
         }
 
         .search-box i {
@@ -126,41 +142,153 @@
             color: var(--text-muted);
         }
 
-        /* Hero Container */
-        .hero {
-            max-width: 1200px;
-            margin: 20px auto 10px auto;
-            padding: 0 20px;
-        }
-
-        .hero-banner {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 30px;
+        .nav-actions {
             display: flex;
-            justify-content: space-between;
+            gap: 10px;
             align-items: center;
-            gap: 20px;
         }
 
-        .hero-text h1 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 8px;
+        .btn-dash {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            border: 1px solid #cbd5e1;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-dash:hover {
+            background-color: var(--primary);
             color: #ffffff;
         }
 
-        .hero-text p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            max-width: 600px;
+        /* Side Navigation Drawer */
+        .drawer-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .side-drawer {
+            position: fixed;
+            top: 0; left: -320px;
+            width: 300px; height: 100%;
+            background: #ffffff;
+            z-index: 1000;
+            transition: left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+        }
+
+        .side-drawer.active {
+            left: 0;
+        }
+
+        .drawer-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .drawer-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .drawer-search {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .drawer-search input {
+            width: 100%;
+            padding: 10px 15px 10px 35px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            outline: none;
+        }
+
+        .drawer-search i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .drawer-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .drawer-menu a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: color 0.2s;
+        }
+
+        .drawer-menu a:hover {
+            color: var(--primary);
+        }
+
+        .drawer-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            background: #f8fafc;
+        }
+
+        .drawer-contact {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        /* View Toggle */
+        .view-section { display: block; }
+        .view-section.hidden { display: none !important; }
 
         /* Category Filter Pills */
         .categories-wrapper {
             max-width: 1200px;
-            margin: 20px auto;
+            margin: 20px auto 10px auto;
             padding: 0 20px;
         }
 
@@ -171,6 +299,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            color: var(--primary);
         }
 
         .category-pills {
@@ -178,11 +307,10 @@
             gap: 10px;
             overflow-x: auto;
             padding-bottom: 10px;
-            scrollbar-width: thin;
         }
 
         .category-btn {
-            background-color: var(--bg-card);
+            background-color: #ffffff;
             border: 1px solid var(--border-color);
             color: var(--text-muted);
             padding: 8px 18px;
@@ -200,7 +328,7 @@
             border-color: var(--primary);
         }
 
-        /* Product Grid */
+        /* Crisp HD Product Grid */
         .main-container {
             max-width: 1200px;
             margin: 10px auto;
@@ -221,26 +349,38 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
         .product-card:hover {
             transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(92, 45, 145, 0.1);
             border-color: var(--primary);
         }
 
+        /* Ultra Sharp Image Rendering Container */
         .card-img-wrapper {
             width: 100%;
-            height: 220px;
-            background-color: #0f172a;
+            height: 240px;
+            background-color: #ffffff;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
         }
 
         .card-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
             transition: transform 0.3s;
         }
 
@@ -252,15 +392,14 @@
             position: absolute;
             top: 12px;
             left: 12px;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(5px);
-            color: var(--primary);
+            background: rgba(92, 45, 145, 0.9);
+            color: #ffffff;
             font-size: 0.75rem;
             font-weight: 700;
             padding: 4px 10px;
             border-radius: 20px;
-            border: 1px solid rgba(13, 148, 136, 0.3);
             text-transform: uppercase;
+            z-index: 2;
         }
 
         .card-body {
@@ -275,7 +414,7 @@
             font-weight: 700;
             margin-bottom: 8px;
             line-height: 1.3;
-            color: #ffffff;
+            color: var(--text-main);
         }
 
         .product-desc {
@@ -287,43 +426,6 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-        }
-
-        /* Variant Selection Chips */
-        .variants-section {
-            margin-bottom: 12px;
-        }
-
-        .variant-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .variant-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .chip {
-            background-color: #0f172a;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 0.78rem;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .chip.active {
-            border-color: var(--primary);
-            background-color: rgba(13, 148, 136, 0.15);
-            color: var(--primary);
         }
 
         .card-footer {
@@ -350,14 +452,14 @@
         .amount {
             font-size: 1.25rem;
             font-weight: 800;
-            color: var(--accent-gold);
+            color: var(--primary);
         }
 
         .btn-order {
             background-color: var(--whatsapp-green);
             color: #ffffff;
             border: none;
-            padding: 10px 14px;
+            padding: 10px 16px;
             border-radius: 8px;
             font-weight: 700;
             font-size: 0.85rem;
@@ -373,7 +475,69 @@
             background-color: var(--whatsapp-hover);
         }
 
-        /* Loading & Empty state */
+        /* Modal / Passcode */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .modal-content h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Admin Section */
+        .admin-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -391,61 +555,195 @@
 
     <!-- Top Banner -->
     <div class="top-banner">
-        <i class="fa-solid fa-truck-fast"></i> Fast Delivery Across Kenya | Direct WhatsApp Orders
+        <i class="fa-solid fa-truck-fast"></i> Fast Delivery Across Kenya | Direct WhatsApp Orders (+254 707 913 881)
     </div>
 
     <!-- Sticky Header -->
     <header>
         <div class="header-container">
-            <a href="#" class="brand-logo">
-                <i class="fa-solid fa-store"></i> Apex-Hub
-            </a>
+            <div class="header-left">
+                <button class="hamburger-btn" onclick="toggleDrawer(true)" aria-label="Open Navigation Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="#" class="brand-logo" onclick="showStorefront()">
+                    <i class="fa-solid fa-store"></i> Apex-Hub
+                </a>
+            </div>
 
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="searchInput" placeholder="Search kettles, coffee makers, machines..." oninput="filterProducts()">
             </div>
+
+            <div class="nav-actions">
+                <button class="btn-dash" onclick="openAdminAuth()">
+                    <i class="fa-solid fa-user-lock"></i> Admin
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- Hero Banner -->
-    <div class="hero">
-        <div class="hero-banner">
-            <div class="hero-text">
-                <h1>Premium Home Appliances</h1>
-                <p>Browse quality electronics and order directly via WhatsApp for instant response and speedy delivery.</p>
+    <!-- Drawer Menu Overlay -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
+
+    <!-- Side Navigation Drawer -->
+    <div class="side-drawer" id="sideDrawer">
+        <div class="drawer-header">
+            <span style="font-weight:800; color:var(--primary); font-size:1.2rem;">Menu</span>
+            <button class="drawer-close" onclick="toggleDrawer(false)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="drawer-body">
+            <div class="drawer-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="drawerSearchInput" placeholder="Search products..." oninput="syncDrawerSearch(this.value)">
+            </div>
+            <ul class="drawer-menu">
+                <li><a href="#" onclick="showStorefront(); toggleDrawer(false);"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="#" onclick="showStorefront(); toggleDrawer(false);"><i class="fa-solid fa-bag-shopping"></i> Shop</a></li>
+                <li><a href="#" onclick="toggleDrawer(false);"><i class="fa-solid fa-newspaper"></i> Blog</a></li>
+                <li><a href="#" onclick="toggleDrawer(false);"><i class="fa-solid fa-tags"></i> Offers</a></li>
+                <li><a href="#" onclick="toggleDrawer(false);"><i class="fa-solid fa-circle-info"></i> About Us</a></li>
+                <li><a href="#" onclick="toggleDrawer(false);"><i class="fa-solid fa-briefcase"></i> Jobs</a></li>
+                <li><a href="https://wa.me/254707913881" target="_blank" onclick="toggleDrawer(false);"><i class="fa-solid fa-envelope"></i> Contact us</a></li>
+                <li><a href="#" onclick="openAdminAuth(); toggleDrawer(false);"><i class="fa-solid fa-right-to-bracket"></i> Sign in</a></li>
+            </ul>
+        </div>
+        <div class="drawer-footer">
+            <a href="https://wa.me/254707913881" target="_blank" class="drawer-contact">
+                <i class="fa-solid fa-phone"></i> +254 707 913 881
+            </a>
+        </div>
+    </div>
+
+    <!-- STOREFRONT VIEW -->
+    <div id="storefrontView" class="view-section">
+        <div class="categories-wrapper">
+            <div class="category-title">
+                <i class="fa-solid fa-layer-group"></i> Categories
+            </div>
+            <div class="category-pills" id="categoryPills">
+                <button class="category-btn active" onclick="selectCategory('All')">All Items</button>
+                <button class="category-btn" onclick="selectCategory('Kitchen Appliances')">Kitchen Appliances</button>
+                <button class="category-btn" onclick="selectCategory('Hair Care & Beauty')">Hair Care & Beauty</button>
+                <button class="category-btn" onclick="selectCategory('Home Appliances')">Home Appliances</button>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="product-grid" id="productGrid">
+                <div class="empty-state">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <p>Loading crisp inventory...</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Categories Filter Bar -->
-    <div class="categories-wrapper">
-        <div class="category-title">
-            <i class="fa-solid fa-layer-group"></i> Categories
-        </div>
-        <div class="category-pills" id="categoryPills">
-            <button class="category-btn active" onclick="selectCategory('All')">All Items</button>
-            <button class="category-btn" onclick="selectCategory('Kitchen Appliances')">Kitchen Appliances</button>
-            <button class="category-btn" onclick="selectCategory('Electronics')">Electronics</button>
-            <button class="category-btn" onclick="selectCategory('Home & Office')">Home & Office</button>
+    <!-- ADMIN DASHBOARD VIEW -->
+    <div id="adminView" class="view-section hidden">
+        <div class="main-container" style="margin-top: 30px;">
+            <div class="admin-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+                    <h2 style="color:var(--primary);"><i class="fa-solid fa-gauge"></i> Inventory Management</h2>
+                    <div>
+                        <button class="btn-dash" onclick="openPasswordChange()"><i class="fa-solid fa-key"></i> Change Password</button>
+                        <button class="btn-dash" style="background:#fee2e2; color:#dc2626;" onclick="showStorefront()"><i class="fa-solid fa-right-from-bracket"></i> Exit Admin</button>
+                    </div>
+                </div>
+
+                <form id="addProductForm" onsubmit="handlePublish(event)">
+                    <div class="admin-grid">
+                        <input type="text" id="prodTitle" class="form-input" placeholder="Product Title" required>
+                        <input type="number" id="prodPrice" class="form-input" placeholder="Price (KES)" required>
+                        <select id="prodCategory" class="form-input">
+                            <option value="Kitchen Appliances">Kitchen Appliances</option>
+                            <option value="Hair Care & Beauty">Hair Care & Beauty</option>
+                            <option value="Home Appliances">Home Appliances</option>
+                        </select>
+                        <input type="text" id="prodImage" class="form-input" placeholder="High Resolution Image URL (Direct HD Link)" required>
+                    </div>
+                    <textarea id="prodDesc" class="form-input" placeholder="Product Description..." rows="3"></textarea>
+                    <button type="submit" class="btn-primary"><i class="fa-solid fa-plus"></i> Publish Product</button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Main Product Grid Section -->
-    <div class="main-container">
-        <div class="product-grid" id="productGrid">
-            <div class="empty-state">
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                <p>Loading inventory...</p>
-            </div>
+    <!-- Passcode Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <h3><i class="fa-solid fa-lock"></i> Admin Access</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Enter passcode to access dashboard.</p>
+            <input type="password" id="adminPassInput" class="form-input" placeholder="Enter Passcode">
+            <button class="btn-primary" onclick="verifyAdmin()">Login</button>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="modal" id="changePassModal">
+        <div class="modal-content">
+            <h3><i class="fa-solid fa-key"></i> Update Passcode</h3>
+            <input type="password" id="newPassInput" class="form-input" placeholder="New Passcode">
+            <button class="btn-primary" onclick="saveNewPassword()">Save Password</button>
         </div>
     </div>
 
     <script>
-        // WhatsApp Configuration
         const WHATSAPP_NUMBER = "254707913881";
+        
+        // High-Definition Crisp 1200px Unsplash Appliance Images
+        const defaultProducts = [
+            {
+                id: "1",
+                name: "Nunix Coffee Maker",
+                price: 3000,
+                category: "Kitchen Appliances",
+                imageUrl: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?auto=format&fit=crop&w=1200&q=80",
+                description: "Premium Nunix Coffee Maker for brewing ultra-rich fresh espresso and coffee."
+            },
+            {
+                id: "2",
+                name: "Nunix HD-01C blow dry hair dryer",
+                price: 1800,
+                category: "Hair Care & Beauty",
+                imageUrl: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1200&q=80",
+                description: "Nunix HD-01C blow dry hair dryer with high speed heat and salon precision."
+            },
+            {
+                id: "3",
+                name: "3 in 1 reki breakfast maker",
+                price: 4500,
+                category: "Kitchen Appliances",
+                imageUrl: "https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?auto=format&fit=crop&w=1200&q=80",
+                description: "3 in 1 multifunctional breakfast center with toaster, coffee maker & grill."
+            },
+            {
+                id: "4",
+                name: "Haier 20L Solo Microwave Oven",
+                price: 9000,
+                category: "Home Appliances",
+                imageUrl: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=1200&q=80",
+                description: "Haier 20L Solo Microwave Oven featuring multi-stage heating and touch controls."
+            },
+            {
+                id: "5",
+                name: "Hisense 14kg washing machine",
+                price: 56000,
+                category: "Home Appliances",
+                imageUrl: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=1200&q=80",
+                description: "Hisense 14kg heavy duty top loading washing machine with spin cycle technology."
+            },
+            {
+                id: "6",
+                name: "Hisense 11kg washing machine",
+                price: 45000,
+                category: "Home Appliances",
+                imageUrl: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=1200&q=80",
+                description: "Hisense 11kg fully automatic eco-smart washing machine."
+            }
+        ];
 
-        // Firebase Realtime Database Config
+        // Firebase Realtime Database
         const firebaseConfig = {
             databaseURL: "https://apex-hub-c6d50-default-rtdb.firebaseio.com"
         };
@@ -455,7 +753,22 @@
         let allProducts = [];
         let selectedCategory = "All";
 
-        // Load Products from Firebase
+        if(!localStorage.getItem('apex_passcode')) {
+            localStorage.setItem('apex_passcode', '1234');
+        }
+
+        // Side Drawer toggle logic
+        function toggleDrawer(open) {
+            document.getElementById('sideDrawer').classList.toggle('active', open);
+            document.getElementById('drawerOverlay').classList.toggle('active', open);
+        }
+
+        function syncDrawerSearch(val) {
+            document.getElementById('searchInput').value = val;
+            filterProducts();
+        }
+
+        // Database Sync
         db.ref('products').on('value', (snapshot) => {
             allProducts = [];
             const data = snapshot.val();
@@ -463,6 +776,8 @@
                 Object.keys(data).forEach(key => {
                     allProducts.push({ id: key, ...data[key] });
                 });
+            } else {
+                allProducts = defaultProducts;
             }
             renderProducts();
         });
@@ -484,9 +799,10 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
             const filtered = allProducts.filter(p => {
-                const matchesSearch = p.name?.toLowerCase().includes(searchTerm) || p.description?.toLowerCase().includes(searchTerm);
+                const titleMatch = (p.name || p.title || '').toLowerCase().includes(searchTerm);
+                const descMatch = (p.description || '').toLowerCase().includes(searchTerm);
                 const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
-                return matchesSearch && matchesCategory;
+                return (titleMatch || descMatch) && matchesCategory;
             });
 
             if (filtered.length === 0) {
@@ -499,40 +815,26 @@
             }
 
             grid.innerHTML = filtered.map(product => {
-                const hasVariants = product.variants && product.variants.length > 0;
-                const initialPrice = hasVariants ? product.variants[0].price : product.price;
-
+                const title = product.name || product.title;
+                const price = product.price;
+                const rawImg = product.imageUrl || product.image || 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=1200&q=80';
+                
                 return `
-                    <div class="product-card" id="card-${product.id}">
+                    <div class="product-card">
                         <div class="card-img-wrapper">
                             <span class="category-tag">${product.category || 'General'}</span>
-                            <img src="${product.imageUrl || 'https://via.placeholder.com/300'}" alt="${product.name}">
+                            <img src="${rawImg}" alt="${title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=1200&q=80'">
                         </div>
                         <div class="card-body">
-                            <div class="product-title">${product.name}</div>
-                            <div class="product-desc">${product.description || 'No description available.'}</div>
+                            <div class="product-title">${title}</div>
+                            <div class="product-desc">${product.description || 'High quality home appliance.'}</div>
                             
-                            ${hasVariants ? `
-                                <div class="variants-section">
-                                    <span class="variant-label">Select Option / Capacity:</span>
-                                    <div class="variant-chips">
-                                        ${product.variants.map((v, index) => `
-                                            <div class="chip ${index === 0 ? 'active' : ''}" 
-                                                 onclick="changeVariant('${product.id}', '${v.name}', ${v.price}, this)">
-                                                ${v.name}
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
-
                             <div class="card-footer">
                                 <div class="price-display">
                                     <span class="currency">KES</span>
-                                    <span class="amount" id="price-${product.id}">${Number(initialPrice).toLocaleString()}</span>
+                                    <span class="amount">${Number(price).toLocaleString()}</span>
                                 </div>
-                                <a id="btn-${product.id}" href="${buildWhatsAppLink(product.name, hasVariants ? product.variants[0].name : '', initialPrice)}" 
-                                   target="_blank" class="btn-order">
+                                <a href="${buildWhatsAppLink(title, price)}" target="_blank" class="btn-order">
                                     <i class="fa-brands fa-whatsapp"></i> Order
                                 </a>
                             </div>
@@ -542,30 +844,70 @@
             }).join('');
         }
 
-        function changeVariant(productId, variantName, price, chipElement) {
-            // Update Chip UI
-            const parent = chipElement.parentElement;
-            parent.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            chipElement.classList.add('active');
-
-            // Update Price Text
-            document.getElementById(`price-${productId}`).innerText = Number(price).toLocaleString();
-
-            // Update WhatsApp Order Button Link
-            const product = allProducts.find(p => p.id === productId);
-            const btn = document.getElementById(`btn-${productId}`);
-            btn.href = buildWhatsAppLink(product.name, variantName, price);
+        function buildWhatsAppLink(productName, price) {
+            let message = `Hello Apex-Hub! I would like to order:\n- *Product:* ${productName}\n- *Price:* KES ${Number(price).toLocaleString()}\n\nPlease confirm availability and delivery details.`;
+            return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
         }
 
-        function buildWhatsAppLink(productName, variant, price) {
-            let message = `Hello Apex-Hub! I would like to order:\n- *Product:* ${productName}`;
-            if (variant) {
-                message += `\n- *Variant/Capacity:* ${variant}`;
-            }
-            message += `\n- *Price:* KES ${Number(price).toLocaleString()}\n\nPlease confirm availability and delivery details.`;
+        function openAdminAuth() {
+            document.getElementById('authModal').classList.add('active');
+        }
 
-            return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+        function verifyAdmin() {
+            const entered = document.getElementById('adminPassInput').value;
+            const saved = localStorage.getItem('apex_passcode');
+            if(entered === saved) {
+                document.getElementById('authModal').classList.remove('active');
+                document.getElementById('storefrontView').classList.add('hidden');
+                document.getElementById('adminView').classList.remove('hidden');
+                document.getElementById('adminPassInput').value = '';
+            } else {
+                alert('Incorrect Passcode!');
+            }
+        }
+
+        function showStorefront() {
+            document.getElementById('adminView').classList.add('hidden');
+            document.getElementById('storefrontView').classList.remove('hidden');
+        }
+
+        function openPasswordChange() {
+            document.getElementById('changePassModal').classList.add('active');
+        }
+
+        function saveNewPassword() {
+            const newPass = document.getElementById('newPassInput').value;
+            if(newPass.length >= 4) {
+                localStorage.setItem('apex_passcode', newPass);
+                alert('Passcode successfully updated!');
+                document.getElementById('changePassModal').classList.remove('active');
+                document.getElementById('newPassInput').value = '';
+            } else {
+                alert('Password must be at least 4 characters long.');
+            }
+        }
+
+        function handlePublish(e) {
+            e.preventDefault();
+            const newProd = {
+                name: document.getElementById('prodTitle').value,
+                price: Number(document.getElementById('prodPrice').value),
+                category: document.getElementById('prodCategory').value,
+                imageUrl: document.getElementById('prodImage').value,
+                description: document.getElementById('prodDesc').value
+            };
+
+            db.ref('products').push(newProd, (error) => {
+                if(!error) {
+                    alert('Product published successfully!');
+                    document.getElementById('addProductForm').reset();
+                    showStorefront();
+                } else {
+                    alert('Error saving product: ' + error.message);
+                }
+            });
         }
     </script>
 </body>
 </html>
+```
