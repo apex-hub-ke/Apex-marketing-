@@ -1,705 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex-Hub Storefront</title>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <style>
-        :root {
-            --primary: #5c2483;
-            --primary-hover: #481b68;
-            --secondary: #25d366;
-            --bg-dark: #0f1117;
-            --card-bg: #1a1d26;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border-color: #2e3344;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex-Hub Kenya | Online Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Top Announcement Bar */
-        .announcement-bar {
-            background: linear-gradient(90deg, #3b1456, #5c2483);
-            color: #fff;
-            text-align: center;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* Navbar */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 24px;
-            background-color: rgba(26, 29, 38, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: #fff;
-        }
-
-        .brand i {
-            color: var(--primary);
-        }
-
-        .nav-btn {
-            background: var(--border-color);
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-
-        .nav-btn:hover {
-            background: var(--primary);
-        }
-
-        /* Main Container */
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        /* Search & Categories */
-        .controls-section {
-            margin-bottom: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .search-box {
-            position: relative;
-            width: 100%;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 12px 16px 12px 42px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 0.95rem;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
-        .categories-wrapper {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-        }
-
-        .cat-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            white-space: nowrap;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .cat-btn.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-        }
-
-        /* Grid */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
-        }
-
-        .product-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--primary);
-        }
-
-        .card-img-wrapper {
-            position: relative;
-            width: 100%;
-            padding-top: 100%;
-            background: #12141c;
-        }
-
-        .card-img-wrapper img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .category-tag {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(15, 17, 23, 0.85);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .card-body {
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .product-title {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .product-desc {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-            line-clamp: 2;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-footer {
-            margin-top: auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .price-display {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .currency {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        .amount {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #fff;
-        }
-
-        .order-btn {
-            background: var(--secondary);
-            color: #fff;
-            text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .order-btn:hover {
-            opacity: 0.9;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.2s;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            width: 90%;
-            max-width: 400px;
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-
-        .modal-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 0.9rem;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            margin-top: 20px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        /* Admin Dashboard View */
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .admin-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 24px;
-        }
-
-        @media (max-width: 768px) {
-            .admin-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 48px;
-            color: var(--text-muted);
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 12px;
-        }
-    </style>
+  <style>
+    .badge-variant {
+      background-color: #f3f4f6;
+      color: #1f2937;
+      border: 1px solid #e5e7eb;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
 
-    <div class="announcement-bar">
-        Fast Delivery Across Kenya | Direct WhatsApp Orders (+254 707 913 881)
+  <!-- Top Announcement Bar -->
+  <div class="bg-black text-white text-xs sm:text-sm py-2 text-center px-4 font-medium">
+    🚚 Express Delivery Across Nairobi & Fast Shipping Countrywide in Kenya!
+  </div>
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <span class="text-2xl font-black tracking-tight text-blue-600">APEX<span class="text-gray-900">-HUB</span></span>
+      </div>
+      <button id="adminToggleBtn" onclick="toggleAdminModal()" class="text-xs font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg border transition">
+        <i class="fa-solid fa-lock mr-1"></i> Admin
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-8 px-4 text-center">
+    <h1 class="text-2xl sm:text-4xl font-extrabold mb-2">Quality Electronics & Home Appliances</h1>
+    <p class="text-sm sm:text-base text-blue-100 max-w-xl mx-auto">Browse our collection, select your specs/variants, and order directly via WhatsApp!</p>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+    
+    <!-- Search & Filter Bar -->
+    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+      <div class="relative flex-1">
+        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search products, inches, capacities..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+      </div>
+      <select id="categoryFilter" onchange="filterProducts()" class="py-2.5 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm bg-white">
+        <option value="All">All Categories</option>
+        <option value="TVs & Audio">TVs & Audio</option>
+        <option value="Home Appliances">Home Appliances</option>
+        <option value="Kitchen Appliances">Kitchen Appliances</option>
+        <option value="Phones & Tech">Phones & Tech</option>
+        <option value="Other">Other</option>
+      </select>
     </div>
 
-    <header>
-        <div class="brand">
-            <i class="fa-solid fa-store"></i>
-            <span>Apex-Hub</span>
-        </div>
-        <button class="nav-btn" id="navAuthBtn" onclick="openAdminAuth()">
-            <i class="fa-solid fa-lock"></i>
-            <span>Admin</span>
-        </button>
-    </header>
-
-    <main>
-        <!-- STOREFRONT VIEW -->
-        <div id="storefrontView">
-            <div class="controls-section">
-                <div class="search-box">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="searchInput" placeholder="Search products..." oninput="renderProducts()">
-                </div>
-                <div class="categories-wrapper" id="categoryFilterContainer">
-                    <button class="cat-btn active" onclick="setCategory('All')">All Items</button>
-                    <button class="cat-btn" onclick="setCategory('Kitchen Appliances')">Kitchen Appliances</button>
-                    <button class="cat-btn" onclick="setCategory('Hair Care & Beauty')">Hair Care & Beauty</button>
-                    <button class="cat-btn" onclick="setCategory('Washing Machine')">Washing Machine</button>
-                </div>
-            </div>
-
-            <div class="products-grid" id="productsGrid">
-                <!-- Products dynamically inserted here -->
-            </div>
-        </div>
-
-        <!-- ADMIN DASHBOARD VIEW -->
-        <div id="adminView" class="hidden">
-            <div class="admin-header">
-                <h2>Admin Management</h2>
-                <div style="display: flex; gap: 8px;">
-                    <button class="btn-secondary" onclick="openPasswordChange()">Change Passcode</button>
-                    <button class="btn-secondary" onclick="showStorefront()"><i class="fa-solid fa-arrow-left"></i> Exit Admin</button>
-                </div>
-            </div>
-
-            <div class="admin-grid">
-                <!-- Add Product Form -->
-                <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color);">
-                    <h3 style="margin-bottom: 16px;">Publish New Product</h3>
-                    <form id="addProductForm" onsubmit="handlePublish(event)">
-                        <div class="form-group">
-                            <label>Product Title</label>
-                            <input type="text" id="prodTitle" required placeholder="e.g. Electric Kettle">
-                        </div>
-                        <div class="form-group">
-                            <label>Price (KES)</label>
-                            <input type="number" id="prodPrice" required placeholder="3000">
-                        </div>
-                        <div class="form-group">
-                            <label>Category</label>
-                            <select id="prodCategory">
-                                <option>Kitchen Appliances</option>
-                                <option>Hair Care & Beauty</option>
-                                <option>Washing Machine</option>
-                                <option>General</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Image URL</label>
-                            <input type="url" id="prodImageUrl" required placeholder="https://...">
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea id="prodDesc" rows="3" placeholder="Product details..."></textarea>
-                        </div>
-                        <button type="submit" class="btn-primary" style="width: 100%;">Publish Item</button>
-                    </form>
-                </div>
-
-                <!-- Admin Manage Items List -->
-                <div>
-                    <h3 style="margin-bottom: 16px;">Current Catalog</h3>
-                    <div id="adminProductList" style="display: flex; flex-direction: column; gap: 10px;">
-                        <!-- Managed products dynamically listed here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- ADMIN LOGIN MODAL -->
-    <div class="modal-overlay" id="authModal">
-        <div class="modal-card">
-            <div class="modal-title">Admin Access</div>
-            <div class="form-group">
-                <label>Enter Passcode</label>
-                <input type="password" id="adminPassInput" placeholder="••••••••">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-secondary" onclick="closeAuthModal()">Cancel</button>
-                <button class="btn-primary" onclick="verifyAdmin()">Login</button>
-            </div>
-        </div>
+    <!-- Product Grid -->
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- Loading State -->
+      <div class="col-span-full text-center py-12 text-gray-500">
+        <i class="fa-solid fa-spinner fa-spin text-2xl text-blue-600 mb-2"></i>
+        <p>Loading catalog...</p>
+      </div>
     </div>
+  </main>
 
-    <!-- CHANGE PASSCODE MODAL -->
-    <div class="modal-overlay" id="changePassModal">
-        <div class="modal-card">
-            <div class="modal-title">Change Passcode</div>
-            <div class="form-group">
-                <label>New Passcode</label>
-                <input type="password" id="newPassInput" placeholder="At least 4 characters">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-secondary" onclick="closeChangePassModal()">Cancel</button>
-                <button class="btn-primary" onclick="saveNewPassword()">Update</button>
-            </div>
+  <!-- Admin Modal -->
+  <div id="adminModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative max-h-[90vh] overflow-y-auto">
+      <button onclick="toggleAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+
+      <!-- Passcode Form -->
+      <div id="authSection">
+        <h2 class="text-xl font-bold mb-4 text-gray-900">Admin Login</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Enter Passcode</label>
+            <input type="password" id="passcodeInput" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Passcode">
+          </div>
+          <button onclick="verifyPasscode()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg text-sm transition">Login</button>
         </div>
+      </div>
+
+      <!-- Add Product Form -->
+      <div id="dashboardSection" class="hidden">
+        <div class="flex items-center justify-between mb-4 border-b pb-2">
+          <h2 class="text-lg font-bold text-gray-900">Publish New Item</h2>
+          <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">Authenticated</span>
+        </div>
+
+        <form id="addProductForm" onsubmit="handlePublishProduct(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Product Title</label>
+            <input type="text" id="prodTitle" required class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="e.g. Smart Android TV">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-1">Price (KES)</label>
+              <input type="number" id="prodPrice" required class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="e.g. 25000">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-1">Category</label>
+              <select id="prodCategory" required class="w-full px-3 py-1.5 border rounded-lg text-sm bg-white">
+                <option value="TVs & Audio">TVs & Audio</option>
+                <option value="Home Appliances">Home Appliances</option>
+                <option value="Kitchen Appliances">Kitchen Appliances</option>
+                <option value="Phones & Tech">Phones & Tech</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Variants / Specs (Sizes, KGs, Inches, Colors)</label>
+            <input type="text" id="prodVariants" class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder='e.g. Sizes: 32", 43", 55" OR Capacity: 7kg, 9kg'>
+            <p class="text-[10px] text-gray-400 mt-0.5">Use commas to separate choices for your customers.</p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Image URL</label>
+            <input type="url" id="prodImage" required class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="https://example.com/image.jpg">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Description</label>
+            <textarea id="prodDesc" rows="2" class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="Brief summary of features..."></textarea>
+          </div>
+
+          <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg text-sm transition mt-2">Publish Product</button>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // --- FIREBASE CONFIGURATION ---
-        const firebaseConfig = {
-            databaseURL: "https://apex-marketing--default-rtdb.firebaseio.com"
-        };
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.database();
+  <footer class="bg-gray-900 text-gray-400 text-xs py-6 text-center mt-auto">
+    <p>© Apex-Hub Kenya. All rights reserved.</p>
+  </footer>
 
-        const WHATSAPP_NUMBER = "254707913881";
-        let allProducts = [];
-        let selectedCategory = 'All';
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      databaseURL: "https://apex-hub-ke-default-rtdb.firebaseio.com/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-        // --- FETCH PRODUCTS REALTIME ---
-        db.ref('products').on('value', (snapshot) => {
-            const data = snapshot.val();
-            allProducts = [];
-            if (data) {
-                Object.keys(data).forEach(key => {
-                    allProducts.push({ id: key, ...data[key] });
-                });
-            }
-            renderProducts();
-            renderAdminProductList();
+    let allProducts = [];
+
+    // Fetch Products Realtime
+    db.ref('products').on('value', (snapshot) => {
+      const data = snapshot.val();
+      allProducts = [];
+      if (data) {
+        Object.keys(data).forEach(key => {
+          allProducts.push({ id: key, ...data[key] });
         });
+      }
+      renderProducts(allProducts);
+    });
 
-        // --- FILTER & RENDER STOREFRONT ---
-        function setCategory(cat) {
-            selectedCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText === cat || (cat === 'All' && btn.innerText === 'All Items'));
-            });
-            renderProducts();
-        }
+    function renderProducts(products) {
+      const grid = document.getElementById('productGrid');
+      if (products.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">No products found.</div>`;
+        return;
+      }
 
-        function renderProducts() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const grid = document.getElementById('productsGrid');
+      grid.innerHTML = products.map(p => `
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition">
+          <img src="${p.imageUrl}" alt="${p.title}" class="w-full h-48 object-cover bg-gray-100" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+          <div class="p-4 flex flex-col flex-grow">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 mb-1">${p.category || 'General'}</span>
+            <h3 class="font-bold text-gray-900 text-base leading-snug mb-1">${p.title}</h3>
+            <p class="text-xs text-gray-500 mb-3 line-clamp-2">${p.description || ''}</p>
+            
+            ${p.variants ? `
+              <div class="mb-3">
+                <span class="text-[11px] font-semibold text-gray-500 block mb-1">Available Specs:</span>
+                <span class="inline-block bg-gray-100 text-gray-700 text-xs font-medium px-2 py-1 rounded border border-gray-200">
+                  <i class="fa-solid fa-sliders text-blue-500 mr-1"></i>${p.variants}
+                </span>
+              </div>
+            ` : ''}
 
-            const filtered = allProducts.filter(p => {
-                const titleMatch = (p.name || p.title || '').toLowerCase().includes(search);
-                const descMatch = (p.description || '').toLowerCase().includes(search);
-                const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
-                return (titleMatch || descMatch) && matchesCategory;
-            });
+            <div class="mt-auto pt-2 flex items-center justify-between border-t border-gray-50">
+              <div>
+                <span class="text-xs text-gray-400 block">Price</span>
+                <span class="text-base font-extrabold text-gray-900">KES ${Number(p.price).toLocaleString()}</span>
+              </div>
+              <button onclick="orderViaWhatsApp('${p.title}', '${p.price}', '${p.variants || ''}')" class="bg-green-600 hover:bg-green-700 text-white font-medium text-xs px-3 py-2 rounded-lg flex items-center gap-1.5 transition">
+                <i class="fa-brands fa-whatsapp text-sm"></i> Order
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
 
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fa-solid fa-box-open"></i>
-                        <p>No products found matching your search.</p>
-                    </div>`;
-                return;
-            }
+    function filterProducts() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const category = document.getElementById('categoryFilter').value;
 
-            grid.innerHTML = filtered.map(product => {
-                const title = product.name || product.title;
-                const price = product.price;
-                const rawImg = product.imageUrl || product.image;
+      const filtered = allProducts.filter(p => {
+        const matchesCategory = category === 'All' || p.category === category;
+        const matchesSearch = p.title.toLowerCase().includes(query) || 
+                              (p.variants && p.variants.toLowerCase().includes(query)) ||
+                              (p.description && p.description.toLowerCase().includes(query));
+        return matchesCategory && matchesSearch;
+      });
 
-                return `
-                    <div class="product-card">
-                        <div class="card-img-wrapper">
-                            <span class="category-tag">${product.category || 'General'}</span>
-                            <img src="${rawImg}" alt="${title}">
-                        </div>
-                        <div class="card-body">
-                            <div class="product-title">${title}</div>
-                            <div class="product-desc">${product.description || ''}</div>
-                            <div class="card-footer">
-                                <div class="price-display">
-                                    <span class="currency">KES</span>
-                                    <span class="amount">${Number(price).toLocaleString()}</span>
-                                </div>
-                                <a href="${buildWhatsAppLink(title, price)}" class="order-btn" target="_blank">
-                                    <i class="fa-brands fa-whatsapp"></i> Order
-                                </a>
-                            </div>
-                        </div>
-                    </div>`;
-            }).join('');
-        }
+      renderProducts(filtered);
+    }
 
-        function buildWhatsAppLink(productName, price) {
-            let message = `Hello Apex-Hub! I would like to order:\n- *Product:* ${productName}\n- *Price:* KES ${price}`;
-            return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-        }
+    function orderViaWhatsApp(title, price, variants) {
+      let msg = `Hello Apex-Hub Kenya! I would like to order:\n\n📌 *Item:* ${title}\n💰 *Price:* KES ${Number(price).toLocaleString()}`;
+      if (variants) {
+        msg += `\n⚙️ *Available Specs:* ${variants}`;
+        msg += `\n\n*(Please specify your preferred size/capacity/color when replying)*`;
+      }
+      const encodedMsg = encodeURIComponent(msg);
+      window.open(`https://wa.me/254707913881?text=${encodedMsg}`, '_blank');
+    }
 
-        // --- AUTHENTICATION & DIRECT PASSCODE VERIFICATION ---
-        function openAdminAuth() {
-            document.getElementById('authModal').classList.add('active');
-        }
+    // Admin Access
+    function toggleAdminModal() {
+      const modal = document.getElementById('adminModal');
+      modal.classList.toggle('hidden');
+    }
 
-        function closeAuthModal() {
-            document.getElementById('authModal').classList.remove('active');
-        }
+    function verifyPasscode() {
+      const code = document.getElementById('passcodeInput').value;
+      if (code === "Milano254!+") {
+        document.getElementById('authSection').classList.add('hidden');
+        document.getElementById('dashboardSection').classList.remove('hidden');
+      } else {
+        alert('Incorrect Admin Passcode');
+      }
+    }
 
-        function verifyAdmin() {
-            const entered = document.getElementById('adminPassInput').value;
-            const saved = localStorage.getItem('apex_passcode') || "Milano254!+";
-            if (entered === saved || entered === "Milano254!+") {
-                document.getElementById('authModal').classList.remove('active');
-                document.getElementById('storefrontView').classList.add('hidden');
-                document.getElementById('adminView').classList.remove('hidden');
-                document.getElementById('adminPassInput').value = '';
-            } else {
-                alert('Incorrect Passcode!');
-            }
-        }
+    function handlePublishProduct(e) {
+      e.preventDefault();
+      const title = document.getElementById('prodTitle').value;
+      const price = document.getElementById('prodPrice').value;
+      const category = document.getElementById('prodCategory').value;
+      const variants = document.getElementById('prodVariants').value;
+      const imageUrl = document.getElementById('prodImage').value;
+      const description = document.getElementById('prodDesc').value;
 
-        function showStorefront() {
-            document.getElementById('adminView').classList.add('hidden');
-            document.getElementById('storefrontView').classList.remove('hidden');
-        }
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerText = 'Publishing...';
 
-        function openPasswordChange() {
-            document.getElementById('changePassModal').classList.add('active');
-        }
-
-        function closeChangePassModal() {
-            document.getElementById('changePassModal').classList.remove('active');
-        }
-
-        function saveNewPassword() {
-            const newPass = document.getElementById('newPassInput').value;
-            if (newPass.length >= 4) {
-                localStorage.setItem('apex_passcode', newPass);
-                alert('Passcode successfully updated!');
-                closeChangePassModal();
-                document.getElementById('newPassInput').value = '';
-            } else {
-                alert('Password must be at least 4 characters long.');
-            }
-        }
-
-        // --- PUBLISH & MANAGEMENT ---
-        function handlePublish(e) {
-            e.preventDefault();
-            const newProd = {
-                name: document.getElementById('prodTitle').value,
-                price: Number(document.getElementById('prodPrice').value),
-                category: document.getElementById('prodCategory').value,
-                imageUrl: document.getElementById('prodImageUrl').value,
-                description: document.getElementById('prodDesc').value
-            };
-
-            db.ref('products').push(newProd, (error) => {
-                if (!error) {
-                    alert('Product published successfully!');
-                    document.getElementById('addProductForm').reset();
-                    showStorefront();
-                } else {
-                    alert('Error saving product: ' + error.message);
-                }
-            });
-        }
-
-        function renderAdminProductList() {
-            const container = document.getElementById('adminProductList');
-            if (allProducts.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-muted);">No products currently listed.</p>';
-                return;
-            }
-
-            container.innerHTML = allProducts.map(p => `
-                <div style="background: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <strong>${p.name || p.title}</strong>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">KES ${p.price}</div>
-                    </div>
-                    <button onclick="deleteProduct('${p.id}')" style="background: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">
-                        Delete
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function deleteProduct(id) {
-            if (confirm('Are you sure you want to delete this item?')) {
-                db.ref('products/' + id).remove();
-            }
-        }
-    </script>
+      db.ref('products').push({
+        title,
+        price,
+        category,
+        variants,
+        imageUrl,
+        description,
+        timestamp: Date.now()
+      }).then(() => {
+        alert('Product published successfully!');
+        document.getElementById('addProductForm').reset();
+        btn.disabled = false;
+        btn.innerText = 'Publish Product';
+        toggleAdminModal();
+      }).catch(err => {
+        alert('Error publishing: ' + err.message);
+        btn.disabled = false;
+        btn.innerText = 'Publish Product';
+      });
+    }
+  </script>
 </body>
 </html>
