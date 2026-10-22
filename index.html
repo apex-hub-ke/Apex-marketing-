@@ -4,15 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Apex-Hub Kenya | Electronics & Home Appliances</title>
-  
-  <!-- Standalone Tailwind CSS Bundle -->
-  <script src="https://tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cloudflare.com">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Firebase SDKs -->
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col antialiased">
 
@@ -42,7 +39,7 @@
   <!-- Main Work Area -->
   <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full space-y-10">
     
-    <!-- ADMIN DASHBOARD PANEL (Dedicated Screen Section) -->
+    <!-- ADMIN DASHBOARD PANEL -->
     <section id="adminDashboardSection" class="bg-white rounded-2xl border-2 border-purple-200 shadow-md p-5 sm:p-8 transition-all">
       <div class="flex items-center justify-between border-b pb-4 mb-6">
         <div class="flex items-center gap-3">
@@ -110,7 +107,7 @@
 
           <div>
             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">High Resolution Image URL</label>
-            <input type="url" id="prodImage" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 focus:outline-none" placeholder="https://ibb.co">
+            <input type="url" id="prodImage" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 focus:outline-none" placeholder="https://i.ibb.co/.../image.jpg">
           </div>
 
           <div>
@@ -133,56 +130,282 @@
     <!-- STOREFRONT SECTION -->
     <section>
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-black text-gray-900 tracking-tight">LIVE STOREFRONT</h2>
+        <h2 class="text-xl font-black text-gray-900 tracking-tight">LIVE CATALOG</h2>
       </div>
-      <div id="productsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <!-- Products will load here dynamically -->
+
+      <!-- Filters -->
+      <div class="flex flex-col sm:flex-row gap-3 mb-6 bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-purple-400"></i>
+          <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search products, inches, capacities..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-600 focus:outline-none text-sm">
+        </div>
+        <select id="categoryFilter" onchange="filterProducts()" class="py-2.5 px-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-600 focus:outline-none text-sm bg-white font-medium text-gray-700">
+          <option value="All">All Categories</option>
+          <option value="TVs & Audio">TVs & Audio</option>
+          <option value="Home Appliances">Home Appliances</option>
+          <option value="Kitchen Appliances">Kitchen Appliances</option>
+          <option value="Phones & Tech">Phones & Tech</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <!-- Product Cards Grid -->
+      <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div id="loadingState" class="col-span-full text-center py-16 text-gray-500 font-medium">
+          <i class="fa-solid fa-circle-notch fa-spin text-3xl text-purple-600 mb-3 block"></i>
+          Loading Apex-Hub catalog...
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- PRODUCT TAP MODAL -->
+  <div id="productModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden relative max-h-[90vh] flex flex-col">
+      <button onclick="closeProductModal()" class="absolute top-3 right-3 bg-white/80 hover:bg-white text-gray-700 rounded-full p-2 z-10 shadow transition">
+        <i class="fa-solid fa-xmark text-lg block w-5 h-5 text-center leading-5"></i>
+      </button>
+
+      <div class="overflow-y-auto p-4 sm:p-6 space-y-5">
+        <div class="w-full h-64 sm:h-80 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 flex items-center justify-center">
+          <img id="modalImage" src="" alt="" class="w-full h-full object-contain p-2">
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span id="modalCategory" class="text-xs font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2.5 py-1 rounded-md border border-purple-100"></span>
+            <span id="modalPrice" class="text-xl sm:text-2xl font-black text-gray-900"></span>
+          </div>
+
+          <h2 id="modalTitle" class="text-xl sm:text-2xl font-bold text-gray-900 leading-tight"></h2>
+          
+          <div class="border-t border-b border-gray-100 py-3">
+            <h4 class="text-xs font-bold uppercase text-gray-400 mb-1">Description & Specs</h4>
+            <p id="modalDescription" class="text-sm text-gray-600 leading-relaxed whitespace-pre-line"></p>
+          </div>
+
+          <div id="modalVariantsContainer" class="hidden">
+            <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Select Preferred Option</label>
+            <div id="modalVariantsList" class="flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-4 mt-auto">
+        <button id="modalOrderBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold text-sm px-6 py-3 rounded-xl flex items-center justify-center gap-2 shadow-md transition">
+          <i class="fa-brands fa-whatsapp text-lg"></i> Order via WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-gray-900 text-gray-400 text-xs py-6 text-center mt-auto">
+    <p>© Apex-Hub Kenya. All rights reserved.</p>
+  </footer>
+
   <script>
+    // Firebase Configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyAHX1af6NlsfsPP9BYWHNPb7b0Y_hLAsM0",
-      authDomain: "://firebaseapp.com",
-      databaseURL: "https://firebaseio.com",
-      projectId: "apex-hub-c6d50",
-      storageBucket: "://appspot.com",
-      messagingSenderId: "508890619708",
-      appId: "1:508890619708:web:8a098b59c55b1e78ae4839"
+      databaseURL: "https://apex-marketing-default-rtdb.firebaseio.com/"
     };
-    
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const auth = firebase.auth();
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    function unlockDashboard(event) {
-      event.preventDefault();
-      const adminEmail = "timothymatheka03@gmail.com"; 
-      const enteredPasscode = document.getElementById("dashboardPasscode").value;
+    let allProducts = [];
+    let selectedVariant = "";
+    let activeProduct = null;
 
-      auth.signInWithEmailAndPassword(adminEmail, enteredPasscode)
-        .then((userCredential) => {
-          alert("Dashboard Unlocked!");
-          document.getElementById("dashboardAuthForm").classList.add("hidden");
-          document.getElementById("dashboardPublishForm").classList.remove("hidden");
-          document.getElementById("statusBadge").textContent = "Unlocked";
-          document.getElementById("statusBadge").className = "text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full border border-green-200";
-        })
-        .catch((error) => {
-          alert("Invalid Passcode. Access Denied.");
-          console.error(error.message);
-        });
+    // Load Connection Watchdog
+    const loadTimeout = setTimeout(() => {
+      const grid = document.getElementById('productGrid');
+      if (allProducts.length === 0 && document.getElementById('loadingState')) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-red-500 font-semibold px-4">Database connecting... Please verify your Firebase Database Rules are set to {".read": true, ".write": true}.</div>`;
+      }
+    }, 5000);
+
+    // Fetch Products Realtime
+    db.ref('products').on('value', (snapshot) => {
+      clearTimeout(loadTimeout);
+      const data = snapshot.val();
+      allProducts = [];
+      if (data) {
+        Object.keys(data).forEach(key => allProducts.push({ id: key, ...data[key] }));
+      }
+      renderProducts(allProducts);
+    });
+
+    function renderProducts(products) {
+      const grid = document.getElementById('productGrid');
+      if (products.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-400 font-medium">No items listed yet. Unlock the Admin Dashboard above to add products.</div>`;
+        return;
+      }
+
+      grid.innerHTML = products.map(p => `
+        <div onclick="openProductModal('${p.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md border border-gray-200/80 overflow-hidden flex flex-col cursor-pointer transition transform hover:-translate-y-0.5">
+          <div class="w-full h-48 bg-gray-50 flex items-center justify-center p-2 border-b border-gray-100 relative">
+            <img src="${p.imageUrl}" alt="${p.title}" class="h-full w-full object-contain" onerror="this.src='https://via.placeholder.com/300x200?text=Apex-Hub'">
+            <span class="absolute top-2 left-2 text-[10px] font-bold uppercase bg-purple-900/80 text-white px-2 py-0.5 rounded backdrop-blur-sm">${p.category || 'General'}</span>
+          </div>
+          <div class="p-4 flex flex-col flex-grow">
+            <h3 class="font-bold text-gray-900 text-sm sm:text-base leading-snug mb-1 line-clamp-1">${p.title}</h3>
+            <p class="text-xs text-gray-500 mb-3 line-clamp-2">${p.description || 'Tap to view full details...'}</p>
+            
+            ${p.variants ? `
+              <div class="mb-3">
+                <span class="inline-block bg-purple-50 text-purple-800 text-[11px] font-semibold px-2 py-0.5 rounded border border-purple-100">
+                  <i class="fa-solid fa-sliders text-purple-600 mr-1"></i>Multiple Specs
+                </span>
+              </div>
+            ` : ''}
+
+            <div class="mt-auto pt-2 flex items-center justify-between border-t border-gray-100">
+              <div>
+                <span class="text-[10px] text-gray-400 block font-semibold uppercase">Price</span>
+                <span class="text-base font-black text-gray-900">KES ${Number(p.price).toLocaleString()}</span>
+              </div>
+              <span class="text-purple-700 text-xs font-bold bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-lg border border-purple-200 transition">
+                View Item <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      `).join('');
     }
 
-    function lockDashboard() {
-      auth.signOut().then(() => {
-        document.getElementById("dashboardAuthForm").classList.remove("hidden");
-        document.getElementById("dashboardPublishForm").classList.add("hidden");
-        document.getElementById("statusBadge").textContent = "Locked";
-        document.getElementById("statusBadge").className = "text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full border border-gray-200";
-        document.getElementById("dashboardPasscode").value = "";
+    function openProductModal(id) {
+      activeProduct = allProducts.find(p => p.id === id);
+      if (!activeProduct) return;
+
+      document.getElementById('modalTitle').innerText = activeProduct.title;
+      document.getElementById('modalPrice').innerText = 'KES ' + Number(activeProduct.price).toLocaleString();
+      document.getElementById('modalCategory').innerText = activeProduct.category || 'General';
+      document.getElementById('modalDescription').innerText = activeProduct.description || 'No detailed summary provided.';
+      document.getElementById('modalImage').src = activeProduct.imageUrl;
+
+      const variantsContainer = document.getElementById('modalVariantsContainer');
+      const variantsList = document.getElementById('modalVariantsList');
+      selectedVariant = "";
+
+      if (activeProduct.variants && activeProduct.variants.trim() !== "") {
+        const choices = activeProduct.variants.split(',').map(v => v.trim()).filter(v => v.length > 0);
+        variantsList.innerHTML = choices.map(choice => `
+          <button onclick="selectVariantChoice('${choice}', this)" class="variant-chip text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-300 text-gray-700 hover:border-purple-600 transition">
+            ${choice}
+          </button>
+        `).join('');
+        variantsContainer.classList.remove('hidden');
+      } else {
+        variantsContainer.classList.add('hidden');
+      }
+
+      document.getElementById('modalOrderBtn').onclick = () => sendWhatsAppOrder();
+      document.getElementById('productModal').classList.remove('hidden');
+    }
+
+    function selectVariantChoice(choice, btnElement) {
+      selectedVariant = choice;
+      document.querySelectorAll('.variant-chip').forEach(btn => {
+        btn.classList.remove('bg-purple-700', 'text-white', 'border-purple-700');
+        btn.classList.add('border-gray-300', 'text-gray-700');
       });
+      btnElement.classList.remove('border-gray-300', 'text-gray-700');
+      btnElement.classList.add('bg-purple-700', 'text-white', 'border-purple-700');
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').classList.add('hidden');
+    }
+
+    function sendWhatsAppOrder() {
+      if (!activeProduct) return;
+      let msg = `Hello Apex-Hub Kenya! I would like to order:\n\n📌 *Item:* ${activeProduct.title}\n💰 *Price:* KES ${Number(activeProduct.price).toLocaleString()}`;
+      
+      if (selectedVariant) {
+        msg += `\n⚙️ *Selected Spec/Variant:* ${selectedVariant}`;
+      } else if (activeProduct.variants) {
+        msg += `\n⚙️ *Available Options:* ${activeProduct.variants}`;
+      }
+
+      const encodedMsg = encodeURIComponent(msg);
+      window.open(`https://wa.me/254707913881?text=${encodedMsg}`, '_blank');
+    }
+
+    function filterProducts() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const category = document.getElementById('categoryFilter').value;
+
+      const filtered = allProducts.filter(p => {
+        const matchesCategory = category === 'All' || p.category === category;
+        const matchesSearch = p.title.toLowerCase().includes(query) || 
+                              (p.variants && p.variants.toLowerCase().includes(query)) ||
+                              (p.description && p.description.toLowerCase().includes(query));
+        return matchesCategory && matchesSearch;
+      });
+
+      renderProducts(filtered);
     }
 
     function scrollToDashboard() {
+      document.getElementById('adminDashboardSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function unlockDashboard(e) {
+      e.preventDefault();
+      const code = document.getElementById('dashboardPasscode').value;
+      if (code === "Milano254!+") {
+        document.getElementById('dashboardAuthForm').classList.add('hidden');
+        document.getElementById('dashboardPublishForm').classList.remove('hidden');
+        const badge = document.getElementById('statusBadge');
+        badge.innerText = "Authenticated";
+        badge.className = "text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full border border-green-200";
+      } else {
+        alert('Incorrect Admin Passcode');
+      }
+    }
+
+    function lockDashboard() {
+      document.getElementById('dashboardAuthForm').classList.remove('hidden');
+      document.getElementById('dashboardPublishForm').classList.add('hidden');
+      document.getElementById('dashboardPasscode').value = "";
+      const badge = document.getElementById('statusBadge');
+      badge.innerText = "Locked";
+      badge.className = "text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full border border-gray-200";
+    }
+
+    function handlePublishProduct(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerText = 'Publishing...';
+
+      const newProduct = {
+        title: document.getElementById('prodTitle').value,
+        price: document.getElementById('prodPrice').value,
+        category: document.getElementById('prodCategory').value,
+        variants: document.getElementById('prodVariants').value,
+        imageUrl: document.getElementById('prodImage').value,
+        description: document.getElementById('prodDesc').value,
+        timestamp: Date.now()
+      };
+
+      db.ref('products').push(newProduct, (error) => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publish Live To Store`;
+
+        if (error) {
+          alert('Error: ' + error.message + '\nEnsure Database Rules are set to { ".read": true, ".write": true } in Firebase Console.');
+        } else {
+          alert('Product successfully published to Apex-Hub store!');
+          document.getElementById('prodTitle').value = "";
+          document.getElementById('prodPrice').value = "";
+          document.getElementById('prodVariants').value = "";
+          document.getElementById('prodImage').value = "";
+          document.getElementById('prodDesc').value = "";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+￼Enter
