@@ -855,8 +855,9 @@
 
         function verifyAdmin() {
             const entered = document.getElementById('adminPassInput').value;
-            const saved = localStorage.getItem('apex_passcode');
-            if(entered === saved) {
+const saved = localStorage.getItem('apex_passcode') || "Milano254!+";
+if (entered === saved) {
+
                 document.getElementById('authModal').classList.remove('active');
                 document.getElementById('storefrontView').classList.add('hidden');
                 document.getElementById('adminView').classList.remove('hidden');
