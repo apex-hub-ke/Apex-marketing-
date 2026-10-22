@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex-Hub Kenya | Online Store</title>
+  <title>Topline Kenya | Electronics & Home Appliances</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -13,18 +13,18 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
 
-  <!-- Top Announcement Bar -->
-  <div class="bg-purple-950 text-purple-100 text-xs sm:text-sm py-2 text-center px-4 font-medium">
-    🚚 Express Delivery Across Nairobi & Fast Shipping Countrywide in Kenya!
+  <!-- Top Banner -->
+  <div class="bg-purple-950 text-purple-100 text-xs sm:text-sm py-2 text-center px-4 font-semibold">
+    🚚 Topline Kenya — Express Delivery Across Nairobi & Countrywide Shipping!
   </div>
 
   <!-- Navigation -->
   <nav class="bg-white shadow-sm sticky top-0 z-40 border-b border-purple-100">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-2">
-        <span class="text-2xl font-black tracking-tight text-purple-700">APEX<span class="text-gray-900">-HUB</span></span>
+        <span class="text-2xl font-black tracking-tight text-purple-700">TOPLINE<span class="text-gray-900"> KENYA</span></span>
       </div>
-      <button id="adminToggleBtn" onclick="toggleAdminModal()" class="text-xs font-semibold bg-purple-50 hover:bg-purple-100 text-purple-800 px-3 py-1.5 rounded-lg border border-purple-200 transition">
+      <button onclick="toggleAdminModal()" class="text-xs font-semibold bg-purple-50 hover:bg-purple-100 text-purple-800 px-3 py-1.5 rounded-lg border border-purple-200 transition">
         <i class="fa-solid fa-lock mr-1 text-purple-600"></i> Admin
       </button>
     </div>
@@ -33,17 +33,17 @@
   <!-- Hero Section -->
   <header class="bg-gradient-to-r from-purple-800 via-purple-700 to-indigo-800 text-white py-8 px-4 text-center shadow-inner">
     <h1 class="text-2xl sm:text-4xl font-extrabold mb-2">Quality Electronics & Home Appliances</h1>
-    <p class="text-sm sm:text-base text-purple-100 max-w-xl mx-auto">Browse our collection, select your specs/variants, and order directly via WhatsApp!</p>
+    <p class="text-sm sm:text-base text-purple-100 max-w-xl mx-auto">Browse our catalog, choose your preferred specs, and order directly via WhatsApp!</p>
   </header>
 
   <!-- Main Container -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
     
-    <!-- Search & Filter Bar -->
+    <!-- Search & Filter Controls -->
     <div class="flex flex-col sm:flex-row gap-3 mb-6">
       <div class="relative flex-1">
         <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-purple-400"></i>
-        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search products, inches, capacities..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:outline-none text-sm">
+        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search products, screen sizes, capacities..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:outline-none text-sm">
       </div>
       <select id="categoryFilter" onchange="filterProducts()" class="py-2.5 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:outline-none text-sm bg-white">
         <option value="All">All Categories</option>
@@ -57,9 +57,9 @@
 
     <!-- Product Grid -->
     <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <div class="col-span-full text-center py-12 text-gray-500">
-        <i class="fa-solid fa-spinner fa-spin text-2xl text-purple-600 mb-2"></i>
-        <p>Loading catalog...</p>
+      <div id="loadingState" class="col-span-full text-center py-12 text-gray-500 font-medium">
+        <i class="fa-solid fa-spinner fa-spin text-2xl text-purple-600 mb-2 block"></i>
+        Loading Topline Kenya catalog...
       </div>
     </div>
   </main>
@@ -71,35 +71,35 @@
         <i class="fa-solid fa-xmark text-xl"></i>
       </button>
 
-      <!-- Passcode Form -->
+      <!-- Auth Form -->
       <div id="authSection">
         <h2 class="text-xl font-bold mb-4 text-gray-900">Admin Login</h2>
         <div class="space-y-4">
           <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Enter Passcode</label>
-            <input type="password" id="passcodeInput" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 text-sm" placeholder="Passcode">
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Passcode</label>
+            <input type="password" id="passcodeInput" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 text-sm" placeholder="Enter Admin Passcode">
           </div>
           <button onclick="verifyPasscode()" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 rounded-lg text-sm transition">Login</button>
         </div>
       </div>
 
-      <!-- Add Product Form -->
+      <!-- Publish Form -->
       <div id="dashboardSection" class="hidden">
         <div class="flex items-center justify-between mb-4 border-b pb-2">
           <h2 class="text-lg font-bold text-gray-900">Publish New Item</h2>
-          <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">Authenticated</span>
+          <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">Topline Admin</span>
         </div>
 
         <form id="addProductForm" onsubmit="handlePublishProduct(event)" class="space-y-3">
           <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">Product Title</label>
-            <input type="text" id="prodTitle" required class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="e.g. Smart Android TV">
+            <input type="text" id="prodTitle" required class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="e.g. Haier 20L Microwave">
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-xs font-semibold text-gray-600 mb-1">Price (KES)</label>
-              <input type="number" id="prodPrice" required class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="e.g. 25000">
+              <input type="number" id="prodPrice" required class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="e.g. 9000">
             </div>
             <div>
               <label class="block text-xs font-semibold text-gray-600 mb-1">Category</label>
@@ -114,18 +114,18 @@
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Variants / Specs (Sizes, KGs, Inches, Colors)</label>
-            <input type="text" id="prodVariants" class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder='e.g. 20 Litres'>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Specs / Variants (Sizes, KGs, Liters, Colors)</label>
+            <input type="text" id="prodVariants" class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder='e.g. 20 Litres OR Sizes: 32", 43"'>
           </div>
 
           <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">Image URL</label>
-            <input type="url" id="prodImage" required class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="https://example.com/image.jpg">
+            <input type="url" id="prodImage" required class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="https://i.ibb.co/.../image.jpg">
           </div>
 
           <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">Description</label>
-            <textarea id="prodDesc" rows="2" class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="Brief summary..."></textarea>
+            <textarea id="prodDesc" rows="2" class="w-full px-3 py-1.5 border rounded-lg text-sm" placeholder="Brief summary of features..."></textarea>
           </div>
 
           <button type="submit" id="submitBtn" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 rounded-lg text-sm transition mt-2">Publish Product</button>
@@ -135,7 +135,7 @@
   </div>
 
   <footer class="bg-gray-900 text-gray-400 text-xs py-6 text-center mt-auto">
-    <p>© Apex-Hub Kenya. All rights reserved.</p>
+    <p>© Topline Kenya. All rights reserved.</p>
   </footer>
 
   <script>
@@ -143,37 +143,40 @@
     const firebaseConfig = {
       databaseURL: "https://apex-marketing-default-rtdb.firebaseio.com/"
     };
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     let allProducts = [];
 
+    // Safety timeout if database load is delayed
+    const loadTimeout = setTimeout(() => {
+      const grid = document.getElementById('productGrid');
+      if (allProducts.length === 0 && document.getElementById('loadingState')) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-red-500 font-semibold">Database connecting... Please verify your Firebase Database Rules are set to {".read": true, ".write": true}.</div>`;
+      }
+    }, 4000);
+
     // Fetch Products Realtime
     db.ref('products').on('value', (snapshot) => {
+      clearTimeout(loadTimeout);
       const data = snapshot.val();
       allProducts = [];
       if (data) {
-        Object.keys(data).forEach(key => {
-          allProducts.push({ id: key, ...data[key] });
-        });
+        Object.keys(data).forEach(key => allProducts.push({ id: key, ...data[key] }));
       }
       renderProducts(allProducts);
-    }, (error) => {
-      console.error("Database Read Error:", error);
     });
 
     function renderProducts(products) {
       const grid = document.getElementById('productGrid');
       if (products.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">No products added yet. Click Admin to publish items.</div>`;
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">No items listed yet. Click Admin to add products.</div>`;
         return;
       }
 
       grid.innerHTML = products.map(p => `
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition">
-          <img src="${p.imageUrl}" alt="${p.title}" class="w-full h-48 object-cover bg-gray-100" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+          <img src="${p.imageUrl}" alt="${p.title}" class="w-full h-48 object-cover bg-gray-100" onerror="this.src='https://via.placeholder.com/300x200?text=Topline+Kenya'">
           <div class="p-4 flex flex-col flex-grow">
             <span class="text-[10px] font-bold uppercase tracking-wider text-purple-700 mb-1">${p.category || 'General'}</span>
             <h3 class="font-bold text-gray-900 text-base leading-snug mb-1">${p.title}</h3>
@@ -218,7 +221,7 @@
     }
 
     function orderViaWhatsApp(title, price, variants) {
-      let msg = `Hello Apex-Hub Kenya! I would like to order:\n\n📌 *Item:* ${title}\n💰 *Price:* KES ${Number(price).toLocaleString()}`;
+      let msg = `Hello Topline Kenya! I would like to order:\n\n📌 *Item:* ${title}\n💰 *Price:* KES ${Number(price).toLocaleString()}`;
       if (variants) {
         msg += `\n⚙️ *Available Specs:* ${variants}`;
         msg += `\n\n*(Please specify your preferred option when replying)*`;
@@ -257,28 +260,14 @@
         timestamp: Date.now()
       };
 
-      // Set a 5-second timeout safeguard
-      let handled = false;
-      const timeout = setTimeout(() => {
-        if (!handled) {
-          handled = true;
-          btn.disabled = false;
-          btn.innerText = 'Publish Product';
-          alert('Publishing timed out. Please check your Firebase Database Rules in Firebase Console to ensure ".write": true is published.');
-        }
-      }, 5000);
-
       db.ref('products').push(newProduct, (error) => {
-        if (handled) return;
-        handled = true;
-        clearTimeout(timeout);
         btn.disabled = false;
         btn.innerText = 'Publish Product';
 
         if (error) {
-          alert('Firebase Permission Error: ' + error.message + '\n\nPlease update your Database Rules to { ".read": true, ".write": true } in Firebase Console.');
+          alert('Error: ' + error.message + '\nEnsure Database Rules are set to { ".read": true, ".write": true } in Firebase Console.');
         } else {
-          alert('Success! Haier Microwave published to Apex-Hub store.');
+          alert('Published successfully to Topline Kenya store!');
           document.getElementById('addProductForm').reset();
           toggleAdminModal();
         }
