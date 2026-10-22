@@ -1,655 +1,798 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex-Hub Kenya</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  </style>
-</head>
-<body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
-
-  <!-- Header with Hamburger Navigation -->
-  <header class="bg-white shadow-sm sticky top-0 z-40">
-    <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-2xl font-black tracking-wider text-purple-900 uppercase">Apex<span class="text-gray-900">-Hub</span></h1>
-      
-      <!-- Hamburger Icon Button -->
-      <button onclick="toggleSideNav()" class="p-2 text-purple-900 hover:text-purple-700 text-xl font-bold focus:outline-none" aria-label="Open Navigation Menu">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-    </div>
-  </header>
-
-  <!-- Slide-over Backdrop Overlay -->
-  <div id="navOverlay" onclick="toggleSideNav()" class="fixed inset-0 bg-black/50 z-50 hidden opacity-0 transition-opacity duration-300"></div>
-
-  <!-- Slide-out Side Drawer Navigation -->
-  <aside id="sideNav" class="fixed top-0 right-0 w-72 h-full bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
-    <div class="p-4 border-b flex justify-between items-center bg-purple-900 text-white">
-      <h2 class="font-bold text-lg">Menu</h2>
-      <button onclick="toggleSideNav()" class="text-white hover:text-gray-200 text-xl font-bold p-1">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-    </div>
-
-    <div class="p-4 space-y-4 flex-1 overflow-y-auto">
-      <button onclick="toggleSideNav(); openAdminAuth();" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-between shadow-sm">
-        <span class="flex items-center gap-2">
-          <i class="fa-solid fa-user-shield"></i>
-          <span>Admin Dashboard</span>
-        </span>
-        <i class="fa-solid fa-chevron-right text-xs"></i>
-      </button>
-
-      <a href="https://wa.me/254700000000" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-between shadow-sm">
-        <span class="flex items-center gap-2">
-          <i class="fa-brands fa-whatsapp text-base"></i>
-          <span>WhatsApp Support</span>
-        </span>
-        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-      </a>
-
-      <div class="pt-4 border-t border-gray-100 space-y-2">
-        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Categories</span>
-        <button onclick="toggleSideNav(); setCategoryFilter('ALL');" class="w-full text-left py-2 text-sm font-semibold text-gray-700 hover:text-purple-700 flex justify-between items-center">
-          <span>All Catalog</span>
-          <i class="fa-solid fa-layer-group text-xs text-gray-400"></i>
-        </button>
-        <button onclick="toggleSideNav(); setCategoryFilter('KITCHEN APPLIANCES');" class="w-full text-left py-2 text-sm font-semibold text-gray-700 hover:text-purple-700 flex justify-between items-center">
-          <span>Kitchen Appliances</span>
-          <i class="fa-solid fa-utensils text-xs text-gray-400"></i>
-        </button>
-        <button onclick="toggleSideNav(); setCategoryFilter('WASHING MACHINES');" class="w-full text-left py-2 text-sm font-semibold text-gray-700 hover:text-purple-700 flex justify-between items-center">
-          <span>Washing Machines</span>
-          <i class="fa-solid fa-soap text-xs text-gray-400"></i>
-        </button>
-        <button onclick="toggleSideNav(); setCategoryFilter('REFRIGERATORS & FREEZERS');" class="w-full text-left py-2 text-sm font-semibold text-gray-700 hover:text-purple-700 flex justify-between items-center">
-          <span>Refrigerators & Freezers</span>
-          <i class="fa-solid fa-snowflake text-xs text-gray-400"></i>
-        </button>
-        <button onclick="toggleSideNav(); setCategoryFilter('AUDIO & SOUND SYSTEMS');" class="w-full text-left py-2 text-sm font-semibold text-gray-700 hover:text-purple-700 flex justify-between items-center">
-          <span>Audio & Sound Systems</span>
-          <i class="fa-solid fa-music text-xs text-gray-400"></i>
-        </button>
-      </div>
-    </div>
-
-    <div class="p-4 border-t border-gray-100 bg-gray-50 text-center">
-      <p class="text-xs text-gray-500 font-medium">Apex-Hub Kenya © 2026</p>
-    </div>
-  </aside>
-
-  <!-- Main Container -->
-  <main class="max-w-md mx-auto px-4 py-4 flex-grow w-full space-y-4">
-
-    <!-- Search Bar -->
-    <div class="relative">
-      <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-purple-500 text-lg">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </span>
-      <input type="text" id="searchInput" oninput="renderProducts()" placeholder="Search products, inches, capacities..." class="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm outline-none focus:border-purple-600 transition">
-    </div>
-
-    <!-- Admin Panel -->
-    <section id="adminSection" class="hidden bg-white p-5 rounded-2xl shadow-md border border-purple-100">
-      <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-100">
-        <h2 id="formHeaderTitle" class="text-base font-bold text-gray-900">Admin Control Center</h2>
-        <button onclick="closeAdminPanel()" class="text-gray-400 hover:text-gray-600 font-bold p-1">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <form id="productForm" onsubmit="handleProductSubmit(event)" class="space-y-3">
-        <input type="hidden" id="productId">
-        <input type="hidden" id="productPath">
-        
-        <div>
-          <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Product Title</label>
-          <input type="text" id="prodTitle" required placeholder="e.g. Nunix Coffee Maker" class="w-full px-3 py-2 border rounded-xl outline-none text-sm focus:border-purple-600">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Category</label>
-          <select id="prodCategory" required onchange="toggleCustomCategory(this.value)" class="w-full px-3 py-2 border rounded-xl outline-none text-sm bg-white focus:border-purple-600">
-            <option value="KITCHEN APPLIANCES">Kitchen Appliances</option>
-            <option value="WASHING MACHINES">Washing Machines</option>
-            <option value="HOME APPLIANCES">Home Appliances</option>
-            <option value="REFRIGERATORS & FREEZERS">Refrigerators & Freezers</option>
-            <option value="AUDIO & SOUND SYSTEMS">Audio & Sound Systems</option>
-            <option value="PERSONAL CARE & BEAUTY">Personal Care & Beauty</option>
-            <option value="CUSTOM">+ Add New Category...</option>
-          </select>
-          <input type="text" id="customCatInput" placeholder="Enter custom category name" class="hidden w-full mt-2 px-3 py-2 border rounded-xl outline-none text-sm focus:border-purple-600">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Base Price (KES)</label>
-            <input type="number" id="prodPrice" required placeholder="5500" class="w-full px-3 py-2 border rounded-xl outline-none text-sm focus:border-purple-600">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Image URL</label>
-            <input type="url" id="prodImage" placeholder="https://i.ibb.co/..." class="w-full px-3 py-2 border rounded-xl outline-none text-sm focus:border-purple-600">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Description</label>
-          <textarea id="prodDesc" rows="2" required placeholder="Describe details, inches, capacity..." class="w-full px-3 py-2 border rounded-xl outline-none text-sm focus:border-purple-600"></textarea>
-        </div>
-
-        <!-- Variant Section -->
-        <div class="bg-purple-50/60 p-3 rounded-xl border border-purple-100 space-y-2">
-          <div class="flex justify-between items-center">
-            <label class="block text-xs font-bold text-purple-900 uppercase">Product Variants (Sizes / Litres / KG)</label>
-            <button type="button" onclick="addVariantRow()" class="text-xs font-bold text-purple-700 bg-white border border-purple-200 px-2.5 py-1 rounded-lg hover:bg-purple-50 shadow-sm">
-              + Add Variant
-            </button>
-          </div>
-          
-          <div id="variantsContainer" class="space-y-2">
-            <!-- Variant inputs added dynamically -->
-          </div>
-        </div>
-
-        <div class="flex gap-2 pt-2">
-          <button type="submit" id="saveProdBtn" class="bg-purple-700 hover:bg-purple-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm shadow transition flex-1">
-            Publish Product
-          </button>
-          <button type="button" onclick="resetForm()" class="bg-gray-100 text-gray-600 font-semibold px-3 py-2.5 rounded-xl text-sm transition">
-            Clear
-          </button>
-        </div>
-      </form>
-    </section>
-
-    <!-- Filter Buttons Bar -->
-    <div id="filterBar" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-      <button onclick="setCategoryFilter('ALL')" class="cat-btn bg-purple-700 text-white font-bold px-4 py-1.5 rounded-xl text-xs shrink-0 shadow-sm">All</button>
-    </div>
-
-    <!-- Product Grid -->
-    <div id="productGrid" class="space-y-4">
-      <div class="text-center py-12">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-purple-600 border-t-transparent"></div>
-        <p class="mt-2 text-xs text-gray-500">Loading catalog...</p>
-      </div>
-    </div>
-  </main>
-
-  <!-- Passcode Auth Modal -->
-  <div id="authModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl">
-      <h3 class="text-base font-bold text-gray-900 mb-1">Admin Access Required</h3>
-      <p class="text-xs text-gray-500 mb-4">Enter passcode to unlock admin features.</p>
-      <input type="password" id="passcodeInput" placeholder="Enter Passcode" class="w-full px-3 py-2 border rounded-xl outline-none text-sm mb-4 focus:border-purple-600">
-      <div class="flex justify-end gap-2">
-        <button onclick="closeAuthModal()" class="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
-        <button onclick="verifyPasscode()" class="px-4 py-2 text-xs font-semibold bg-purple-700 text-white rounded-lg shadow hover:bg-purple-800">Unlock</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Client Review Modal -->
-  <div id="reviewModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-3">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="text-sm font-bold text-gray-900">Write a Review</h3>
-        <button onclick="closeReviewModal()" class="text-gray-400 hover:text-gray-600 font-bold p-1">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      
-      <input type="hidden" id="reviewProductPath">
-      
-      <div>
-        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Your Name</label>
-        <input type="text" id="reviewerName" required placeholder="e.g. Clement" class="w-full px-3 py-2 border rounded-xl outline-none text-sm focus:border-purple-600">
-      </div>
-
-      <div>
-        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Rating</label>
-        <select id="reviewRating" class="w-full px-3 py-2 border rounded-xl outline-none text-sm bg-white focus:border-purple-600">
-          <option value="5">⭐⭐⭐⭐⭐ (5/5 - Excellent)</option>
-          <option value="4">⭐⭐⭐⭐ (4/5 - Very Good)</option>
-          <option value="3">⭐⭐⭐ (3/5 - Good)</option>
-          <option value="2">⭐⭐ (2/5 - Fair)</option>
-          <option value="1">⭐ (1/5 - Poor)</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Your Review</label>
-        <textarea id="reviewComment" rows="2" required placeholder="Good quality and epic design..." class="w-full px-3 py-2 border rounded-xl outline-none text-sm focus:border-purple-600"></textarea>
-      </div>
-
-      <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closeReviewModal()" class="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
-        <button onclick="submitClientReview()" class="px-4 py-2 text-xs font-semibold bg-purple-700 text-white rounded-lg shadow hover:bg-purple-800">Submit Review</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const DB_ROOT = "https://apex-hub-c6d50-default-rtdb.firebaseio.com";
-    const DEFAULT_FALLBACK_IMG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='100%25' height='100%25' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='45%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='22' fill='%23581c87'%3EAPEX-HUB KENYA%3C/text%3E%3Ctext x='50%25' y='58%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='600' font-size='12' fill='%239ca3af'%3EProduct Image Preview%3C/text%3E%3C/svg%3E";
-
-    let rawProducts = {};
-    let activeCategory = 'ALL';
-    let isAdminAuthenticated = false;
-
-    function toggleSideNav() {
-      const nav = document.getElementById('sideNav');
-      const overlay = document.getElementById('navOverlay');
-      const isHidden = nav.classList.contains('translate-x-full');
-
-      if (isHidden) {
-        overlay.classList.remove('hidden');
-        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-        nav.classList.remove('translate-x-full');
-      } else {
-        overlay.classList.add('opacity-0');
-        nav.classList.add('translate-x-full');
-        setTimeout(() => overlay.classList.add('hidden'), 300);
-      }
-    }
-
-    function openAdminAuth() {
-      if (isAdminAuthenticated) {
-        document.getElementById('adminSection').classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        document.getElementById('authModal').classList.remove('hidden');
-      }
-    }
-
-    function closeAuthModal() {
-      document.getElementById('authModal').classList.add('hidden');
-      document.getElementById('passcodeInput').value = '';
-    }
-
-    function verifyPasscode() {
-      if (document.getElementById('passcodeInput').value === "Milano254!+") {
-        isAdminAuthenticated = true;
-        closeAuthModal();
-        document.getElementById('adminSection').classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        renderProducts();
-      } else {
-        alert("Incorrect passcode!");
-      }
-    }
-
-    function closeAdminPanel() {
-      document.getElementById('adminSection').classList.add('hidden');
-      resetForm();
-    }
-
-    function toggleCustomCategory(val) {
-      const customInput = document.getElementById('customCatInput');
-      if (val === 'CUSTOM') {
-        customInput.classList.remove('hidden');
-        customInput.required = true;
-      } else {
-        customInput.classList.add('hidden');
-        customInput.required = false;
-      }
-    }
-
-    function addVariantRow(name = '', price = '') {
-      const container = document.getElementById('variantsContainer');
-      const div = document.createElement('div');
-      div.className = "flex gap-2 items-center variant-row";
-      div.innerHTML = `
-        <input type="text" placeholder="Size/Capacity (e.g. 6 Litres)" value="${name}" class="var-name flex-1 px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-purple-600">
-        <input type="number" placeholder="Price (KES)" value="${price}" class="var-price w-28 px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-purple-600">
-        <button type="button" onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700 font-bold px-1.5 text-sm">
-          <i class="fa-solid fa-trash"></i>
-        </button>
-      `;
-      container.appendChild(div);
-    }
-
-    function getVariantsData() {
-      const rows = document.querySelectorAll('.variant-row');
-      const variants = [];
-      rows.forEach(r => {
-        const name = r.querySelector('.var-name').value.trim();
-        const price = r.querySelector('.var-price').value.trim();
-        if (name && price) {
-          variants.push({ name: name, title: name, price: Number(price) });
-        }
-      });
-      return variants;
-    }
-
-    function openReviewModal(path) {
-      document.getElementById('reviewProductPath').value = path;
-      document.getElementById('reviewModal').classList.remove('hidden');
-    }
-
-    function closeReviewModal() {
-      document.getElementById('reviewModal').classList.add('hidden');
-      document.getElementById('reviewerName').value = '';
-      document.getElementById('reviewComment').value = '';
-    }
-
-    async function submitClientReview() {
-      const path = document.getElementById('reviewProductPath').value;
-      const name = document.getElementById('reviewerName').value.trim();
-      const rating = Number(document.getElementById('reviewRating').value);
-      const comment = document.getElementById('reviewComment').value.trim();
-
-      if (!name || !comment) {
-        alert("Please fill in both your name and comment.");
-        return;
-      }
-
-      const reviewData = {
-        name: name,
-        rating: rating,
-        comment: comment,
-        timestamp: Date.now()
-      };
-
-      try {
-        const res = await fetch(`${DB_ROOT}/${path}/reviews.json`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(reviewData)
-        });
-
-        if (res.ok) {
-          alert("Thank you! Your review has been published.");
-          closeReviewModal();
-          fetchProducts();
-        } else {
-          alert("Failed to post review. Please try again.");
-        }
-      } catch (err) {
-        alert("Network error.");
-      }
-    }
-
-    async function fetchProducts() {
-      try {
-        const res = await fetch(`${DB_ROOT}.json`);
-        const data = await res.json() || {};
-        
-        rawProducts = {};
-
-        Object.keys(data).forEach(key => {
-          if (key === 'products') {
-            Object.keys(data.products || {}).forEach(pKey => {
-              rawProducts[`products/${pKey}`] = data.products[pKey];
-            });
-          } else if (typeof data[key] === 'object' && data[key] !== null) {
-            if (data[key].name || data[key].title) {
-              rawProducts[key] = data[key];
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex-Hub Kenya - Quality Home Electronics & Appliances</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        apex: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#7c3aed',
+                            600: '#6d28d9',
+                            700: '#5b21b6',
+                            900: '#2e1065'
+                        }
+                    }
+                }
             }
-          }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .drawer-slide { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-apex-900 text-white text-xs font-medium py-1.5 px-4 text-center tracking-wide flex justify-between items-center">
+        <span><i class="fa-solid fa-truck-fast text-apex-500 mr-1.5"></i> Fast Same-Day Delivery Across Kenya</span>
+        <a href="https://wa.me/254700000000" target="_blank" class="hover:underline text-apex-100 flex items-center gap-1">
+            <i class="fa-brands fa-whatsapp text-green-400"></i> Order via WhatsApp
+        </a>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-2 group" onclick="resetFilters()">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-apex-700 to-apex-500 flex items-center justify-center text-white font-extrabold text-xl shadow-md group-hover:scale-105 transition-transform">
+                    A
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold text-xl tracking-tight text-slate-900 leading-none">APEX<span class="text-apex-600">-HUB</span></span>
+                    <span class="text-[10px] font-semibold text-slate-400 tracking-widest uppercase">Kenya Market</span>
+                </div>
+            </a>
+
+            <!-- Hamburger Icon Button -->
+            <button id="drawerToggleBtn" onclick="toggleDrawer(true)" class="p-2.5 text-slate-700 hover:text-apex-600 hover:bg-slate-100 rounded-xl transition-colors focus:outline-none" aria-label="Open Navigation Menu">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Slide-Out Hamburger Navigation Drawer & Overlay -->
+    <div id="drawerOverlay" onclick="toggleDrawer(false)" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <aside id="navDrawer" class="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white z-50 shadow-2xl drawer-slide translate-x-full flex flex-col justify-between">
+        <div class="p-5">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-100 mb-4">
+                <div class="font-bold text-lg text-slate-800">Apex-Hub Menu</div>
+                <button onclick="toggleDrawer(false)" class="p-2 text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Drawer Links -->
+            <nav class="space-y-1">
+                <button onclick="resetFilters(); toggleDrawer(false);" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 font-medium hover:bg-apex-50 hover:text-apex-600 transition-colors text-left">
+                    <i class="fa-solid fa-store w-5 text-center text-apex-500"></i> All Products Catalog
+                </button>
+                <a href="https://wa.me/254700000000" target="_blank" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-emerald-700 font-medium hover:bg-emerald-50 transition-colors">
+                    <i class="fa-brands fa-whatsapp w-5 text-center text-emerald-500 text-lg"></i> WhatsApp Customer Care
+                </a>
+                <button onclick="openAdminModal(); toggleDrawer(false);" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 font-medium hover:bg-slate-100 transition-colors text-left">
+                    <i class="fa-solid fa-user-shield w-5 text-center text-slate-500"></i> Admin Panel
+                </button>
+            </nav>
+
+            <!-- Quick Categories in Drawer -->
+            <div class="mt-6 pt-4 border-t border-slate-100">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3">Browse Categories</span>
+                <div id="drawerCategoryList" class="mt-2 space-y-1">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </div>
+
+        <div class="p-5 border-t border-slate-100 bg-slate-50 text-xs text-slate-500 text-center">
+            &copy; 2026 Apex-Hub Kenya. All Rights Reserved.
+        </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6">
+        
+        <!-- Search & Filter Controls -->
+        <section class="mb-6 space-y-4">
+            <div class="relative max-w-2xl mx-auto">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search products, sizes, models..." class="w-full pl-11 pr-10 py-3.5 bg-white border border-slate-200 rounded-2xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-apex-500 focus:border-transparent transition-all">
+                <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Dynamic Category Filter Pills -->
+            <div id="categoryPills" class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-1">
+                <button onclick="filterCategory('All')" class="category-pill active bg-apex-600 text-white text-xs font-medium px-4 py-2 rounded-full whitespace-nowrap shadow-sm transition-all">
+                    All Products
+                </button>
+            </div>
+        </section>
+
+        <!-- Dynamic Product Grid Section -->
+        <section>
+            <div class="flex justify-between items-center mb-4">
+                <h1 id="catalogTitle" class="text-lg font-bold text-slate-800">Featured Inventory</h1>
+                <span id="productCount" class="text-xs font-medium text-slate-500 bg-slate-200/60 px-2.5 py-1 rounded-full">0 Items</span>
+            </div>
+
+            <!-- Loading Spinner / Status -->
+            <div id="loadingState" class="py-20 text-center">
+                <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-apex-500 border-t-transparent"></div>
+                <p class="mt-4 text-sm font-medium text-slate-500">Connecting to Apex-Hub Database...</p>
+            </div>
+
+            <!-- Error Retry Container -->
+            <div id="errorState" class="hidden py-16 text-center max-w-md mx-auto bg-white p-6 rounded-2xl border border-red-100 shadow-sm">
+                <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500 mb-3"></i>
+                <h3 class="text-base font-bold text-slate-800">Unable to load catalog</h3>
+                <p class="text-xs text-slate-500 mt-1 mb-4" id="errorMessageText">Database connection issue. Please check your network or database rules.</p>
+                <button onclick="fetchProducts()" class="bg-apex-600 hover:bg-apex-700 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-all shadow-md">
+                    <i class="fa-solid fa-rotate-right mr-1.5"></i> Retry Connection
+                </button>
+            </div>
+
+            <!-- Grid Container for Cards -->
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Dynamically populated product cards -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal: Write a Client Review -->
+    <div id="reviewModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl transform transition-all">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <h3 class="font-bold text-slate-800 text-base">Write a Review</h3>
+                <button onclick="closeReviewModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="reviewForm" onsubmit="submitReview(event)" class="mt-4 space-y-4">
+                <input type="hidden" id="reviewProductKey">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Your Name</label>
+                    <input type="text" id="reviewAuthor" required placeholder="e.g. Clement K." class="w-full text-xs px-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-apex-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Rating</label>
+                    <select id="reviewRating" class="w-full text-xs px-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-apex-500">
+                        <option value="5">⭐⭐⭐⭐⭐ (5/5) Excellent</option>
+                        <option value="4">⭐⭐⭐⭐ (4/5) Very Good</option>
+                        <option value="3">⭐⭐⭐ (3/5) Average</option>
+                        <option value="2">⭐⭐ (2/5) Poor</option>
+                        <option value="1">⭐ (1/5) Terrible</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Comment</label>
+                    <textarea id="reviewComment" rows="3" required placeholder="Share your experience with this product..." class="w-full text-xs px-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-apex-500"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeReviewModal()" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-xl">Cancel</button>
+                    <button type="submit" id="submitReviewBtn" class="px-5 py-2 text-xs font-semibold bg-apex-600 text-white rounded-xl hover:bg-apex-700 shadow-md">Post Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Admin Passcode Login -->
+    <div id="adminLoginModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl">
+            <div class="text-center mb-4">
+                <div class="w-12 h-12 bg-apex-100 text-apex-600 rounded-full flex items-center justify-center mx-auto mb-2 text-xl">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 text-base">Admin Verification</h3>
+                <p class="text-xs text-slate-500 mt-1">Enter your passcode to manage products</p>
+            </div>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <input type="password" id="adminPasscode" required placeholder="Enter Passcode" class="w-full text-center tracking-widest text-sm px-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-apex-500">
+                </div>
+                <div id="loginError" class="hidden text-xs text-red-500 text-center font-medium">
+                    Incorrect Passcode. Access Denied.
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="closeAdminLoginModal()" class="w-1/2 py-2.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-xl">Cancel</button>
+                    <button type="submit" class="w-1/2 py-2.5 text-xs font-semibold bg-apex-600 text-white rounded-xl hover:bg-apex-700 shadow-md">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Admin CRUD Dashboard -->
+    <div id="adminDashboardModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full my-auto shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-apex-500"></i>
+                    <h3 class="font-bold text-sm sm:text-base">Apex-Hub Inventory Admin</h3>
+                </div>
+                <button onclick="closeAdminDashboardModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-6">
+                <!-- Add/Edit Product Form -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                    <h4 id="adminFormTitle" class="font-bold text-xs uppercase tracking-wider text-apex-700 mb-3">Add New Inventory Item</h4>
+                    <form id="productForm" onsubmit="saveProduct(event)" class="space-y-3">
+                        <input type="hidden" id="editProductKey">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Product Title / Name</label>
+                                <input type="text" id="formTitle" required placeholder="e.g. Syinix 7kg Front Load Washer" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-apex-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Category</label>
+                                <input type="text" id="formCategory" required placeholder="e.g. Washing Machines" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-apex-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Base Price (KSh)</label>
+                                <input type="number" id="formPrice" required placeholder="38500" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-apex-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Image URL</label>
+                                <input type="url" id="formImageUrl" placeholder="https://..." class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-apex-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Description</label>
+                            <textarea id="formDescription" rows="2" placeholder="Product details and specifications..." class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-apex-500"></textarea>
+                        </div>
+
+                        <!-- Variant Builder -->
+                        <div class="pt-2 border-t border-slate-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-[11px] font-semibold text-slate-700">Product Variants (Sizes / Capacities)</label>
+                                <button type="button" onclick="addVariantRow()" class="text-[10px] bg-apex-100 text-apex-700 font-bold px-2 py-1 rounded hover:bg-apex-200 transition-colors">+ Add Variant</button>
+                            </div>
+                            <div id="variantsContainer" class="space-y-2">
+                                <!-- Dynamic variant rows -->
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 pt-2">
+                            <button type="submit" id="saveProductBtn" class="w-full py-2.5 bg-apex-600 hover:bg-apex-700 text-white font-semibold text-xs rounded-xl shadow-sm transition-colors">
+                                Save Product to Database
+                            </button>
+                            <button type="button" id="cancelEditBtn" onclick="resetAdminForm()" class="hidden py-2.5 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-xl transition-colors">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Existing Items Quick List -->
+                <div>
+                    <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 mb-3">Live Database Items</h4>
+                    <div id="adminProductList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Database Configuration with Automatic URL Normalization
+        const DB_RAW_URL = "https://apex-hub-c6d50-default-rtdb.firebaseio.com/";
+        const ADMIN_PASSCODE = "Milano254!+";
+
+        // Clean & Normalize Base Endpoint
+        const DB_ROOT = DB_RAW_URL.endsWith('/') ? DB_RAW_URL.slice(0, -1) : DB_RAW_URL;
+
+        let rawProducts = {};
+        let activeCategory = 'All';
+        let currentSearchQuery = '';
+
+        // Inline SVG Fallback Data URL
+        const SVG_PLACEHOLDER = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300" fill="%23f1f5f9"><rect width="400" height="300" fill="%23f1f5f9"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="20" fill="%236d28d9">APEX-HUB KENYA</text><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="12" fill="%2394a3b8">Quality Home Appliances</text></svg>`;
+
+        // Initialize Application
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchProducts();
         });
 
-        updateFilterButtons();
-        renderProducts();
-      } catch (err) {
-        document.getElementById('productGrid').innerHTML = '<div class="text-center py-12 text-gray-400 text-sm">Error connecting to database.</div>';
-      }
-    }
+        // 1. Fetch Data with Recursive Traversal & Failover
+        async function fetchProducts() {
+            showLoading(true);
+            showError(false);
 
-    function updateFilterButtons() {
-      const filterBar = document.getElementById('filterBar');
-      const categories = new Set();
-      
-      Object.values(rawProducts || {}).forEach(p => {
-        if (p && p.category) categories.add(p.category.toUpperCase());
-      });
+            try {
+                // Fetch complete root node JSON
+                const res = await fetch(`${DB_ROOT}/.json`);
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
 
-      let buttonsHTML = `<button onclick="setCategoryFilter('ALL')" class="cat-btn ${activeCategory === 'ALL' ? 'bg-purple-700 text-white' : 'bg-white text-gray-600'} font-bold px-4 py-1.5 rounded-xl text-xs shrink-0 shadow-sm border border-gray-100">All</button>`;
+                const data = await res.json() || {};
+                rawProducts = {};
 
-      categories.forEach(cat => {
-        buttonsHTML += `<button onclick="setCategoryFilter('${cat}')" class="cat-btn ${activeCategory === cat ? 'bg-purple-700 text-white' : 'bg-white text-gray-600'} font-bold px-4 py-1.5 rounded-xl text-xs shrink-0 shadow-sm border border-gray-100">${cat}</button>`;
-      });
+                // Normalize database items across Root & /products child nodes
+                Object.keys(data).forEach(key => {
+                    if (key === 'products') {
+                        Object.keys(data.products || {}).forEach(pKey => {
+                            if (typeof data.products[pKey] === 'object' && data.products[pKey] !== null) {
+                                rawProducts[`products/${pKey}`] = normalizeProductData(data.products[pKey]);
+                            }
+                        });
+                    } else if (typeof data[key] === 'object' && data[key] !== null) {
+                        const item = data[key];
+                        if (item.name || item.title || item.price || item.cost) {
+                            rawProducts[key] = normalizeProductData(item);
+                        }
+                    }
+                });
 
-      filterBar.innerHTML = buttonsHTML;
-    }
-
-    function renderProducts() {
-      const grid = document.getElementById('productGrid');
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-      grid.innerHTML = '';
-
-      let keys = Object.keys(rawProducts || {});
-
-      if (keys.length === 0) {
-        grid.innerHTML = '<div class="text-center py-12 text-gray-400 text-sm">No products found. Open menu to publish!</div>';
-        return;
-      }
-
-      keys.forEach(path => {
-        const p = rawProducts[path];
-        if (!p) return;
-
-        const title = p.name || p.title || 'Untitled Product';
-        const image = (p.imageUrl || p.image || '').trim() || DEFAULT_FALLBACK_IMG;
-        const catUpper = (p.category || 'GENERAL').toUpperCase();
-        const price = p.price || 0;
-        const desc = p.description || '';
-
-        if (activeCategory !== 'ALL' && catUpper !== activeCategory) return;
-        if (searchTerm && !title.toLowerCase().includes(searchTerm) && !desc.toLowerCase().includes(searchTerm)) return;
-
-        // Render Variant Badges
-        let variantsHTML = '';
-        if (p.variants && Array.isArray(p.variants) && p.variants.length > 0) {
-          variantsHTML = `<div class="flex flex-wrap gap-1 mt-2">` + 
-            p.variants.map(v => `<span class="bg-purple-50 text-purple-900 text-[10px] font-bold px-2 py-0.5 rounded border border-purple-100">${v.name || v.title} - KES ${Number(v.price).toLocaleString()}</span>`).join('') +
-            `</div>`;
+                showLoading(false);
+                renderCategoryPills();
+                renderProducts();
+            } catch (err) {
+                console.error("Database Connection Error:", err);
+                showLoading(false);
+                showError(true, err.message);
+            }
         }
 
-        // Render Reviews List
-        let reviewsHTML = '';
-        if (p.reviews && typeof p.reviews === 'object') {
-          const revList = Object.values(p.reviews);
-          if (revList.length > 0) {
-            reviewsHTML = `<div class="mt-3 pt-3 border-t border-gray-100 space-y-1.5">
-              <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Client Reviews (${revList.length})</span>`;
-            
-            revList.forEach(r => {
-              const stars = '⭐'.repeat(r.rating || 5);
-              reviewsHTML += `
-                <div class="bg-gray-50 p-2 rounded-xl border border-gray-100 text-xs">
-                  <div class="flex justify-between items-center mb-0.5">
-                    <span class="font-bold text-gray-800 text-[11px]">${r.name || 'Anonymous'}</span>
-                    <span class="text-[10px]">${stars}</span>
-                  </div>
-                  <p class="text-gray-600 text-[11px] italic">"${r.comment || ''}"</p>
-                </div>
-              `;
+        // Schema Normalization Utility
+        function normalizeProductData(item) {
+            return {
+                title: item.title || item.name || "Apex Appliance",
+                category: item.category || item.cat || "General",
+                price: parseFloat(item.price || item.cost || 0),
+                description: item.description || item.details || "No description available.",
+                imageUrl: item.imageUrl || item.image || item.photo || SVG_PLACEHOLDER,
+                variants: Array.isArray(item.variants) ? item.variants : (item.variants ? Object.values(item.variants) : []),
+                reviews: item.reviews || {}
+            };
+        }
+
+        // UI View State Helpers
+        function showLoading(isLoading) {
+            document.getElementById('loadingState').classList.toggle('hidden', !isLoading);
+        }
+
+        function showError(isError, msg = '') {
+            const errDiv = document.getElementById('errorState');
+            errDiv.classList.toggle('hidden', !isError);
+            if (msg) document.getElementById('errorMessageText').innerText = msg;
+        }
+
+        // Hamburger Drawer Toggle
+        function toggleDrawer(open) {
+            const drawer = document.getElementById('navDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+
+            if (open) {
+                overlay.classList.remove('pointer-events-none', 'opacity-0');
+                overlay.classList.add('opacity-100');
+                drawer.classList.remove('translate-x-full');
+            } else {
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                overlay.classList.remove('opacity-100');
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        // Categories & Filters
+        function getCategories() {
+            const cats = new Set(['All']);
+            Object.values(rawProducts).forEach(p => {
+                if (p.category) cats.add(p.category);
+            });
+            return Array.from(cats);
+        }
+
+        function renderCategoryPills() {
+            const categories = getCategories();
+            const container = document.getElementById('categoryPills');
+            const drawerContainer = document.getElementById('drawerCategoryList');
+
+            // Render Horizontal Pills
+            container.innerHTML = categories.map(cat => `
+                <button onclick="filterCategory('${escapeQuotes(cat)}')" 
+                    class="category-pill text-xs font-medium px-4 py-2 rounded-full whitespace-nowrap transition-all shadow-sm ${cat === activeCategory ? 'bg-apex-600 text-white' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'}">
+                    ${cat}
+                </button>
+            `).join('');
+
+            // Render Drawer List
+            drawerContainer.innerHTML = categories.filter(c => c !== 'All').map(cat => `
+                <button onclick="filterCategory('${escapeQuotes(cat)}'); toggleDrawer(false);" 
+                    class="w-full text-left px-3 py-2 text-xs font-medium rounded-lg ${cat === activeCategory ? 'bg-apex-50 text-apex-600 font-bold' : 'text-slate-600 hover:bg-slate-50'}">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function filterCategory(category) {
+            activeCategory = category;
+            renderCategoryPills();
+            renderProducts();
+        }
+
+        function handleSearch(val) {
+            currentSearchQuery = val.toLowerCase().trim();
+            document.getElementById('clearSearchBtn').classList.toggle('hidden', currentSearchQuery === '');
+            renderProducts();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            handleSearch('');
+        }
+
+        function resetFilters() {
+            activeCategory = 'All';
+            clearSearch();
+            renderCategoryPills();
+            renderProducts();
+        }
+
+        // Product Cards Rendering
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const titleEl = document.getElementById('catalogTitle');
+            const countEl = document.getElementById('productCount');
+
+            const keys = Object.keys(rawProducts);
+            let filteredKeys = keys.filter(key => {
+                const p = rawProducts[key];
+                const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
+                const matchesSearch = currentSearchQuery === '' || 
+                    p.title.toLowerCase().includes(currentSearchQuery) || 
+                    p.category.toLowerCase().includes(currentSearchQuery) ||
+                    p.description.toLowerCase().includes(currentSearchQuery);
+
+                return matchesCategory && matchesSearch;
             });
 
-            reviewsHTML += `</div>`;
-          }
+            titleEl.innerText = activeCategory === 'All' ? 'Featured Inventory' : `${activeCategory} Collection`;
+            countEl.innerText = `${filteredKeys.length} Item${filteredKeys.length !== 1 ? 's' : ''}`;
+
+            if (filteredKeys.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center text-slate-400">
+                        <i class="fa-solid fa-box-open text-4xl mb-2"></i>
+                        <p class="text-sm">No products found matching your criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredKeys.map(key => {
+                const item = rawProducts[key];
+                const formattedPrice = Number(item.price).toLocaleString();
+                const reviewList = typeof item.reviews === 'object' ? Object.values(item.reviews) : [];
+                
+                // Calculate average rating
+                let avgRating = 5;
+                if (reviewList.length > 0) {
+                    const total = reviewList.reduce((acc, r) => acc + (parseInt(r.rating) || 5), 0);
+                    avgRating = (total / reviewList.length).toFixed(1);
+                }
+
+                return `
+                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+                        <div>
+                            <!-- Product Image Container -->
+                            <div class="relative w-full h-48 bg-slate-50 overflow-hidden">
+                                <img src="${item.imageUrl}" 
+                                     alt="${escapeQuotes(item.title)}" 
+                                     onerror="this.onerror=null; this.src='${SVG_PLACEHOLDER}'"
+                                     class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300">
+                                <span class="absolute top-3 left-3 bg-apex-50 text-apex-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                    ${item.category}
+                                </span>
+                            </div>
+
+                            <!-- Product Info -->
+                            <div class="p-4">
+                                <h3 class="font-bold text-slate-800 text-sm line-clamp-2 mb-1">${item.title}</h3>
+                                <p class="text-xs text-slate-500 line-clamp-2 mb-3 leading-relaxed">${item.description}</p>
+                                
+                                <!-- Price -->
+                                <div class="text-apex-700 font-extrabold text-lg">
+                                    KSh ${formattedPrice}
+                                </div>
+
+                                <!-- Dynamic Variants Badges -->
+                                ${item.variants && item.variants.length > 0 ? `
+                                    <div class="mt-2.5 pt-2 border-t border-slate-100">
+                                        <span class="text-[10px] text-slate-400 font-semibold block mb-1">Available Sizes/Capacities:</span>
+                                        <div class="flex flex-wrap gap-1">
+                                            ${item.variants.map(v => `
+                                                <span class="text-[10px] font-medium bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
+                                                    ${v.name || v.label || v}: <strong class="text-slate-900">KSh ${Number(v.price || item.price).toLocaleString()}</strong>
+                                                </span>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''}
+
+                                <!-- Client Reviews List -->
+                                <div class="mt-3 pt-3 border-t border-slate-100">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <div class="flex items-center text-amber-400 gap-0.5">
+                                            <i class="fa-solid fa-star"></i>
+                                            <span class="font-bold text-slate-700 ml-1">${avgRating}</span>
+                                            <span class="text-slate-400 font-normal text-[11px]">(${reviewList.length})</span>
+                                        </div>
+                                        <button onclick="openReviewModal('${key}')" class="text-[11px] font-medium text-apex-600 hover:underline">
+                                            + Add Review
+                                        </button>
+                                    </div>
+
+                                    ${reviewList.length > 0 ? `
+                                        <div class="mt-2 space-y-1.5 max-h-24 overflow-y-auto hide-scrollbar bg-slate-50 p-2 rounded-lg">
+                                            ${reviewList.slice(-2).map(r => `
+                                                <div class="text-[11px]">
+                                                    <div class="flex justify-between font-semibold text-slate-700">
+                                                        <span>${r.author || 'Customer'}</span>
+                                                        <span class="text-amber-500">★ ${r.rating || 5}</span>
+                                                    </div>
+                                                    <p class="text-slate-500 italic text-[10px] leading-tight">"${r.comment || ''}"</p>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Action -->
+                        <div class="p-4 pt-0">
+                            <a href="https://wa.me/254700000000?text=Hello%20Apex-Hub,%20I%20am%20interested%20in%20buying%20${encodeURIComponent(item.title)}" 
+                               target="_blank" 
+                               class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-colors shadow-sm">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> Order via WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        const adminControls = isAdminAuthenticated ? `
-          <div class="flex gap-2 border-t pt-3 mt-3">
-            <button onclick="editProduct('${path}')" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm flex-1">
-              <i class="fa-solid fa-pen"></i> Edit
-            </button>
-            <button onclick="deleteProduct('${path}')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm flex-1">
-              <i class="fa-solid fa-trash"></i> Delete
-            </button>
-          </div>
-        ` : '';
-
-        const card = document.createElement('div');
-        card.className = "bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-3";
-        card.innerHTML = `
-          <div class="relative rounded-xl overflow-hidden bg-gray-50 mb-3 h-56 flex items-center justify-center">
-            <span class="absolute top-3 left-3 bg-purple-800 text-white text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-wider z-10">${catUpper}</span>
-            <img src="${image}" alt="${title}" class="object-contain w-full h-full p-2" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMG}';">
-          </div>
-          
-          <div class="space-y-1">
-            <h3 class="font-bold text-gray-900 text-base leading-snug">${title}</h3>
-            <p class="text-xs text-gray-400 line-clamp-2">${desc}</p>
-            ${variantsHTML}
-          </div>
-
-          <div class="mt-4 flex items-center justify-between pt-2">
-            <div>
-              <span class="text-[10px] uppercase text-gray-400 font-bold block leading-none">Price</span>
-              <span class="text-base font-extrabold text-gray-900">KES ${Number(price).toLocaleString()}</span>
-            </div>
-            <div class="flex gap-1.5">
-              <button onclick="openReviewModal('${path}')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 border border-gray-200">
-                <i class="fa-regular fa-star text-amber-500"></i> Review
-              </button>
-              <a href="https://wa.me/254700000000?text=Hello%20Apex-Hub%20Kenya,%20I%20am%20interested%20in%20${encodeURIComponent(title)}" target="_blank" class="bg-purple-50 hover:bg-purple-100 text-purple-700 px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 border border-purple-100">
-                View <i class="fa-solid fa-chevron-right text-[10px]"></i>
-              </a>
-            </div>
-          </div>
-
-          ${reviewsHTML}
-          ${adminControls}
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    async function handleProductSubmit(e) {
-      e.preventDefault();
-      const saveBtn = document.getElementById('saveProdBtn');
-      saveBtn.disabled = true;
-      saveBtn.textContent = "Publishing...";
-
-      const path = document.getElementById('productPath').value;
-      const selectedCat = document.getElementById('prodCategory').value;
-      const customCat = document.getElementById('customCatInput').value.trim();
-      const finalCat = (selectedCat === 'CUSTOM' ? customCat : selectedCat).toUpperCase();
-      const variantsList = getVariantsData();
-
-      const data = {
-        name: document.getElementById('prodTitle').value,
-        title: document.getElementById('prodTitle').value,
-        category: finalCat,
-        price: Number(document.getElementById('prodPrice').value),
-        imageUrl: document.getElementById('prodImage').value.trim() || DEFAULT_FALLBACK_IMG,
-        image: document.getElementById('prodImage').value.trim() || DEFAULT_FALLBACK_IMG,
-        description: document.getElementById('prodDesc').value
-      };
-
-      if (variantsList.length > 0) {
-        data.variants = variantsList;
-      }
-
-      const url = path ? `${DB_ROOT}/${path}.json` : `${DB_ROOT}/products.json`;
-      const method = path ? 'PUT' : 'POST';
-
-      try {
-        const res = await fetch(url, {
-          method: method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        if (res.ok) {
-          alert(path ? "Product updated!" : "Product published!");
-          resetForm();
-          fetchProducts();
-        } else {
-          alert("Failed to publish.");
+        // Reviews System
+        function openReviewModal(productKey) {
+            document.getElementById('reviewProductKey').value = productKey;
+            document.getElementById('reviewModal').classList.remove('hidden');
         }
-      } catch (err) {
-        alert("Network error.");
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = "Publish Product";
-      }
-    }
 
-    function editProduct(path) {
-      const p = rawProducts[path];
-      if (!p) return;
-
-      document.getElementById('productPath').value = path;
-      document.getElementById('prodTitle').value = p.name || p.title || '';
-      document.getElementById('prodPrice').value = p.price || '';
-      document.getElementById('prodImage').value = p.imageUrl || p.image || '';
-      document.getElementById('prodDesc').value = p.description || '';
-
-      const select = document.getElementById('prodCategory');
-      let found = false;
-      const catUpper = (p.category || '').toUpperCase();
-
-      for (let i = 0; i < select.options.length; i++) {
-        if (select.options[i].value.toUpperCase() === catUpper) {
-          select.selectedIndex = i;
-          found = true;
-          break;
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.add('hidden');
+            document.getElementById('reviewForm').reset();
         }
-      }
 
-      if (!found) {
-        select.value = 'CUSTOM';
-        toggleCustomCategory('CUSTOM');
-        document.getElementById('customCatInput').value = p.category || '';
-      } else {
-        toggleCustomCategory(select.value);
-      }
+        async function submitReview(e) {
+            e.preventDefault();
+            const key = document.getElementById('reviewProductKey').value;
+            const author = document.getElementById('reviewAuthor').value;
+            const rating = parseInt(document.getElementById('reviewRating').value);
+            const comment = document.getElementById('reviewComment').value;
 
-      document.getElementById('variantsContainer').innerHTML = '';
-      if (p.variants && Array.isArray(p.variants)) {
-        p.variants.forEach(v => {
-          addVariantRow(v.name || v.title || '', v.price || '');
-        });
-      }
+            const btn = document.getElementById('submitReviewBtn');
+            btn.disabled = true;
+            btn.innerText = 'Posting...';
 
-      document.getElementById('formHeaderTitle').textContent = "Edit Product Details";
-      document.getElementById('saveProdBtn').textContent = "Update Product";
-      document.getElementById('adminSection').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+            try {
+                const reviewData = { author, rating, comment, date: new Date().toISOString() };
+                const res = await fetch(`${DB_ROOT}/${key}/reviews.json`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reviewData)
+                });
 
-    async function deleteProduct(path) {
-      if (!confirm("Delete this product?")) return;
+                if (!res.ok) throw new Error("Failed to post review");
 
-      try {
-        const res = await fetch(`${DB_ROOT}/${path}.json`, { method: 'DELETE' });
-        if (res.ok) {
-          alert("Product deleted!");
-          fetchProducts();
-        } else {
-          alert("Failed to delete.");
+                closeReviewModal();
+                await fetchProducts(); // Refresh UI
+            } catch (err) {
+                alert("Error posting review. Please check database permissions.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Post Review';
+            }
         }
-      } catch (err) {
-        alert("Network error.");
-      }
-    }
 
-    function resetForm() {
-      document.getElementById('productForm').reset();
-      document.getElementById('productPath').value = '';
-      document.getElementById('customCatInput').classList.add('hidden');
-      document.getElementById('variantsContainer').innerHTML = '';
-      document.getElementById('formHeaderTitle').textContent = "Admin Control Center";
-      document.getElementById('saveProdBtn').textContent = "Publish Product";
-    }
+        // Admin Auth System
+        function openAdminModal() {
+            document.getElementById('adminLoginModal').classList.remove('hidden');
+        }
 
-    function setCategoryFilter(cat) {
-      activeCategory = cat;
-      updateFilterButtons();
-      renderProducts();
-    }
+        function closeAdminLoginModal() {
+            document.getElementById('adminLoginModal').classList.add('hidden');
+            document.getElementById('adminPasscode').value = '';
+            document.getElementById('loginError').classList.add('hidden');
+        }
 
-    fetchProducts();
-  </script>
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const input = document.getElementById('adminPasscode').value;
+            if (input === ADMIN_PASSCODE) {
+                closeAdminLoginModal();
+                openAdminDashboardModal();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function openAdminDashboardModal() {
+            document.getElementById('adminDashboardModal').classList.remove('hidden');
+            renderAdminProductList();
+        }
+
+        function closeAdminDashboardModal() {
+            document.getElementById('adminDashboardModal').classList.add('hidden');
+            resetAdminForm();
+        }
+
+        // Dynamic Variant Row Builder
+        function addVariantRow(name = '', price = '') {
+            const container = document.getElementById('variantsContainer');
+            const rowId = 'variant_' + Date.now() + Math.random().toString(36).substr(2, 4);
+            const div = document.createElement('div');
+            div.id = rowId;
+            div.className = "flex gap-2 items-center";
+            div.innerHTML = `
+                <input type="text" placeholder="Size/Capacity (e.g. 6L)" value="${escapeQuotes(name)}" class="variant-name w-1/2 text-xs px-2.5 py-1.5 border border-slate-200 rounded-lg">
+                <input type="number" placeholder="Price (KSh)" value="${price}" class="variant-price w-1/2 text-xs px-2.5 py-1.5 border border-slate-200 rounded-lg">
+                <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
+            `;
+            container.appendChild(div);
+        }
+
+        // CRUD Admin Functions
+        async function saveProduct(e) {
+            e.preventDefault();
+            const editKey = document.getElementById('editProductKey').value;
+
+            // Gather variants
+            const variantNames = document.querySelectorAll('.variant-name');
+            const variantPrices = document.querySelectorAll('.variant-price');
+            const variants = [];
+            variantNames.forEach((el, idx) => {
+                const n = el.value.trim();
+                const p = parseFloat(variantPrices[idx].value) || 0;
+                if (n) variants.push({ name: n, price: p });
+            });
+
+            const payload = {
+                title: document.getElementById('formTitle').value,
+                category: document.getElementById('formCategory').value,
+                price: parseFloat(document.getElementById('formPrice').value),
+                imageUrl: document.getElementById('formImageUrl').value || SVG_PLACEHOLDER,
+                description: document.getElementById('formDescription').value,
+                variants: variants
+            };
+
+            const btn = document.getElementById('saveProductBtn');
+            btn.disabled = true;
+            btn.innerText = 'Saving...';
+
+            try {
+                let url = `${DB_ROOT}/products.json`;
+                let method = 'POST';
+
+                if (editKey) {
+                    url = `${DB_ROOT}/${editKey}.json`;
+                    method = 'PUT';
+                }
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error("Database Write Failed");
+
+                resetAdminForm();
+                await fetchProducts();
+                renderAdminProductList();
+            } catch (err) {
+                alert("Error saving item: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Save Product to Database';
+            }
+        }
+
+        function editProduct(key) {
+            const item = rawProducts[key];
+            if (!item) return;
+
+            document.getElementById('editProductKey').value = key;
+            document.getElementById('formTitle').value = item.title;
+            document.getElementById('formCategory').value = item.category;
+            document.getElementById('formPrice').value = item.price;
+            document.getElementById('formImageUrl').value = item.imageUrl === SVG_PLACEHOLDER ? '' : item.imageUrl;
+            document.getElementById('formDescription').value = item.description;
+
+            // Clear and add variants
+            document.getElementById('variantsContainer').innerHTML = '';
+            if (item.variants) {
+                item.variants.forEach(v => addVariantRow(v.name || v.label || v, v.price || item.price));
+            }
+
+            document.getElementById('adminFormTitle').innerText = "Edit Inventory Item";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+        }
+
+        async function deleteProduct(key) {
+            if (!confirm("Are you sure you want to delete this product?")) return;
+
+            try {
+                const res = await fetch(`${DB_ROOT}/${key}.json`, { method: 'DELETE' });
+                if (!res.ok) throw new Error("Delete Failed");
+
+                await fetchProducts();
+                renderAdminProductList();
+            } catch (err) {
+                alert("Error deleting item: " + err.message);
+            }
+        }
+
+        function resetAdminForm() {
+            document.getElementById('productForm').reset();
+            document.getElementById('editProductKey').value = '';
+            document.getElementById('variantsContainer').innerHTML = '';
+            document.getElementById('adminFormTitle').innerText = "Add New Inventory Item";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        }
+
+        function renderAdminProductList() {
+            const list = document.getElementById('adminProductList');
+            const keys = Object.keys(rawProducts);
+
+            if (keys.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400">No items available.</p>`;
+                return;
+            }
+
+            list.innerHTML = keys.map(key => {
+                const p = rawProducts[key];
+                return `
+                    <div class="flex items-center justify-between bg-white p-2.5 rounded-lg border border-slate-200 text-xs">
+                        <div class="flex items-center gap-2 overflow-hidden">
+                            <img src="${p.imageUrl}" onerror="this.src='${SVG_PLACEHOLDER}'" class="w-8 h-8 object-cover rounded bg-slate-100 flex-shrink-0">
+                            <div class="truncate">
+                                <div class="font-bold text-slate-800 truncate">${p.title}</div>
+                                <div class="text-[10px] text-slate-500">KSh ${p.price.toLocaleString()}</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="editProduct('${key}')" class="p-1.5 text-apex-600 hover:bg-apex-50 rounded"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="deleteProduct('${key}')" class="p-1.5 text-red-500 hover:bg-red-50 rounded"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Helper Utility
+        function escapeQuotes(str) {
+            return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+    </script>
 </body>
 </html>
+```
