@@ -137,7 +137,7 @@
     const db = firebase.database();
 
     const CLOUDINARY_CLOUD_NAME = "c-f43b0cdb2f32fd4c8e7e174ff5bd67";
-    const CLOUDINARY_PRESET = "apex_hub_preset";
+    const CLOUDINARY_PRESET = "apex_hub-preset"; // Updated to match your exact preset dash
 
     let rawProducts = {};
     let activeCategory = 'ALL';
@@ -196,26 +196,23 @@
           document.getElementById('prodImage').value = data.secure_url;
           statusEl.textContent = "✓ Photo uploaded successfully!";
         } else {
-          statusEl.textContent = "Upload failed. Check Cloudinary settings.";
+          statusEl.textContent = "Error: " + (data.error ? data.error.message : "Check preset name.");
         }
       } catch (err) {
         statusEl.textContent = "Error uploading photo.";
       }
     }
 
-    function fetchProducts() {
-      db.ref('products').on('value', (snapshot) => {
-        rawProducts = snapshot.val() || {};
+    // Direct REST API fetch to guarantee instant loading without spinners
+    async function fetchProducts() {
+      try {
+        const res = await fetch('https://apex-hub-default-rtdb.firebaseio.com/products.json');
+        const data = await res.json();
+        rawProducts = data || {};
         renderProducts();
-      }, (error) => {
-        // Fallback to direct REST API if socket connection fails
-        fetch('https://apex-hub-default-rtdb.firebaseio.com/products.json')
-          .then(res => res.json())
-          .then(data => {
-            rawProducts = data || {};
-            renderProducts();
-          });
-      });
+      } catch (error) {
+        document.getElementById('productGrid').innerHTML = '<div class="col-span-full text-center py-12 text-gray-400">Failed to load products. Check connection.</div>';
+      }
     }
 
     function renderProducts() {
@@ -223,7 +220,7 @@
       const searchTerm = document.getElementById('searchInput').value.toLowerCase();
       grid.innerHTML = '';
 
-      let keys = Object.keys(rawProducts);
+      let keys = Object.keys(rawProducts || {});
       if (keys.length === 0) {
         grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-400">No products found. Click Admin Dashboard to publish one!</div>';
         return;
@@ -277,9 +274,9 @@
       };
 
       if (id) {
-        db.ref('products/' + id).update(data, () => resetForm());
+        db.ref('products/' + id).update(data, () => { resetForm(); fetchProducts(); });
       } else {
-        db.ref('products').push(data, () => resetForm());
+        db.ref('products').push(data, () => { resetForm(); fetchProducts(); });
       }
     }
 
