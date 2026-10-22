@@ -63,15 +63,9 @@
             <input type="number" id="prodPrice" required placeholder="14500" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none text-sm">
           </div>
           <div>
-            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Product Image</label>
-            <div class="flex gap-2">
-              <input type="url" id="prodImage" required placeholder="Paste Image URL or Upload Below" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none text-sm">
-              <label for="cloudinaryFile" class="cursor-pointer bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded-lg text-sm flex items-center justify-center shrink-0 shadow">
-                <i class="fa-solid fa-upload mr-1"></i> Upload
-              </label>
-              <input type="file" id="cloudinaryFile" accept="image/*" class="hidden" onchange="uploadDirectImage(event)">
-            </div>
-            <p id="uploadStatus" class="text-xs text-indigo-600 mt-1 hidden"></p>
+            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Product Image URL</label>
+            <input type="url" id="prodImage" placeholder="Paste direct image link here..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none text-sm">
+            <p class="text-[11px] text-gray-500 mt-1">Tip: Copy any image link from WhatsApp or the web and paste it here.</p>
           </div>
         </div>
 
@@ -134,8 +128,6 @@
   <script>
     firebase.initializeApp({ databaseURL: "https://apex-hub-default-rtdb.firebaseio.com" });
     const db = firebase.database();
-    const CLOUDINARY_CLOUD_NAME = "c-f43b0cdb2f32fd4c8e7e174ff5bd67";
-    const CLOUDINARY_PRESET = "apex_hub-preset";
 
     let rawProducts = {};
     let activeCategory = 'ALL';
@@ -169,36 +161,6 @@
 
     function closeAdminPanel() {
       document.getElementById('adminSection').classList.add('hidden');
-    }
-
-    async function uploadDirectImage(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const statusEl = document.getElementById('uploadStatus');
-      statusEl.textContent = "Uploading image...";
-      statusEl.classList.remove('hidden');
-
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', CLOUDINARY_PRESET);
-
-      try {
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-          method: 'POST',
-          body: formData
-        });
-        const data = await res.json();
-
-        if (data.secure_url) {
-          document.getElementById('prodImage').value = data.secure_url;
-          statusEl.textContent = "✓ Photo uploaded successfully!";
-        } else {
-          statusEl.textContent = "Error: " + (data.error ? data.error.message : "Check preset settings.");
-        }
-      } catch (err) {
-        statusEl.textContent = "Error uploading photo.";
-      }
     }
 
     async function fetchProducts() {
@@ -249,13 +211,15 @@
         if (activeCategory !== 'ALL' && p.category !== activeCategory) return;
         if (searchTerm && !p.title.toLowerCase().includes(searchTerm) && !(p.description && p.description.toLowerCase().includes(searchTerm))) return;
 
+        const imgSrc = p.image && p.image.trim() !== '' ? p.image : 'https://via.placeholder.com/400x300?text=Apex-Hub';
+
         const card = document.createElement('div');
         card.className = "bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition";
         card.innerHTML = `
           <div>
             <div class="relative h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
               <span class="absolute top-3 left-3 bg-purple-700 text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">${p.category || 'General'}</span>
-              <img src="${p.image}" alt="${p.title}" class="object-cover w-full h-full" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Found'">
+              <img src="${imgSrc}" alt="${p.title}" class="object-cover w-full h-full" onerror="this.src='https://via.placeholder.com/400x300?text=Apex-Hub'">
             </div>
             <div class="p-4">
               <h3 class="font-bold text-gray-900 text-base line-clamp-1 mb-1">${p.title}</h3>
@@ -282,11 +246,12 @@
     function handleProductSubmit(e) {
       e.preventDefault();
       const id = document.getElementById('productId').value;
+      const userImage = document.getElementById('prodImage').value.trim();
       const data = {
         title: document.getElementById('prodTitle').value,
         category: document.getElementById('prodCategory').value,
         price: document.getElementById('prodPrice').value,
-        image: document.getElementById('prodImage').value,
+        image: userImage !== '' ? userImage : 'https://via.placeholder.com/400x300?text=Apex-Hub+Cooker',
         description: document.getElementById('prodDesc').value
       };
 
@@ -314,7 +279,6 @@
       document.getElementById('productForm').reset();
       document.getElementById('productId').value = '';
       document.getElementById('saveProdBtn').textContent = "Publish Product";
-      document.getElementById('uploadStatus').classList.add('hidden');
     }
 
     function setCategoryFilter(cat) {
