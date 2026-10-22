@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Apex-Hub Kenya | Electronics & Home Appliances</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cloudflare.com">
   
   <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://gstatic.com"></script>
+  <script src="https://gstatic.com"></script>
   <script src="https://gstatic.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col antialiased">
@@ -108,7 +108,7 @@
 
           <div>
             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">High Resolution Image URL</label>
-            <input type="url" id="prodImage" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 focus:outline-none" placeholder="https://i.ibb.co/.../image.jpg">
+            <input type="url" id="prodImage" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 focus:outline-none" placeholder="https://ibb.co">
           </div>
 
           <div>
@@ -140,15 +140,15 @@
   </main>
 
   <script>
-    // Paste your Firebase Config setup (firebase.initializeApp) exactly here:
+    // Loaded keys mapped cleanly to your actual credentials setup
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_://firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_://firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_://appspot.com",
-      messagingSenderId: "YOUR_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyAHX1af6NlsfsPP9BYWHNPb7b0Y_hLAsM0",
+      authDomain: "://firebaseapp.com",
+      databaseURL: "https://firebaseio.com",
+      projectId: "apex-hub-c6d50",
+      storageBucket: "://appspot.com",
+      messagingSenderId: "508890619708",
+      appId: "1:508890619708:web:8a098b59c55b1e78ae4839"
     };
     
     firebase.initializeApp(firebaseConfig);
@@ -157,7 +157,7 @@
 
     function unlockDashboard(event) {
       event.preventDefault();
-      const adminEmail = "YOUR_REGISTERED_EMAIL@EXAMPLE.COM"; // 👈 Type your Firebase account email here
+      const adminEmail = "YOUR_REGISTERED_EMAIL@EXAMPLE.COM"; // 👈 Type your Firebase email inside these quotes
       const enteredPasscode = document.getElementById("dashboardPasscode").value;
 
       auth.signInWithEmailAndPassword(adminEmail, enteredPasscode)
@@ -180,7 +180,3 @@
         document.getElementById("dashboardPublishForm").classList.add("hidden");
         document.getElementById("statusBadge").textContent = "Locked";
         document.getElementById("statusBadge").className = "text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full border border-gray-200";
-        document.getElementById("dashboardPasscode").value = "";
-      });
-    }
-
