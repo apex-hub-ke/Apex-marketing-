@@ -203,19 +203,21 @@
 
     async function fetchProducts() {
       try {
-        const res = await fetch('https://apex-hub-default-rtdb.firebaseio.com/products.json');
+        const res = await fetch('https://apex-hub-default-rtdb.firebaseio.com/.json');
         const data = await res.json();
-        rawProducts = data || {};
-        renderProducts();
-      } catch (error) {
-        try {
-          const resFallback = await fetch('https://apex-hub-default-rtdb.firebaseio.com/.json');
-          const fallbackData = await resFallback.json();
-          rawProducts = (fallbackData && fallbackData.products) ? fallbackData.products : (fallbackData || {});
-          renderProducts();
-        } catch (err) {
-          document.getElementById('productGrid').innerHTML = '<div class="col-span-full text-center py-12 text-gray-400">Failed to load products. Check connection.</div>';
+        
+        if (!data) {
+          rawProducts = {};
+        } else if (data.products) {
+          rawProducts = { ...data, ...data.products };
+          delete rawProducts.products;
+        } else {
+          rawProducts = data;
         }
+        
+        renderProducts();
+      } catch (err) {
+        document.getElementById('productGrid').innerHTML = '<div class="col-span-full text-center py-12 text-gray-400">Failed to load products. Check connection.</div>';
       }
     }
 
