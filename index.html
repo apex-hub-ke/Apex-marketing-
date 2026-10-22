@@ -33,7 +33,7 @@
   <!-- Hero Header -->
   <header class="bg-gradient-to-r from-purple-800 via-purple-700 to-indigo-800 text-white py-8 px-4 text-center shadow-inner">
     <h1 class="text-2xl sm:text-4xl font-extrabold mb-2">Quality Electronics & Home Appliances</h1>
-    <p class="text-xs sm:text-base text-purple-100 max-w-xl mx-auto opacity-90">Tap any item below to view full details, specifications, and place your order on WhatsApp!</p>
+    <p class="text-xs sm:text-base text-purple-100 max-w-xl mx-auto opacity-90">Tap any item below to view full details, specifications, reviews, and place your order on WhatsApp!</p>
   </header>
 
   <!-- Main Work Area -->
@@ -47,8 +47,8 @@
             <i class="fa-solid fa-user-shield text-lg"></i>
           </div>
           <div>
-            <h2 class="text-xl font-bold text-gray-900">Admin Control Center</h2>
-            <p class="text-xs text-gray-500">Sign in to publish new inventory live to your storefront</p>
+            <h2 id="formHeaderTitle" class="text-xl font-bold text-gray-900">Admin Control Center</h2>
+            <p class="text-xs text-gray-500">Sign in to publish or edit inventory live on your storefront</p>
           </div>
         </div>
         <span id="statusBadge" class="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full border border-gray-200">
@@ -72,7 +72,7 @@
         </form>
       </div>
 
-      <!-- STEP 2: FULL PUBLISHING DASHBOARD -->
+      <!-- STEP 2: FULL PUBLISHING/EDITING DASHBOARD -->
       <div id="dashboardPublishForm" class="hidden">
         <form onsubmit="handlePublishProduct(event)" class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -90,13 +90,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Category</label>
-              <select id="prodCategory" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm bg-white focus:ring-2 focus:ring-purple-600 focus:outline-none">
-                <option value="TVs & Audio">TVs & Audio</option>
-                <option value="Home Appliances">Home Appliances</option>
-                <option value="Kitchen Appliances">Kitchen Appliances</option>
-                <option value="Phones & Tech">Phones & Tech</option>
-                <option value="Other">Other</option>
-              </select>
+              <input type="text" id="prodCategory" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm bg-white focus:ring-2 focus:ring-purple-600 focus:outline-none" placeholder="e.g. TVs & Audio, Kitchen Appliances, etc.">
             </div>
 
             <div>
@@ -115,11 +109,14 @@
             <textarea id="prodDesc" rows="3" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 focus:outline-none" placeholder="Enter key features, specs, warranty details..."></textarea>
           </div>
 
-          <div class="flex items-center gap-3 pt-2">
+          <div class="flex items-center gap-3 pt-2 flex-wrap">
             <button type="submit" id="submitBtn" class="bg-purple-700 hover:bg-purple-800 text-white font-bold px-8 py-3 rounded-xl text-sm transition shadow flex items-center gap-2">
               <i class="fa-solid fa-cloud-arrow-up"></i> Publish Live To Store
             </button>
-            <button type="button" onclick="lockDashboard()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-4 py-3 rounded-xl text-sm transition">
+            <button type="button" id="cancelEditBtn" onclick="cancelEditMode()" class="hidden bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold px-4 py-3 rounded-xl text-sm transition">
+              Cancel Edit
+            </button>
+            <button type="button" onclick="lockDashboard()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-4 py-3 rounded-xl text-sm transition ml-auto">
               Sign Out
             </button>
           </div>
@@ -139,14 +136,6 @@
           <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-purple-400"></i>
           <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search products, inches, capacities..." class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-600 focus:outline-none text-sm">
         </div>
-        <select id="categoryFilter" onchange="filterProducts()" class="py-2.5 px-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-purple-600 focus:outline-none text-sm bg-white font-medium text-gray-700">
-          <option value="All">All Categories</option>
-          <option value="TVs & Audio">TVs & Audio</option>
-          <option value="Home Appliances">Home Appliances</option>
-          <option value="Kitchen Appliances">Kitchen Appliances</option>
-          <option value="Phones & Tech">Phones & Tech</option>
-          <option value="Other">Other</option>
-        </select>
       </div>
 
       <!-- Product Cards Grid -->
@@ -159,7 +148,7 @@
     </section>
   </main>
 
-  <!-- PRODUCT TAP MODAL -->
+  <!-- PRODUCT TAP MODAL WITH REVIEWS -->
   <div id="productModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden relative max-h-[90vh] flex flex-col">
       <button onclick="closeProductModal()" class="absolute top-3 right-3 bg-white/80 hover:bg-white text-gray-700 rounded-full p-2 z-10 shadow transition">
@@ -188,6 +177,38 @@
             <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Select Preferred Option</label>
             <div id="modalVariantsList" class="flex flex-wrap gap-2"></div>
           </div>
+
+          <!-- REVIEWS SECTION -->
+          <div class="border-t border-gray-100 pt-4 space-y-4">
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-bold text-gray-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-star text-amber-400"></i> Customer Reviews
+              </h4>
+              <span id="averageRatingText" class="text-xs font-bold text-gray-500">No reviews yet</span>
+            </div>
+
+            <!-- List of Submitted Reviews -->
+            <div id="reviewsList" class="space-y-3 max-h-40 overflow-y-auto pr-1"></div>
+
+            <!-- Add Review Form -->
+            <form onsubmit="handleReviewSubmit(event)" class="bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2">
+              <span class="block text-xs font-bold text-gray-700">Leave a Review</span>
+              <div class="flex items-center gap-3">
+                <input type="text" id="reviewerName" required placeholder="Your name" class="w-1/2 px-3 py-1.5 border border-gray-300 rounded-lg text-xs">
+                <select id="reviewRating" required class="w-1/2 px-3 py-1.5 border border-gray-300 rounded-lg text-xs bg-white">
+                  <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                  <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                  <option value="3">⭐⭐⭐ (3/5)</option>
+                  <option value="2">⭐⭐ (2/5)</option>
+                  <option value="1">⭐ (1/5)</option>
+                </select>
+              </div>
+              <textarea id="reviewComment" required rows="2" placeholder="Write your thoughts..." class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-xs"></textarea>
+              <button type="submit" class="bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs px-4 py-2 rounded-lg transition">
+                Submit Review
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 
@@ -214,6 +235,7 @@
     let allProducts = [];
     let selectedVariant = "";
     let activeProduct = null;
+    let editingProductId = null;
 
     // Load Connection Watchdog
     const loadTimeout = setTimeout(() => {
@@ -232,23 +254,28 @@
         Object.keys(data).forEach(key => allProducts.push({ id: key, ...data[key] }));
       }
       renderProducts(allProducts);
+      if (activeProduct) {
+        openProductModal(activeProduct.id);
+      }
     });
 
     function renderProducts(products) {
       const grid = document.getElementById('productGrid');
+      const isAdminAuthenticated = !document.getElementById('dashboardPublishForm').classList.contains('hidden');
+
       if (products.length === 0) {
         grid.innerHTML = `<div class="col-span-full text-center py-16 text-gray-400 font-medium">No items listed yet. Unlock the Admin Dashboard above to add products.</div>`;
         return;
       }
 
       grid.innerHTML = products.map(p => `
-        <div onclick="openProductModal('${p.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md border border-gray-200/80 overflow-hidden flex flex-col cursor-pointer transition transform hover:-translate-y-0.5">
+        <div onclick="openProductModal('${p.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md border border-gray-200/80 overflow-hidden flex flex-col cursor-pointer transition transform hover:-translate-y-0.5 relative">
           <div class="w-full h-48 bg-gray-50 flex items-center justify-center p-2 border-b border-gray-100 relative">
-            <img src="${p.imageUrl}" alt="${p.title}" class="h-full w-full object-contain" onerror="this.src='https://via.placeholder.com/300x200?text=Apex-Hub'">
-            <span class="absolute top-2 left-2 text-[10px] font-bold uppercase bg-purple-900/80 text-white px-2 py-0.5 rounded backdrop-blur-sm">${p.category || 'General'}</span>
+            <img src="${p.imageUrl}" alt="${p.title || p.name || 'Product'}" class="h-full w-full object-contain" onerror="this.src='https://via.placeholder.com/300x200?text=Apex-Hub'">
+            <span class="absolute top-2 left-2 text-[10px] font-bold uppercase bg-purple-900/80 text-white px-2.5 py-1 rounded backdrop-blur-sm">${p.category || 'General'}</span>
           </div>
           <div class="p-4 flex flex-col flex-grow">
-            <h3 class="font-bold text-gray-900 text-sm sm:text-base leading-snug mb-1 line-clamp-1">${p.title}</h3>
+            <h3 class="font-bold text-gray-900 text-sm sm:text-base leading-snug mb-1 line-clamp-1">${p.title || p.name || 'Apex-Hub Product'}</h3>
             <p class="text-xs text-gray-500 mb-3 line-clamp-2">${p.description || 'Tap to view full details...'}</p>
             
             ${p.variants ? `
@@ -262,11 +289,18 @@
             <div class="mt-auto pt-2 flex items-center justify-between border-t border-gray-100">
               <div>
                 <span class="text-[10px] text-gray-400 block font-semibold uppercase">Price</span>
-                <span class="text-base font-black text-gray-900">KES ${Number(p.price).toLocaleString()}</span>
+                <span class="text-base font-black text-gray-900">KES ${Number(p.price || 0).toLocaleString()}</span>
               </div>
-              <span class="text-purple-700 text-xs font-bold bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-lg border border-purple-200 transition">
-                View Item <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i>
-              </span>
+              <div class="flex items-center gap-1.5">
+                ${isAdminAuthenticated ? `
+                  <button onclick="event.stopPropagation(); startEditProduct('${p.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg transition" title="Edit Product">
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+                ` : ''}
+                <span class="text-purple-700 text-xs font-bold bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-lg border border-purple-200 transition">
+                  View <i class="fa-solid fa-chevron-right ml-0.5 text-[10px]"></i>
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -277,8 +311,8 @@
       activeProduct = allProducts.find(p => p.id === id);
       if (!activeProduct) return;
 
-      document.getElementById('modalTitle').innerText = activeProduct.title;
-      document.getElementById('modalPrice').innerText = 'KES ' + Number(activeProduct.price).toLocaleString();
+      document.getElementById('modalTitle').innerText = activeProduct.title || activeProduct.name || 'Apex-Hub Product';
+      document.getElementById('modalPrice').innerText = 'KES ' + Number(activeProduct.price || 0).toLocaleString();
       document.getElementById('modalCategory').innerText = activeProduct.category || 'General';
       document.getElementById('modalDescription').innerText = activeProduct.description || 'No detailed summary provided.';
       document.getElementById('modalImage').src = activeProduct.imageUrl;
@@ -299,8 +333,56 @@
         variantsContainer.classList.add('hidden');
       }
 
+      renderReviews(activeProduct.reviews);
+
       document.getElementById('modalOrderBtn').onclick = () => sendWhatsAppOrder();
       document.getElementById('productModal').classList.remove('hidden');
+    }
+
+    function renderReviews(reviewsObj) {
+      const listContainer = document.getElementById('reviewsList');
+      const avgText = document.getElementById('averageRatingText');
+
+      if (!reviewsObj) {
+        listContainer.innerHTML = `<p class="text-xs text-gray-400 italic">Be the first to review this item!</p>`;
+        avgText.innerText = "No reviews yet";
+        return;
+      }
+
+      const reviews = Object.keys(reviewsObj).map(key => reviewsObj[key]);
+      const totalRating = reviews.reduce((sum, r) => sum + Number(r.rating), 0);
+      const avg = (totalRating / reviews.length).toFixed(1);
+
+      avgText.innerText = `⭐ ${avg} / 5 (${reviews.length} reviews)`;
+
+      listContainer.innerHTML = reviews.map(r => `
+        <div class="bg-white p-2.5 rounded-lg border border-gray-100 text-xs shadow-xs">
+          <div class="flex items-center justify-between font-bold text-gray-800">
+            <span>${r.name}</span>
+            <span class="text-amber-500">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+          </div>
+          <p class="text-gray-600 mt-1">${r.comment}</p>
+        </div>
+      `).join('');
+    }
+
+    function handleReviewSubmit(e) {
+      e.preventDefault();
+      if (!activeProduct) return;
+
+      const newReview = {
+        name: document.getElementById('reviewerName').value,
+        rating: Number(document.getElementById('reviewRating').value),
+        comment: document.getElementById('reviewComment').value,
+        timestamp: Date.now()
+      };
+
+      db.ref(`products/${activeProduct.id}/reviews`).push(newReview, (err) => {
+        if (!err) {
+          document.getElementById('reviewerName').value = "";
+          document.getElementById('reviewComment').value = "";
+        }
+      });
     }
 
     function selectVariantChoice(choice, btnElement) {
@@ -314,12 +396,14 @@
     }
 
     function closeProductModal() {
+      activeProduct = null;
       document.getElementById('productModal').classList.add('hidden');
     }
 
     function sendWhatsAppOrder() {
       if (!activeProduct) return;
-      let msg = `Hello Apex-Hub Kenya! I would like to order:\n\n📌 *Item:* ${activeProduct.title}\n💰 *Price:* KES ${Number(activeProduct.price).toLocaleString()}`;
+      const title = activeProduct.title || activeProduct.name || 'Apex-Hub Product';
+      let msg = `Hello Apex-Hub Kenya! I would like to order:\n\n📌 *Item:* ${title}\n💰 *Price:* KES ${Number(activeProduct.price || 0).toLocaleString()}`;
       
       if (selectedVariant) {
         msg += `\n⚙️ *Selected Spec/Variant:* ${selectedVariant}`;
@@ -333,16 +417,13 @@
 
     function filterProducts() {
       const query = document.getElementById('searchInput').value.toLowerCase();
-      const category = document.getElementById('categoryFilter').value;
-
       const filtered = allProducts.filter(p => {
-        const matchesCategory = category === 'All' || p.category === category;
-        const matchesSearch = p.title.toLowerCase().includes(query) || 
-                              (p.variants && p.variants.toLowerCase().includes(query)) ||
-                              (p.description && p.description.toLowerCase().includes(query));
-        return matchesCategory && matchesSearch;
+        const title = (p.title || p.name || '').toLowerCase();
+        const desc = (p.description || '').toLowerCase();
+        const cat = (p.category || '').toLowerCase();
+        const vars = (p.variants || '').toLowerCase();
+        return title.includes(query) || desc.includes(query) || cat.includes(query) || vars.includes(query);
       });
-
       renderProducts(filtered);
     }
 
@@ -359,27 +440,63 @@
         const badge = document.getElementById('statusBadge');
         badge.innerText = "Authenticated";
         badge.className = "text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full border border-green-200";
+        renderProducts(allProducts);
       } else {
         alert('Incorrect Admin Passcode');
       }
     }
 
     function lockDashboard() {
+      cancelEditMode();
       document.getElementById('dashboardAuthForm').classList.remove('hidden');
       document.getElementById('dashboardPublishForm').classList.add('hidden');
       document.getElementById('dashboardPasscode').value = "";
       const badge = document.getElementById('statusBadge');
       badge.innerText = "Locked";
       badge.className = "text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full border border-gray-200";
+      renderProducts(allProducts);
+    }
+
+    function startEditProduct(id) {
+      const p = allProducts.find(item => item.id === id);
+      if (!p) return;
+
+      editingProductId = id;
+      document.getElementById('prodTitle').value = p.title || p.name || '';
+      document.getElementById('prodPrice').value = p.price || '';
+      document.getElementById('prodCategory').value = p.category || 'General';
+      document.getElementById('prodVariants').value = p.variants || '';
+      document.getElementById('prodImage').value = p.imageUrl || '';
+      document.getElementById('prodDesc').value = p.description || '';
+
+      document.getElementById('formHeaderTitle').innerText = "Edit Product: " + (p.title || p.name || '');
+      document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Update Live Product`;
+      document.getElementById('cancelEditBtn').classList.remove('hidden');
+
+      scrollToDashboard();
+    }
+
+    function cancelEditMode() {
+      editingProductId = null;
+      document.getElementById('formHeaderTitle').innerText = "Admin Control Center";
+      document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publish Live To Store`;
+      document.getElementById('cancelEditBtn').classList.add('hidden');
+      
+      document.getElementById('prodTitle').value = "";
+      document.getElementById('prodPrice').value = "";
+      document.getElementById('prodCategory').value = "";
+      document.getElementById('prodVariants').value = "";
+      document.getElementById('prodImage').value = "";
+      document.getElementById('prodDesc').value = "";
     }
 
     function handlePublishProduct(e) {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
-      btn.innerText = 'Publishing...';
+      btn.innerText = editingProductId ? 'Updating...' : 'Publishing...';
 
-      const newProduct = {
+      const productData = {
         title: document.getElementById('prodTitle').value,
         price: document.getElementById('prodPrice').value,
         category: document.getElementById('prodCategory').value,
@@ -389,21 +506,31 @@
         timestamp: Date.now()
       };
 
-      db.ref('products').push(newProduct, (error) => {
-        btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publish Live To Store`;
+      if (editingProductId) {
+        db.ref('products/' + editingProductId).update(productData, (error) => {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Update Live Product`;
 
-        if (error) {
-          alert('Error: ' + error.message + '\nEnsure Database Rules are set to { ".read": true, ".write": true } in Firebase Console.');
-        } else {
-          alert('Product successfully published to Apex-Hub store!');
-          document.getElementById('prodTitle').value = "";
-          document.getElementById('prodPrice').value = "";
-          document.getElementById('prodVariants').value = "";
-          document.getElementById('prodImage').value = "";
-          document.getElementById('prodDesc').value = "";
-        }
-      });
+          if (error) {
+            alert('Error updating product: ' + error.message);
+          } else {
+            alert('Product successfully updated!');
+            cancelEditMode();
+          }
+        });
+      } else {
+        db.ref('products').push(productData, (error) => {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Publish Live To Store`;
+
+          if (error) {
+            alert('Error publishing: ' + error.message);
+          } else {
+            alert('Product successfully published to Apex-Hub store!');
+            cancelEditMode();
+          }
+        });
+      }
     }
   </script>
 </body>
