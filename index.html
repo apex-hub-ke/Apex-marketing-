@@ -6,8 +6,6 @@
   <title>Apex-Hub Kenya</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen flex flex-col">
 
@@ -47,13 +45,14 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Category</label>
-            <select id="prodCategory" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none text-sm bg-white">
-              <option value="KITCHEN APPLIANCES">KITCHEN APPLIANCES</option>
-              <option value="HOME APPLIANCES">HOME APPLIANCES</option>
-              <option value="ELECTRONICS">ELECTRONICS</option>
-              <option value="FURNITURE">FURNITURE</option>
-              <option value="ACCESSORIES">ACCESSORIES</option>
+            <select id="prodCategory" required onchange="toggleCustomCategory(this.value)" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none text-sm bg-white">
+              <option value="Kitchen">Kitchen Appliances</option>
+              <option value="Home">Home Appliances</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Furniture">Furniture</option>
+              <option value="CUSTOM">+ Add New Category...</option>
             </select>
+            <input type="text" id="customCatInput" placeholder="Type new category name" class="hidden w-full mt-2 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none text-sm">
           </div>
         </div>
 
@@ -64,8 +63,7 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Product Image URL</label>
-            <input type="url" id="prodImage" placeholder="Paste direct image link here..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none text-sm">
-            <p class="text-[11px] text-gray-500 mt-1">Tip: Copy any image link from WhatsApp or the web and paste it here.</p>
+            <input type="url" id="prodImage" placeholder="https://i.ibb.co/..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none text-sm">
           </div>
         </div>
 
@@ -90,12 +88,8 @@
       <div class="w-full md:w-72">
         <input type="text" id="searchInput" oninput="renderProducts()" placeholder="Search products..." class="w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-purple-600 outline-none text-sm">
       </div>
-      <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+      <div id="filterBar" class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
         <button onclick="setCategoryFilter('ALL')" class="cat-btn bg-purple-700 text-white font-semibold px-4 py-2 rounded-xl text-xs shrink-0 shadow">All</button>
-        <button onclick="setCategoryFilter('KITCHEN APPLIANCES')" class="cat-btn bg-white text-gray-600 hover:bg-purple-50 font-semibold px-4 py-2 rounded-xl text-xs shrink-0 shadow-sm border">Kitchen</button>
-        <button onclick="setCategoryFilter('HOME APPLIANCES')" class="cat-btn bg-white text-gray-600 hover:bg-purple-50 font-semibold px-4 py-2 rounded-xl text-xs shrink-0 shadow-sm border">Home</button>
-        <button onclick="setCategoryFilter('ELECTRONICS')" class="cat-btn bg-white text-gray-600 hover:bg-purple-50 font-semibold px-4 py-2 rounded-xl text-xs shrink-0 shadow-sm border">Electronics</button>
-        <button onclick="setCategoryFilter('FURNITURE')" class="cat-btn bg-white text-gray-600 hover:bg-purple-50 font-semibold px-4 py-2 rounded-xl text-xs shrink-0 shadow-sm border">Furniture</button>
       </div>
     </div>
 
@@ -116,19 +110,17 @@
   <div id="authModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl">
       <h3 class="text-lg font-bold text-gray-900 mb-1">Admin Access Required</h3>
-      <p class="text-xs text-gray-500 mb-4">Enter your passcode to manage products.</p>
+      <p class="text-xs text-gray-500 mb-4">Enter passcode to publish items.</p>
       <input type="password" id="passcodeInput" placeholder="Enter Admin Passcode" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none text-sm mb-4">
       <div class="flex justify-end gap-2">
         <button onclick="closeAuthModal()" class="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
-        <button onclick="verifyPasscode()" class="px-4 py-2 text-xs font-semibold bg-purple-700 text-white rounded-lg shadow hover:bg-purple-800">Unlock Dashboard</button>
+        <button onclick="verifyPasscode()" class="px-4 py-2 text-xs font-semibold bg-purple-700 text-white rounded-lg shadow hover:bg-purple-800">Unlock</button>
       </div>
     </div>
   </div>
 
   <script>
-    firebase.initializeApp({ databaseURL: "https://apex-hub-default-rtdb.firebaseio.com" });
-    const db = firebase.database();
-
+    const DB_URL = "https://apex-hub-default-rtdb.firebaseio.com/products.json";
     let rawProducts = {};
     let activeCategory = 'ALL';
     let isAdminAuthenticated = false;
@@ -163,24 +155,44 @@
       document.getElementById('adminSection').classList.add('hidden');
     }
 
+    function toggleCustomCategory(val) {
+      const customInput = document.getElementById('customCatInput');
+      if (val === 'CUSTOM') {
+        customInput.classList.remove('hidden');
+        customInput.required = true;
+      } else {
+        customInput.classList.add('hidden');
+        customInput.required = false;
+      }
+    }
+
     async function fetchProducts() {
       try {
-        const res = await fetch('https://apex-hub-default-rtdb.firebaseio.com/.json');
+        const res = await fetch(DB_URL);
         const data = await res.json();
-        
-        if (!data) {
-          rawProducts = {};
-        } else if (data.products) {
-          rawProducts = { ...data, ...data.products };
-          delete rawProducts.products;
-        } else {
-          rawProducts = data;
-        }
-        
+        rawProducts = data || {};
+        updateFilterButtons();
         renderProducts();
       } catch (err) {
-        document.getElementById('productGrid').innerHTML = '<div class="col-span-full text-center py-12 text-gray-400">Failed to load products. Check connection.</div>';
+        document.getElementById('productGrid').innerHTML = '<div class="col-span-full text-center py-12 text-gray-400">Error connecting to database.</div>';
       }
+    }
+
+    function updateFilterButtons() {
+      const filterBar = document.getElementById('filterBar');
+      const categories = new Set(['Kitchen', 'Home', 'Electronics', 'Furniture']);
+      
+      Object.values(rawProducts || {}).forEach(p => {
+        if (p && p.category) categories.add(p.category);
+      });
+
+      let buttonsHTML = `<button onclick="setCategoryFilter('ALL')" class="cat-btn ${activeCategory === 'ALL' ? 'bg-purple-700 text-white' : 'bg-white text-gray-600'} font-semibold px-4 py-2 rounded-xl text-xs shrink-0 shadow-sm border">All</button>`;
+
+      categories.forEach(cat => {
+        buttonsHTML += `<button onclick="setCategoryFilter('${cat}')" class="cat-btn ${activeCategory === cat ? 'bg-purple-700 text-white' : 'bg-white text-gray-600'} font-semibold px-4 py-2 rounded-xl text-xs shrink-0 shadow-sm border">${cat}</button>`;
+      });
+
+      filterBar.innerHTML = buttonsHTML;
     }
 
     function renderProducts() {
@@ -189,29 +201,25 @@
       grid.innerHTML = '';
 
       let keys = Object.keys(rawProducts || {});
-      
-      // Strict filter: Eliminate any corrupt entries, undefined titles, or NaN prices
+
       keys = keys.filter(id => {
         const p = rawProducts[id];
-        if (!p) return false;
-        const title = String(p.title || '').trim().toLowerCase();
-        const price = Number(p.price);
-        if (!p.title || title === '' || title === 'undefined' || title === 'null' || isNaN(price) || price <= 0) return false;
-        return true;
+        return p && p.title && String(p.title).trim() !== '';
       });
 
       if (keys.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-400">No products found. Click Admin Dashboard to publish one!</div>';
+        grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-400">No products found. Use Admin Dashboard to publish!</div>';
         return;
       }
 
       keys.forEach(id => {
         const p = rawProducts[id];
         if (!p) return;
+
         if (activeCategory !== 'ALL' && p.category !== activeCategory) return;
         if (searchTerm && !p.title.toLowerCase().includes(searchTerm) && !(p.description && p.description.toLowerCase().includes(searchTerm))) return;
 
-        const imgSrc = p.image && p.image.trim() !== '' ? p.image : 'https://via.placeholder.com/400x300?text=Apex-Hub';
+        const imgSrc = p.image && p.image.trim() !== '' ? p.image : 'https://i.ibb.co/kgpDWKbw/1000006379.jpg';
 
         const card = document.createElement('div');
         card.className = "bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition";
@@ -219,7 +227,7 @@
           <div>
             <div class="relative h-48 bg-gray-50 flex items-center justify-center overflow-hidden">
               <span class="absolute top-3 left-3 bg-purple-700 text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">${p.category || 'General'}</span>
-              <img src="${imgSrc}" alt="${p.title}" class="object-cover w-full h-full" onerror="this.src='https://via.placeholder.com/400x300?text=Apex-Hub'">
+              <img src="${imgSrc}" alt="${p.title}" class="object-cover w-full h-full" onerror="this.src='https://i.ibb.co/kgpDWKbw/1000006379.jpg'">
             </div>
             <div class="p-4">
               <h3 class="font-bold text-gray-900 text-base line-clamp-1 mb-1">${p.title}</h3>
@@ -232,7 +240,6 @@
               <span class="text-base font-extrabold text-purple-900">KES ${Number(p.price).toLocaleString()}</span>
             </div>
             <div class="flex gap-2">
-              ${isAdminAuthenticated ? `<button onclick="editProduct('${id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 p-2 rounded-lg text-xs"><i class="fa-solid fa-pen"></i></button>` : ''}
               <a href="https://wa.me/254700000000?text=Hello%20Apex-Hub%20Kenya,%20I%20am%20interested%20in%20${encodeURIComponent(p.title)}" target="_blank" class="bg-purple-700 hover:bg-purple-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 shadow">
                 Order <i class="fa-brands fa-whatsapp"></i>
               </a>
@@ -243,50 +250,58 @@
       });
     }
 
-    function handleProductSubmit(e) {
+    async function handleProductSubmit(e) {
       e.preventDefault();
-      const id = document.getElementById('productId').value;
-      const userImage = document.getElementById('prodImage').value.trim();
+      const saveBtn = document.getElementById('saveProdBtn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Publishing...";
+
+      const selectedCat = document.getElementById('prodCategory').value;
+      const customCat = document.getElementById('customCatInput').value.trim();
+      const finalCat = selectedCat === 'CUSTOM' ? customCat : selectedCat;
+
       const data = {
         title: document.getElementById('prodTitle').value,
-        category: document.getElementById('prodCategory').value,
+        category: finalCat,
         price: document.getElementById('prodPrice').value,
-        image: userImage !== '' ? userImage : 'https://via.placeholder.com/400x300?text=Apex-Hub+Cooker',
+        image: document.getElementById('prodImage').value.trim() || 'https://i.ibb.co/kgpDWKbw/1000006379.jpg',
         description: document.getElementById('prodDesc').value
       };
 
-      if (id) {
-        db.ref('products/' + id).update(data, () => { resetForm(); fetchProducts(); });
-      } else {
-        db.ref('products').push(data, () => { resetForm(); fetchProducts(); });
-      }
-    }
+      try {
+        const res = await fetch(DB_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
 
-    function editProduct(id) {
-      const p = rawProducts[id];
-      if (!p) return;
-      document.getElementById('productId').value = id;
-      document.getElementById('prodTitle').value = p.title;
-      document.getElementById('prodCategory').value = p.category;
-      document.getElementById('prodPrice').value = p.price;
-      document.getElementById('prodImage').value = p.image;
-      document.getElementById('prodDesc').value = p.description;
-      document.getElementById('saveProdBtn').textContent = "Update Live Product";
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (res.ok) {
+          alert("Product published successfully!");
+          resetForm();
+          fetchProducts();
+        } else {
+          alert("Failed to publish. Check Firebase rules.");
+        }
+      } catch (err) {
+        alert("Network error while publishing.");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Publish Product";
+      }
     }
 
     function resetForm() {
       document.getElementById('productForm').reset();
       document.getElementById('productId').value = '';
-      document.getElementById('saveProdBtn').textContent = "Publish Product";
+      document.getElementById('customCatInput').classList.add('hidden');
     }
 
     function setCategoryFilter(cat) {
       activeCategory = cat;
+      updateFilterButtons();
       renderProducts();
     }
 
-    // Initialize
     fetchProducts();
   </script>
 </body>
