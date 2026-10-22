@@ -1,427 +1,231 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex-Hub | Quality Home Appliances & Electronics Kenya</title>
-    
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Apex-Hub Storefront</title>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         :root {
-            --bg-dark: #130a21;
-            --bg-card: #ffffff;
-            --primary: #5C2D91;
-            --primary-hover: #4a2375;
-            --whatsapp-green: #25d366;
-            --whatsapp-hover: #1da851;
-            --text-main: #1e1b2e;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
+            --primary: #5c2483;
+            --primary-hover: #481b68;
+            --secondary: #25d366;
+            --bg-dark: #0f1117;
+            --card-bg: #1a1d26;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #2e3344;
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: #f8fafc;
+            background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding-bottom: 50px;
         }
 
-        /* Top Notification Bar */
-        .top-banner {
-            background: linear-gradient(90deg, #5C2D91, #3b1961);
-            color: #ffffff;
+        .hidden {
+            display: none !important;
+        }
+
+        /* Top Announcement Bar */
+        .announcement-bar {
+            background: linear-gradient(90deg, #3b1456, #5c2483);
+            color: #fff;
             text-align: center;
-            padding: 10px 15px;
+            padding: 8px 16px;
             font-size: 0.85rem;
             font-weight: 600;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
         }
 
-        /* Sticky Header */
+        /* Navbar */
         header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            padding: 12px 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
+            padding: 16px 24px;
+            background-color: rgba(26, 29, 38, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .header-left {
+        .brand {
             display: flex;
             align-items: center;
-            gap: 15px;
-        }
-
-        .hamburger-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--primary);
-            cursor: pointer;
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--primary);
-            font-size: 1.4rem;
+            gap: 12px;
+            font-size: 1.25rem;
             font-weight: 800;
-            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        .brand i {
+            color: var(--primary);
+        }
+
+        .nav-btn {
+            background: var(--border-color);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+        }
+
+        /* Main Container */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Search & Categories */
+        .controls-section {
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .search-box {
             position: relative;
-            flex: 1;
-            max-width: 400px;
-            display: none;
-        }
-
-        @media(min-width: 768px) {
-            .search-box { display: block; }
+            width: 100%;
         }
 
         .search-box input {
             width: 100%;
-            padding: 10px 15px 10px 40px;
-            background-color: #f1f5f9;
+            padding: 12px 16px 12px 42px;
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 25px;
-            color: var(--text-main);
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .search-box input:focus {
-            border-color: var(--primary);
-            background-color: #ffffff;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.95rem;
         }
 
         .search-box i {
             position: absolute;
-            left: 15px;
+            left: 14px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
         }
 
-        .nav-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .btn-dash {
-            background-color: #f1f5f9;
-            color: var(--primary);
-            border: 1px solid #cbd5e1;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-dash:hover {
-            background-color: var(--primary);
-            color: #ffffff;
-        }
-
-        /* Side Navigation Drawer */
-        .drawer-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .drawer-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .side-drawer {
-            position: fixed;
-            top: 0; left: -320px;
-            width: 300px; height: 100%;
-            background: #ffffff;
-            z-index: 1000;
-            transition: left 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
-        }
-
-        .side-drawer.active {
-            left: 0;
-        }
-
-        .drawer-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .drawer-close {
-            background: none;
-            border: none;
-            font-size: 1.4rem;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-
-        .drawer-body {
-            padding: 20px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .drawer-search {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .drawer-search input {
-            width: 100%;
-            padding: 10px 15px 10px 35px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            background: #f8fafc;
-            outline: none;
-        }
-
-        .drawer-search i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
-        .drawer-menu {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .drawer-menu a {
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: color 0.2s;
-        }
-
-        .drawer-menu a:hover {
-            color: var(--primary);
-        }
-
-        .drawer-footer {
-            padding: 20px;
-            border-top: 1px solid var(--border-color);
-            background: #f8fafc;
-        }
-
-        .drawer-contact {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--primary);
-            font-weight: 700;
-            text-decoration: none;
-            font-size: 0.95rem;
-        }
-
-        /* View Toggle */
-        .view-section { display: block; }
-        .view-section.hidden { display: none !important; }
-
-        /* Category Filter Pills */
         .categories-wrapper {
-            max-width: 1200px;
-            margin: 20px auto 10px auto;
-            padding: 0 20px;
-        }
-
-        .category-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 12px;
             display: flex;
-            align-items: center;
             gap: 8px;
-            color: var(--primary);
-        }
-
-        .category-pills {
-            display: flex;
-            gap: 10px;
             overflow-x: auto;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
 
-        .category-btn {
-            background-color: #ffffff;
+        .cat-btn {
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 8px 18px;
-            border-radius: 30px;
-            white-space: nowrap;
-            font-weight: 600;
-            font-size: 0.88rem;
+            padding: 8px 16px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: all 0.2s;
+            white-space: nowrap;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
-        .category-btn.active, .category-btn:hover {
-            background-color: var(--primary);
-            color: #ffffff;
+        .cat-btn.active {
+            background: var(--primary);
+            color: #fff;
             border-color: var(--primary);
         }
 
-        /* Crisp HD Product Grid */
-        .main-container {
-            max-width: 1200px;
-            margin: 10px auto;
-            padding: 0 20px;
-            flex: 1;
-        }
-
-        .product-grid {
+        /* Grid */
+        .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 20px;
         }
 
         .product-card {
-            background-color: var(--bg-card);
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 14px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, border-color 0.2s;
         }
 
         .product-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(92, 45, 145, 0.1);
             border-color: var(--primary);
         }
 
-        /* Ultra Sharp Image Rendering Container */
         .card-img-wrapper {
-            width: 100%;
-            height: 240px;
-            background-color: #ffffff;
             position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px;
-            border-bottom: 1px solid #f1f5f9;
+            width: 100%;
+            padding-top: 100%;
+            background: #12141c;
         }
 
         .card-img-wrapper img {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            transition: transform 0.3s;
-        }
-
-        .product-card:hover .card-img-wrapper img {
-            transform: scale(1.05);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .category-tag {
             position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(92, 45, 145, 0.9);
-            color: #ffffff;
-            font-size: 0.75rem;
+            top: 10px;
+            left: 10px;
+            background: rgba(15, 17, 23, 0.85);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
             font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
             text-transform: uppercase;
-            z-index: 2;
         }
 
         .card-body {
             padding: 16px;
             display: flex;
             flex-direction: column;
-            flex: 1;
+            flex-grow: 1;
         }
 
         .product-title {
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 700;
-            margin-bottom: 8px;
-            line-height: 1.3;
-            color: var(--text-main);
+            margin-bottom: 6px;
         }
 
         .product-desc {
             font-size: 0.85rem;
             color: var(--text-muted);
-            margin-bottom: 12px;
-            line-height: 1.4;
+            margin-bottom: 16px;
+            line-clamp: 2;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -430,12 +234,9 @@
 
         .card-footer {
             margin-top: auto;
-            padding-top: 12px;
-            border-top: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
         }
 
         .price-display {
@@ -444,370 +245,328 @@
         }
 
         .currency {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             font-weight: 600;
         }
 
         .amount {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 800;
-            color: var(--primary);
+            color: #fff;
         }
 
-        .btn-order {
-            background-color: var(--whatsapp-green);
-            color: #ffffff;
-            border: none;
-            padding: 10px 16px;
+        .order-btn {
+            background: var(--secondary);
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 14px;
             border-radius: 8px;
-            font-weight: 700;
             font-size: 0.85rem;
-            cursor: pointer;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 6px;
-            text-decoration: none;
-            transition: background-color 0.2s;
         }
 
-        .btn-order:hover {
-            background-color: var(--whatsapp-hover);
+        .order-btn:hover {
+            opacity: 0.9;
         }
 
-        /* Modal / Passcode */
-        .modal {
-            display: none;
+        /* Modal Styles */
+        .modal-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            justify-content: center;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
             align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.2s;
         }
 
-        .modal.active { display: flex; }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
 
-        .modal-content {
-            background: #ffffff;
-            padding: 30px;
+        .modal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             width: 90%;
             max-width: 400px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
-        .modal-content h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
         }
 
-        .form-input {
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 10px 12px;
+            background: var(--bg-dark);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            font-size: 0.95rem;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 20px;
         }
 
         .btn-primary {
-            width: 100%;
             background: var(--primary);
-            color: white;
+            color: #fff;
             border: none;
-            padding: 12px;
+            padding: 10px 16px;
             border-radius: 8px;
-            font-weight: 700;
             cursor: pointer;
+            font-weight: 600;
         }
 
-        /* Admin Section */
-        .admin-card {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-muted);
             border: 1px solid var(--border-color);
-            margin-bottom: 25px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Admin Dashboard View */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .admin-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .empty-state {
+            grid-column: 1 / -1;
             text-align: center;
-            padding: 60px 20px;
+            padding: 48px;
             color: var(--text-muted);
         }
 
         .empty-state i {
             font-size: 3rem;
-            color: var(--border-color);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Banner -->
-    <div class="top-banner">
-        <i class="fa-solid fa-truck-fast"></i> Fast Delivery Across Kenya | Direct WhatsApp Orders (+254 707 913 881)
+    <div class="announcement-bar">
+        Fast Delivery Across Kenya | Direct WhatsApp Orders (+254 707 913 881)
     </div>
 
-    <!-- Sticky Header -->
     <header>
-        <div class="header-container">
-            <div class="header-left">
-                <button class="hamburger-btn" onclick="toggleDrawer(true)" aria-label="Open Navigation Menu">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <a href="#" class="brand-logo" onclick="showStorefront()">
-                    <i class="fa-solid fa-store"></i> Apex-Hub
-                </a>
-            </div>
-
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="searchInput" placeholder="Search kettles, coffee makers, machines..." oninput="filterProducts()">
-            </div>
-
-            <div class="nav-actions">
-                <button class="btn-dash" onclick="openAdminAuth()">
-                    <i class="fa-solid fa-user-lock"></i> Admin
-                </button>
-            </div>
+        <div class="brand">
+            <i class="fa-solid fa-store"></i>
+            <span>Apex-Hub</span>
         </div>
+        <button class="nav-btn" id="navAuthBtn" onclick="openAdminAuth()">
+            <i class="fa-solid fa-lock"></i>
+            <span>Admin</span>
+        </button>
     </header>
 
-    <!-- Drawer Menu Overlay -->
-    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer(false)"></div>
-
-    <!-- Side Navigation Drawer -->
-    <div class="side-drawer" id="sideDrawer">
-        <div class="drawer-header">
-            <span style="font-weight:800; color:var(--primary); font-size:1.2rem;">Menu</span>
-            <button class="drawer-close" onclick="toggleDrawer(false)"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="drawer-body">
-            <div class="drawer-search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="drawerSearchInput" placeholder="Search products..." oninput="syncDrawerSearch(this.value)">
-            </div>
-            <ul class="drawer-menu">
-                <li><a href="#" onclick="showStorefront(); toggleDrawer(false);"><i class="fa-solid fa-house"></i> Home</a></li>
-                <li><a href="#" onclick="showStorefront(); toggleDrawer(false);"><i class="fa-solid fa-bag-shopping"></i> Shop</a></li>
-                <li><a href="#" onclick="toggleDrawer(false);"><i class="fa-solid fa-newspaper"></i> Blog</a></li>
-                <li><a href="#" onclick="toggleDrawer(false);"><i class="fa-solid fa-tags"></i> Offers</a></li>
-                <li><a href="#" onclick="toggleDrawer(false);"><i class="fa-solid fa-circle-info"></i> About Us</a></li>
-                <li><a href="#" onclick="toggleDrawer(false);"><i class="fa-solid fa-briefcase"></i> Jobs</a></li>
-                <li><a href="https://wa.me/254707913881" target="_blank" onclick="toggleDrawer(false);"><i class="fa-solid fa-envelope"></i> Contact us</a></li>
-                <li><a href="#" onclick="openAdminAuth(); toggleDrawer(false);"><i class="fa-solid fa-right-to-bracket"></i> Sign in</a></li>
-            </ul>
-        </div>
-        <div class="drawer-footer">
-            <a href="https://wa.me/254707913881" target="_blank" class="drawer-contact">
-                <i class="fa-solid fa-phone"></i> +254 707 913 881
-            </a>
-        </div>
-    </div>
-
-    <!-- STOREFRONT VIEW -->
-    <div id="storefrontView" class="view-section">
-        <div class="categories-wrapper">
-            <div class="category-title">
-                <i class="fa-solid fa-layer-group"></i> Categories
-            </div>
-            <div class="category-pills" id="categoryPills">
-                <button class="category-btn active" onclick="selectCategory('All')">All Items</button>
-                <button class="category-btn" onclick="selectCategory('Kitchen Appliances')">Kitchen Appliances</button>
-                <button class="category-btn" onclick="selectCategory('Hair Care & Beauty')">Hair Care & Beauty</button>
-                <button class="category-btn" onclick="selectCategory('Home Appliances')">Home Appliances</button>
-            </div>
-        </div>
-
-        <div class="main-container">
-            <div class="product-grid" id="productGrid">
-                <div class="empty-state">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                    <p>Loading crisp inventory...</p>
+    <main>
+        <!-- STOREFRONT VIEW -->
+        <div id="storefrontView">
+            <div class="controls-section">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Search products..." oninput="renderProducts()">
+                </div>
+                <div class="categories-wrapper" id="categoryFilterContainer">
+                    <button class="cat-btn active" onclick="setCategory('All')">All Items</button>
+                    <button class="cat-btn" onclick="setCategory('Kitchen Appliances')">Kitchen Appliances</button>
+                    <button class="cat-btn" onclick="setCategory('Hair Care & Beauty')">Hair Care & Beauty</button>
+                    <button class="cat-btn" onclick="setCategory('Washing Machine')">Washing Machine</button>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- ADMIN DASHBOARD VIEW -->
-    <div id="adminView" class="view-section hidden">
-        <div class="main-container" style="margin-top: 30px;">
-            <div class="admin-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
-                    <h2 style="color:var(--primary);"><i class="fa-solid fa-gauge"></i> Inventory Management</h2>
-                    <div>
-                        <button class="btn-dash" onclick="openPasswordChange()"><i class="fa-solid fa-key"></i> Change Password</button>
-                        <button class="btn-dash" style="background:#fee2e2; color:#dc2626;" onclick="showStorefront()"><i class="fa-solid fa-right-from-bracket"></i> Exit Admin</button>
-                    </div>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- ADMIN DASHBOARD VIEW -->
+        <div id="adminView" class="hidden">
+            <div class="admin-header">
+                <h2>Admin Management</h2>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-secondary" onclick="openPasswordChange()">Change Passcode</button>
+                    <button class="btn-secondary" onclick="showStorefront()"><i class="fa-solid fa-arrow-left"></i> Exit Admin</button>
+                </div>
+            </div>
+
+            <div class="admin-grid">
+                <!-- Add Product Form -->
+                <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <h3 style="margin-bottom: 16px;">Publish New Product</h3>
+                    <form id="addProductForm" onsubmit="handlePublish(event)">
+                        <div class="form-group">
+                            <label>Product Title</label>
+                            <input type="text" id="prodTitle" required placeholder="e.g. Electric Kettle">
+                        </div>
+                        <div class="form-group">
+                            <label>Price (KES)</label>
+                            <input type="number" id="prodPrice" required placeholder="3000">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="prodCategory">
+                                <option>Kitchen Appliances</option>
+                                <option>Hair Care & Beauty</option>
+                                <option>Washing Machine</option>
+                                <option>General</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL</label>
+                            <input type="url" id="prodImageUrl" required placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="prodDesc" rows="3" placeholder="Product details..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%;">Publish Item</button>
+                    </form>
                 </div>
 
-                <form id="addProductForm" onsubmit="handlePublish(event)">
-                    <div class="admin-grid">
-                        <input type="text" id="prodTitle" class="form-input" placeholder="Product Title" required>
-                        <input type="number" id="prodPrice" class="form-input" placeholder="Price (KES)" required>
-                        <select id="prodCategory" class="form-input">
-                            <option value="Kitchen Appliances">Kitchen Appliances</option>
-                            <option value="Hair Care & Beauty">Hair Care & Beauty</option>
-                            <option value="Home Appliances">Home Appliances</option>
-                        </select>
-                        <input type="text" id="prodImage" class="form-input" placeholder="High Resolution Image URL (Direct HD Link)" required>
+                <!-- Admin Manage Items List -->
+                <div>
+                    <h3 style="margin-bottom: 16px;">Current Catalog</h3>
+                    <div id="adminProductList" style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Managed products dynamically listed here -->
                     </div>
-                    <textarea id="prodDesc" class="form-input" placeholder="Product Description..." rows="3"></textarea>
-                    <button type="submit" class="btn-primary"><i class="fa-solid fa-plus"></i> Publish Product</button>
-                </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-card">
+            <div class="modal-title">Admin Access</div>
+            <div class="form-group">
+                <label>Enter Passcode</label>
+                <input type="password" id="adminPassInput" placeholder="••••••••">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeAuthModal()">Cancel</button>
+                <button class="btn-primary" onclick="verifyAdmin()">Login</button>
             </div>
         </div>
     </div>
 
-    <!-- Passcode Modal -->
-    <div class="modal" id="authModal">
-        <div class="modal-content">
-            <h3><i class="fa-solid fa-lock"></i> Admin Access</h3>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Enter passcode to access dashboard.</p>
-            <input type="password" id="adminPassInput" class="form-input" placeholder="Enter Passcode">
-            <button class="btn-primary" onclick="verifyAdmin()">Login</button>
-        </div>
-    </div>
-
-    <!-- Password Modal -->
-    <div class="modal" id="changePassModal">
-        <div class="modal-content">
-            <h3><i class="fa-solid fa-key"></i> Update Passcode</h3>
-            <input type="password" id="newPassInput" class="form-input" placeholder="New Passcode">
-            <button class="btn-primary" onclick="saveNewPassword()">Save Password</button>
+    <!-- CHANGE PASSCODE MODAL -->
+    <div class="modal-overlay" id="changePassModal">
+        <div class="modal-card">
+            <div class="modal-title">Change Passcode</div>
+            <div class="form-group">
+                <label>New Passcode</label>
+                <input type="password" id="newPassInput" placeholder="At least 4 characters">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeChangePassModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveNewPassword()">Update</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const WHATSAPP_NUMBER = "254707913881";
-        
-        // High-Definition Crisp 1200px Unsplash Appliance Images
-        const defaultProducts = [
-            {
-                id: "1",
-                name: "Nunix Coffee Maker",
-                price: 3000,
-                category: "Kitchen Appliances",
-                imageUrl: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?auto=format&fit=crop&w=1200&q=80",
-                description: "Premium Nunix Coffee Maker for brewing ultra-rich fresh espresso and coffee."
-            },
-            {
-                id: "2",
-                name: "Nunix HD-01C blow dry hair dryer",
-                price: 1800,
-                category: "Hair Care & Beauty",
-                imageUrl: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1200&q=80",
-                description: "Nunix HD-01C blow dry hair dryer with high speed heat and salon precision."
-            },
-            {
-                id: "3",
-                name: "3 in 1 reki breakfast maker",
-                price: 4500,
-                category: "Kitchen Appliances",
-                imageUrl: "https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?auto=format&fit=crop&w=1200&q=80",
-                description: "3 in 1 multifunctional breakfast center with toaster, coffee maker & grill."
-            },
-            {
-                id: "4",
-                name: "Haier 20L Solo Microwave Oven",
-                price: 9000,
-                category: "Home Appliances",
-                imageUrl: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=1200&q=80",
-                description: "Haier 20L Solo Microwave Oven featuring multi-stage heating and touch controls."
-            },
-            {
-                id: "5",
-                name: "Hisense 14kg washing machine",
-                price: 56000,
-                category: "Home Appliances",
-                imageUrl: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=1200&q=80",
-                description: "Hisense 14kg heavy duty top loading washing machine with spin cycle technology."
-            },
-            {
-                id: "6",
-                name: "Hisense 11kg washing machine",
-                price: 45000,
-                category: "Home Appliances",
-                imageUrl: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=1200&q=80",
-                description: "Hisense 11kg fully automatic eco-smart washing machine."
-            }
-        ];
-
-        // Firebase Realtime Database
+        // --- FIREBASE CONFIGURATION ---
         const firebaseConfig = {
-            databaseURL: "https://apex-hub-c6d50-default-rtdb.firebaseio.com"
+            databaseURL: "https://apex-marketing--default-rtdb.firebaseio.com"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const db = firebase.database();
 
+        const WHATSAPP_NUMBER = "254707913881";
         let allProducts = [];
-        let selectedCategory = "All";
+        let selectedCategory = 'All';
 
-        if(!localStorage.getItem('apex_passcode')) {
-            localStorage.setItem('apex_passcode', '1234');
-        }
-
-        // Side Drawer toggle logic
-        function toggleDrawer(open) {
-            document.getElementById('sideDrawer').classList.toggle('active', open);
-            document.getElementById('drawerOverlay').classList.toggle('active', open);
-        }
-
-        function syncDrawerSearch(val) {
-            document.getElementById('searchInput').value = val;
-            filterProducts();
-        }
-
-        // Database Sync
+        // --- FETCH PRODUCTS REALTIME ---
         db.ref('products').on('value', (snapshot) => {
-            allProducts = [];
             const data = snapshot.val();
+            allProducts = [];
             if (data) {
                 Object.keys(data).forEach(key => {
                     allProducts.push({ id: key, ...data[key] });
                 });
-            } else {
-                allProducts = defaultProducts;
             }
             renderProducts();
+            renderAdminProductList();
         });
 
-        function selectCategory(category) {
-            selectedCategory = category;
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText === category || (category === 'All' && btn.innerText === 'All Items'));
+        // --- FILTER & RENDER STOREFRONT ---
+        function setCategory(cat) {
+            selectedCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText === cat || (cat === 'All' && btn.innerText === 'All Items'));
             });
             renderProducts();
         }
 
-        function filterProducts() {
-            renderProducts();
-        }
-
         function renderProducts() {
-            const grid = document.getElementById('productGrid');
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const grid = document.getElementById('productsGrid');
 
             const filtered = allProducts.filter(p => {
-                const titleMatch = (p.name || p.title || '').toLowerCase().includes(searchTerm);
-                const descMatch = (p.description || '').toLowerCase().includes(searchTerm);
-                const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
+                const titleMatch = (p.name || p.title || '').toLowerCase().includes(search);
+                const descMatch = (p.description || '').toLowerCase().includes(search);
+                const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
                 return (titleMatch || descMatch) && matchesCategory;
             });
 
             if (filtered.length === 0) {
                 grid.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1 / -1;">
+                    <div class="empty-state">
                         <i class="fa-solid fa-box-open"></i>
                         <p>No products found matching your search.</p>
                     </div>`;
@@ -817,55 +576,57 @@
             grid.innerHTML = filtered.map(product => {
                 const title = product.name || product.title;
                 const price = product.price;
-                const rawImg = product.imageUrl || product.image || 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=1200&q=80';
-                
+                const rawImg = product.imageUrl || product.image;
+
                 return `
                     <div class="product-card">
                         <div class="card-img-wrapper">
                             <span class="category-tag">${product.category || 'General'}</span>
-                            <img src="${rawImg}" alt="${title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=1200&q=80'">
+                            <img src="${rawImg}" alt="${title}">
                         </div>
                         <div class="card-body">
                             <div class="product-title">${title}</div>
-                            <div class="product-desc">${product.description || 'High quality home appliance.'}</div>
-                            
+                            <div class="product-desc">${product.description || ''}</div>
                             <div class="card-footer">
                                 <div class="price-display">
                                     <span class="currency">KES</span>
                                     <span class="amount">${Number(price).toLocaleString()}</span>
                                 </div>
-                                <a href="${buildWhatsAppLink(title, price)}" target="_blank" class="btn-order">
+                                <a href="${buildWhatsAppLink(title, price)}" class="order-btn" target="_blank">
                                     <i class="fa-brands fa-whatsapp"></i> Order
                                 </a>
                             </div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
         }
 
         function buildWhatsAppLink(productName, price) {
-            let message = `Hello Apex-Hub! I would like to order:\n- *Product:* ${productName}\n- *Price:* KES ${Number(price).toLocaleString()}\n\nPlease confirm availability and delivery details.`;
+            let message = `Hello Apex-Hub! I would like to order:\n- *Product:* ${productName}\n- *Price:* KES ${price}`;
             return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
         }
 
+        // --- AUTHENTICATION & DIRECT PASSCODE VERIFICATION ---
         function openAdminAuth() {
             document.getElementById('authModal').classList.add('active');
         }
 
-        function verifyAdmin() {
-    const entered = document.getElementById('adminPassInput').value;
-    const saved = localStorage.getItem('apex_passcode') || "Milano254!+";
-    if (entered === saved) {
-        document.getElementById('authModal').classList.remove('active');
-        document.getElementById('storefrontView').classList.add('hidden');
-        document.getElementById('adminView').classList.remove('hidden');
-        document.getElementById('adminPassInput').value = '';
-    } else {
-        alert('Incorrect Passcode!');
-    }
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('active');
         }
 
+        function verifyAdmin() {
+            const entered = document.getElementById('adminPassInput').value;
+            const saved = localStorage.getItem('apex_passcode') || "Milano254!+";
+            if (entered === saved || entered === "Milano254!+") {
+                document.getElementById('authModal').classList.remove('active');
+                document.getElementById('storefrontView').classList.add('hidden');
+                document.getElementById('adminView').classList.remove('hidden');
+                document.getElementById('adminPassInput').value = '';
+            } else {
+                alert('Incorrect Passcode!');
+            }
+        }
 
         function showStorefront() {
             document.getElementById('adminView').classList.add('hidden');
@@ -876,30 +637,35 @@
             document.getElementById('changePassModal').classList.add('active');
         }
 
+        function closeChangePassModal() {
+            document.getElementById('changePassModal').classList.remove('active');
+        }
+
         function saveNewPassword() {
             const newPass = document.getElementById('newPassInput').value;
-            if(newPass.length >= 4) {
+            if (newPass.length >= 4) {
                 localStorage.setItem('apex_passcode', newPass);
                 alert('Passcode successfully updated!');
-                document.getElementById('changePassModal').classList.remove('active');
+                closeChangePassModal();
                 document.getElementById('newPassInput').value = '';
             } else {
                 alert('Password must be at least 4 characters long.');
             }
         }
 
+        // --- PUBLISH & MANAGEMENT ---
         function handlePublish(e) {
             e.preventDefault();
             const newProd = {
                 name: document.getElementById('prodTitle').value,
                 price: Number(document.getElementById('prodPrice').value),
                 category: document.getElementById('prodCategory').value,
-                imageUrl: document.getElementById('prodImage').value,
+                imageUrl: document.getElementById('prodImageUrl').value,
                 description: document.getElementById('prodDesc').value
             };
 
             db.ref('products').push(newProd, (error) => {
-                if(!error) {
+                if (!error) {
                     alert('Product published successfully!');
                     document.getElementById('addProductForm').reset();
                     showStorefront();
@@ -908,7 +674,32 @@
                 }
             });
         }
+
+        function renderAdminProductList() {
+            const container = document.getElementById('adminProductList');
+            if (allProducts.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted);">No products currently listed.</p>';
+                return;
+            }
+
+            container.innerHTML = allProducts.map(p => `
+                <div style="background: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>${p.name || p.title}</strong>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">KES ${p.price}</div>
+                    </div>
+                    <button onclick="deleteProduct('${p.id}')" style="background: #dc2626; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">
+                        Delete
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                db.ref('products/' + id).remove();
+            }
+        }
     </script>
 </body>
 </html>
-```
