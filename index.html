@@ -10,6 +10,7 @@
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://gstatic.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col antialiased">
 
@@ -72,7 +73,7 @@
         </form>
       </div>
 
-      <!-- STEP 2: FULL PUBLISHING DASHBOARD (Unlocked via Milano254!+) -->
+      <!-- STEP 2: FULL PUBLISHING DASHBOARD -->
       <div id="dashboardPublishForm" class="hidden">
         <form onsubmit="handlePublishProduct(event)" class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -130,4 +131,56 @@
     <!-- STOREFRONT SECTION -->
     <section>
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-black text-gray-900 tracking-tight">LIVE
+        <h2 class="text-xl font-black text-gray-900 tracking-tight">LIVE STOREFRONT</h2>
+      </div>
+      <div id="productsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- Products will load here dynamically -->
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Paste your Firebase Config setup (firebase.initializeApp) exactly here:
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_://firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_://firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_://appspot.com",
+      messagingSenderId: "YOUR_ID",
+      appId: "YOUR_APP_ID"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const auth = firebase.auth();
+
+    function unlockDashboard(event) {
+      event.preventDefault();
+      const adminEmail = "YOUR_REGISTERED_EMAIL@EXAMPLE.COM"; // 👈 Type your Firebase account email here
+      const enteredPasscode = document.getElementById("dashboardPasscode").value;
+
+      auth.signInWithEmailAndPassword(adminEmail, enteredPasscode)
+        .then((userCredential) => {
+          alert("Dashboard Unlocked!");
+          document.getElementById("dashboardAuthForm").classList.add("hidden");
+          document.getElementById("dashboardPublishForm").classList.remove("hidden");
+          document.getElementById("statusBadge").textContent = "Unlocked";
+          document.getElementById("statusBadge").className = "text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full border border-green-200";
+        })
+        .catch((error) => {
+          alert("Invalid Passcode. Access Denied.");
+          console.error(error.message);
+        });
+    }
+
+    function lockDashboard() {
+      auth.signOut().then(() => {
+        document.getElementById("dashboardAuthForm").classList.remove("hidden");
+        document.getElementById("dashboardPublishForm").classList.add("hidden");
+        document.getElementById("statusBadge").textContent = "Locked";
+        document.getElementById("statusBadge").className = "text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full border border-gray-200";
+        document.getElementById("dashboardPasscode").value = "";
+      });
+    }
+
