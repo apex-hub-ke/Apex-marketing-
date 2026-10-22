@@ -6,7 +6,7 @@
   <title>Apex-Hub Kenya | Electronics & Home Appliances</title>
   
   <!-- Standalone Tailwind CSS Bundle -->
-  <script src="https://jsdelivr.net"></script>
+  <script src="https://tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cloudflare.com">
   
   <!-- Firebase SDKs -->
@@ -142,7 +142,6 @@
   </main>
 
   <script>
-    // Config values completely synced with your specific project credentials
     const firebaseConfig = {
       apiKey: "AIzaSyAHX1af6NlsfsPP9BYWHNPb7b0Y_hLAsM0",
       authDomain: "://firebaseapp.com",
@@ -159,10 +158,7 @@
 
     function unlockDashboard(event) {
       event.preventDefault();
-      
-      // ⚠️ ASSIGNMENT OPTION: Put your exact Firebase user email between these quotes
-      const adminEmail = "your-registered-email@example.com"; 
-      
+      const adminEmail = "timothymatheka03@gmail.com"; 
       const enteredPasscode = document.getElementById("dashboardPasscode").value;
 
       auth.signInWithEmailAndPassword(adminEmail, enteredPasscode)
@@ -184,4 +180,9 @@
         document.getElementById("dashboardAuthForm").classList.remove("hidden");
         document.getElementById("dashboardPublishForm").classList.add("hidden");
         document.getElementById("statusBadge").textContent = "Locked";
-￼Enter
+        document.getElementById("statusBadge").className = "text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1 rounded-full border border-gray-200";
+        document.getElementById("dashboardPasscode").value = "";
+      });
+    }
+
+    function scrollToDashboard() {
