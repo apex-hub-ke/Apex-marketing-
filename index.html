@@ -238,8 +238,15 @@
 
       let keys = Object.keys(rawProducts || {});
       
-      // Filter out invalid/empty items automatically
-      keys = keys.filter(id => rawProducts[id] && rawProducts[id].title && rawProducts[id].price);
+      // Strict filter: Eliminate anything corrupt, undefined strings, or NaN prices
+      keys = keys.filter(id => {
+        const p = rawProducts[id];
+        if (!p) return false;
+        const title = String(p.title || '').trim().toLowerCase();
+        const price = Number(p.price);
+        if (!p.title || title === '' || title === 'undefined' || title === 'null' || isNaN(price) || price <= 0) return false;
+        return true;
+      });
 
       if (keys.length === 0) {
         grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-400">No products found. Click Admin Dashboard to publish one!</div>';
@@ -330,4 +337,3 @@
   </script>
 </body>
 </html>
-￼Enter
