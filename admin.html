@@ -1,729 +1,495 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex-Hub Kenya | Premier Store & Admin</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f5f3ff',
-                            100: '#ede9fe',
-                            500: '#8b5cf6',
-                            600: '#7c3aed',
-                            700: '#6d28d9',
-                            900: '#4c1d95',
-                        },
-                        accent: {
-                            500: '#d946ef',
-                            600: '#c026d3'
-                        },
-                        dark: {
-                            bg: '#0f172a',
-                            card: '#1e293b',
-                            border: '#334155',
-                            input: '#0f172a'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Google Fonts & Font Awesome -->
+    <title>Apex-Hub Kenya | Premier Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
+        :root {
+            --primary: #6b21a8;
+            --primary-hover: #581c87;
+            --bg: #f8fafc;
+            --text: #0f172a;
+            --border: #e2e8f0;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
         }
-        ::-webkit-scrollbar {
-            width: 8px;
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
         }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
+
+        header {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+
+        .admin-btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
         }
-        .hide-scrollbar::-webkit-scrollbar {
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f1f5f9;
+        }
+
+        .product-card-body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .buy-btn {
+            margin-top: auto;
+            background: #25d366;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        /* Modal Styles */
+        .modal {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
         }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+
+        .modal-content {
+            background: #fff;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .ai-box {
+            background: #f3e8ff;
+            border: 1px solid #d8b4fe;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .ai-btn {
+            background: #9333ea;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .inventory-list {
+            margin-top: 2rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+
+        .inventory-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-edit { background: var(--primary); color: #fff; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; cursor: pointer; }
+        .btn-delete { background: #ef4444; color: #fff; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
-<body class="min-h-screen antialiased selection:bg-brand-500 selection:text-white pb-20">
+<body>
 
-    <!-- Toast Notification Container -->
-    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
-
-    <!-- MAIN NAVBAR -->
-    <header class="sticky top-0 z-30 bg-dark-bg/80 backdrop-blur-md border-b border-dark-border">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
-            <!-- Brand Logo -->
-            <div class="flex items-center gap-3 cursor-pointer" onclick="filterByCategory('ALL')">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-purple-600 to-accent-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-brand-500/25">
-                    AH
-                </div>
-                <div>
-                    <h1 class="font-extrabold text-lg text-white tracking-tight leading-none flex items-center gap-1.5">
-                        Apex-Hub <span class="text-accent-500">KE</span>
-                    </h1>
-                    <p class="text-[11px] text-slate-400 font-medium">Quality Storefront Kenya</p>
-                </div>
-            </div>
-
-            <!-- Search Bar (Desktop) -->
-            <div class="hidden md:flex flex-1 max-w-md relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-                <input type="text" id="desktopSearchInput" oninput="handleSearch(this.value)" placeholder="Search products, cookers, TVs..." 
-                    class="w-full bg-dark-card border border-dark-border rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all">
-            </div>
-
-            <!-- Header Actions -->
-            <div class="flex items-center gap-2.5">
-                <button onclick="openAdminModal()" class="flex items-center gap-2 bg-gradient-to-r from-brand-600/20 to-accent-500/20 hover:from-brand-600/30 hover:to-accent-500/30 text-brand-300 border border-brand-500/30 font-semibold px-3.5 py-2 rounded-xl text-xs sm:text-sm transition-all shadow-sm">
-                    <i class="fa-solid fa-lock-open text-accent-500"></i>
-                    <span>Admin Portal</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Search Bar (Mobile View) -->
-        <div class="px-4 pb-3 md:hidden">
-            <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-                <input type="text" id="mobileSearchInput" oninput="handleSearch(this.value)" placeholder="Search products..." 
-                    class="w-full bg-dark-card border border-dark-border rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-all">
-            </div>
-        </div>
+    <header>
+        <div class="logo">APEX-HUB KENYA</div>
+        <button class="admin-btn" onclick="openAdminModal()">⚙️ Admin Panel</button>
     </header>
 
-    <!-- HERO / BANNER SECTION -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-6">
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-900/60 via-dark-card to-dark-card border border-dark-border p-6 sm:p-10 shadow-2xl">
-            <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-accent-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="relative z-10 max-w-2xl">
-                <span class="inline-flex items-center gap-1.5 bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-wider">
-                    <i class="fa-solid fa-shield-check text-emerald-400"></i> Verified Local Deals
-                </span>
-                <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight leading-tight">
-                    Premium Home & Kitchen Appliances Delivered Across Kenya
-                </h2>
-                <p class="text-slate-400 text-sm sm:text-base mt-2 leading-relaxed">
-                    Browse authentic items at competitive prices. Order directly on WhatsApp for fast dispatch and pay on delivery options.
-                </p>
+    <div class="container">
+        <div id="productGrid" class="grid">Loading store inventory...</div>
+    </div>
+
+    <!-- Admin Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚙️ Admin Store Management</h3>
+                <button class="close-btn" onclick="closeAdminModal()">&times;</button>
             </div>
-        </div>
-    </section>
 
-    <!-- STOREFRONT CONTENT -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 space-y-6">
-
-        <!-- CATEGORY FILTERS -->
-        <div class="flex items-center gap-2.5 overflow-x-auto hide-scrollbar pb-2">
-            <button onclick="filterByCategory('ALL')" id="cat-ALL" class="cat-pill active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all border bg-brand-600 text-white border-brand-500 shadow-md shadow-brand-600/20">
-                All Products
-            </button>
-            <button onclick="filterByCategory('KITCHEN APPLIANCES')" id="cat-KITCHEN APPLIANCES" class="cat-pill px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all border bg-dark-card text-slate-400 border-dark-border hover:border-slate-500">
-                🍳 Kitchen Appliances
-            </button>
-            <button onclick="filterByCategory('HOME ELECTRONICS')" id="cat-HOME ELECTRONICS" class="cat-pill px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all border bg-dark-card text-slate-400 border-dark-border hover:border-slate-500">
-                📺 Home Electronics
-            </button>
-            <button onclick="filterByCategory('LIVING & FURNITURE')" id="cat-LIVING & FURNITURE" class="cat-pill px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all border bg-dark-card text-slate-400 border-dark-border hover:border-slate-500">
-                🛋️ Living & Furniture
-            </button>
-            <button onclick="filterByCategory('PERSONAL CARE')" id="cat-PERSONAL CARE" class="cat-pill px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all border bg-dark-card text-slate-400 border-dark-border hover:border-slate-500">
-                💈 Personal Care
-            </button>
-        </div>
-
-        <!-- STORE STATS / COUNTER BAR -->
-        <div class="flex items-center justify-between border-b border-dark-border pb-3">
-            <div class="text-xs sm:text-sm text-slate-400 font-medium">
-                Showing <span id="displayedCount" class="text-white font-bold">0</span> verified products
+            <div id="authBox">
+                <p style="margin-bottom: 1rem;">Enter Passcode to Access Store Management:</p>
+                <input type="password" id="passcode" placeholder="Enter Admin Passcode">
+                <button class="submit-btn" onclick="authenticate()">Unlock Admin</button>
             </div>
-            <button onclick="fetchStoreProducts()" class="text-xs text-brand-400 hover:text-brand-300 flex items-center gap-1">
-                <i id="storeRefreshIcon" class="fa-solid fa-rotate-right"></i> Refresh Catalog
-            </button>
-        </div>
 
-        <!-- PRODUCT GRID -->
-        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            <!-- Loading Spinner -->
-            <div class="col-span-full py-20 text-center">
-                <i class="fa-solid fa-circle-notch fa-spin text-3xl text-brand-500 mb-3"></i>
-                <p class="text-slate-400 text-sm">Loading live store inventory from Firebase...</p>
-            </div>
-        </div>
+            <div id="adminControls" style="display: none;">
+                
+                <!-- AI Assistant Quick Generator -->
+                <div class="ai-box">
+                    <label style="font-weight: 700; color: #6b21a8;">⚡ AI QUICK GENERATOR</label>
+                    <input type="text" id="aiInput" placeholder="e.g., 6L Roch pressure cooker 5000">
+                    <button class="ai-btn" onclick="runAIGenerator()">Enhance with AI</button>
+                </div>
 
-    </main>
+                <input type="hidden" id="editKey">
+                
+                <label>PRODUCT TITLE</label>
+                <input type="text" id="title" placeholder="e.g. ROCH 3.0L Electric Food Processor">
 
-    <!-- ADMIN MODAL PORTAL -->
-    <div id="adminModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-        <div class="bg-dark-card border border-dark-border rounded-2xl w-full max-w-4xl shadow-2xl overflow-hidden my-auto relative max-h-[92vh] flex flex-col">
-            
-            <!-- Modal Header -->
-            <div class="p-4 sm:p-5 border-b border-dark-border flex items-center justify-between bg-dark-bg/60">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-500 flex items-center justify-center text-white font-black text-sm">
-                        AH
+                <div class="form-row">
+                    <div>
+                        <label>CATEGORY</label>
+                        <select id="category">
+                            <option value="KITCHEN APPLIANCES">KITCHEN APPLIANCES</option>
+                            <option value="HOME ELECTRONICS">HOME ELECTRONICS</option>
+                            <option value="LIVING & FURNITURE">LIVING & FURNITURE</option>
+                        </select>
                     </div>
                     <div>
-                        <h3 class="font-bold text-white text-base leading-tight">Apex-Hub Admin Portal</h3>
-                        <p class="text-xs text-slate-400">Inventory & Store Management</p>
-                    </div>
-                </div>
-                <button onclick="closeAdminModal()" class="w-8 h-8 rounded-lg bg-dark-bg border border-dark-border text-slate-400 hover:text-white flex items-center justify-center transition-all">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="p-4 sm:p-6 overflow-y-auto flex-1 space-y-6">
-
-                <!-- PASSCODE LOCK SCREEN (IF NOT AUTHENTICATED) -->
-                <div id="adminLockScreen" class="py-12 px-4 text-center max-w-md mx-auto space-y-5">
-                    <div class="w-16 h-16 rounded-2xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center mx-auto text-2xl shadow-lg">
-                        <i class="fa-solid fa-lock"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-bold text-white">Admin Authentication Required</h4>
-                        <p class="text-xs text-slate-400 mt-1">Enter your passcode to unlock inventory management controls</p>
-                    </div>
-                    <div class="space-y-3">
-                        <input type="password" id="adminPasscode" placeholder="Enter Admin Passcode"
-                            class="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-3 text-white placeholder-slate-500 text-center tracking-widest font-mono text-base focus:outline-none focus:border-brand-500"
-                            onkeyup="if(event.key==='Enter') unlockAdmin()">
-                        <button onclick="unlockAdmin()" class="w-full bg-gradient-to-r from-brand-600 to-accent-500 hover:from-brand-500 hover:to-accent-500 text-white font-bold py-3 px-6 rounded-xl text-sm shadow-lg shadow-brand-600/25 transition-all">
-                            Unlock Dashboard
-                        </button>
+                        <label>PRICE (KES)</label>
+                        <input type="number" id="price" placeholder="3500">
                     </div>
                 </div>
 
-                <!-- ADMIN CONTENT (UNLOCKED) -->
-                <div id="adminUnlockedContent" class="hidden space-y-6">
+                <label>IMAGE LINK (DIRECT FILE URL)</label>
+                <input type="text" id="imageUrl" placeholder="https://i.ibb.co/..." onchange="convertImageUrl()">
 
-                    <!-- AI QUICK GENERATOR -->
-                    <div class="bg-brand-900/20 border border-brand-500/30 rounded-xl p-4">
-                        <div class="flex items-center gap-2 mb-2 text-brand-300 font-semibold text-xs uppercase tracking-wider">
-                            <i class="fa-solid fa-bolt text-yellow-400"></i> AI Quick Generator
-                        </div>
-                        <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="text" id="aiInput" placeholder="e.g., 6L Roch pressure cooker 5000 kitchen appliances" 
-                                class="flex-1 bg-dark-bg border border-dark-border rounded-lg px-3.5 py-2 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500">
-                            <button type="button" onclick="runAIEnhancer()" class="bg-brand-600 hover:bg-brand-500 text-white font-medium px-4 py-2 rounded-lg text-xs sm:text-sm transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-md">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Enhance Fields
-                            </button>
-                        </div>
-                        <p class="text-[11px] text-slate-400 mt-2">Type quick notes and tap Enhance to auto-fill title, price, category, and bullet specs!</p>
-                    </div>
+                <label>DESCRIPTION</label>
+                <textarea id="description" rows="3" placeholder="Product features, power specifications..."></textarea>
 
-                    <!-- PRODUCT EDIT / ADD FORM -->
-                    <form id="productForm" onsubmit="event.preventDefault(); saveProduct();" class="space-y-4 bg-dark-bg/40 p-4 border border-dark-border rounded-xl">
-                        <div class="flex items-center justify-between pb-3 border-b border-dark-border">
-                            <h4 id="formHeading" class="font-bold text-sm text-white flex items-center gap-2">
-                                <i class="fa-solid fa-square-plus text-brand-400"></i> Post New Store Product
-                            </h4>
-                            <button type="button" id="resetBtn" onclick="resetAdminForm()" class="hidden text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded border border-slate-700">
-                                <i class="fa-solid fa-xmark mr-1"></i> Cancel Editing
-                            </button>
-                        </div>
+                <button class="submit-btn" id="saveBtn" onclick="saveProduct()">Save Product to Database</button>
 
-                        <input type="hidden" id="editKey">
-
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Product Title / Name</label>
-                            <input type="text" id="formTitle" required placeholder="e.g., ROCH 6.0L Electric Pressure Cooker"
-                                class="w-full bg-dark-bg border border-dark-border rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500">
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Price (KES)</label>
-                                <input type="number" id="formPrice" required placeholder="5000"
-                                    class="w-full bg-dark-bg border border-dark-border rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500">
-                            </div>
-
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Category</label>
-                                <select id="formCategory" class="w-full bg-dark-bg border border-dark-border rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500">
-                                    <option value="KITCHEN APPLIANCES">KITCHEN APPLIANCES</option>
-                                    <option value="HOME ELECTRONICS">HOME ELECTRONICS</option>
-                                    <option value="LIVING & FURNITURE">LIVING & FURNITURE</option>
-                                    <option value="PERSONAL CARE">PERSONAL CARE</option>
-                                    <option value="GENERAL STORE">GENERAL STORE</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Image URL (Direct or ImgBB)</label>
-                                <span class="text-[10px] text-accent-500 bg-accent-500/10 px-2 py-0.5 rounded font-mono">ibb.co auto-converter</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <input type="text" id="formImage" required placeholder="https://ibb.co/..." onblur="sanitizeImgBBUrl()"
-                                    class="flex-1 bg-dark-bg border border-dark-border rounded-lg px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500">
-                                <button type="button" onclick="sanitizeImgBBUrl()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-lg border border-slate-700">
-                                    Sanitize
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Bullet Specs / Description</label>
-                            <textarea id="formDescription" rows="3" placeholder="• High capacity cooking chamber&#10;• Energy efficient specs&#10;• Full manufacturer warranty included"
-                                class="w-full bg-dark-bg border border-dark-border rounded-lg p-3 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500"></textarea>
-                        </div>
-
-                        <button type="submit" id="saveBtn" class="w-full bg-gradient-to-r from-brand-600 to-accent-500 hover:from-brand-500 hover:to-accent-500 text-white font-bold py-3 px-6 rounded-xl text-sm shadow-lg shadow-brand-600/25 transition-all">
-                            <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Publish Product to Live Store
-                        </button>
-                    </form>
-
-                    <!-- LIVE INVENTORY LIST INSIDE ADMIN -->
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between border-b border-dark-border pb-2">
-                            <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                                <i class="fa-solid fa-boxes-stacked text-accent-500"></i> Live Store Inventory
-                            </h4>
-                            <span id="adminItemBadge" class="bg-brand-500/20 text-brand-300 text-xs font-bold px-2.5 py-1 rounded-md border border-brand-500/30">
-                                0 Items
-                            </span>
-                        </div>
-
-                        <div id="adminInventoryList" class="space-y-2 max-h-72 overflow-y-auto pr-1">
-                            <!-- Items populated dynamically -->
-                        </div>
-                    </div>
-
+                <div class="inventory-list">
+                    <h4>EXISTING STORE INVENTORY (<span id="itemCount">0</span> Items)</h4>
+                    <div id="adminInventory">Loading...</div>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT APP LOGIC -->
     <script>
-        // CONFIGURATION & STATE
         const DB_URL = "https://apex-hub-c6d50-default-rtdb.firebaseio.com/products";
-        const ADMIN_PASSCODE = "Milano254!+";
-        const WHATSAPP_PHONE = "254700000000"; // Replace with your WhatsApp number
+        const PASSCODE = "Milano254!+";
 
-        let globalProducts = {};
-        let activeCategory = "ALL";
-        let searchQuery = "";
-        let isAdminAuthenticated = false;
-
-        // INITIAL LOAD
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchStoreProducts();
-        });
-
-        // TOAST SYSTEM
-        function showToast(message, type = "info") {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            
-            let bgClass = "bg-slate-800 border-slate-700 text-white";
-            let icon = "fa-circle-info text-blue-400";
-            
-            if (type === "success") {
-                bgClass = "bg-emerald-950/90 border-emerald-500/40 text-emerald-100";
-                icon = "fa-circle-check text-emerald-400";
-            } else if (type === "error") {
-                bgClass = "bg-rose-950/90 border-rose-500/40 text-rose-100";
-                icon = "fa-circle-xmark text-rose-400";
-            }
-
-            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border shadow-xl text-xs sm:text-sm transition-all duration-300 ${bgClass}`;
-            toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i> <span class="flex-1 font-medium">${message}</span>`;
-            
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.add('opacity-0', '-translate-y-2');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        // FETCH PRODUCTS FROM FIREBASE
-        async function fetchStoreProducts() {
-            const grid = document.getElementById('productGrid');
-            const refreshIcon = document.getElementById('storeRefreshIcon');
-            if (refreshIcon) refreshIcon.classList.add('fa-spin');
-
-            try {
-                const response = await fetch(`${DB_URL}.json`);
-                const data = await response.json();
-
-                if (data && typeof data === 'object') {
-                    globalProducts = data;
-                } else {
-                    globalProducts = {};
-                }
-
-                renderStorefront();
-                if (isAdminAuthenticated) renderAdminInventory();
-
-            } catch (error) {
-                console.error("Firebase load error:", error);
-                showToast("Network error connecting to store database", "error");
-            } finally {
-                if (refreshIcon) refreshIcon.classList.remove('fa-spin');
-            }
-        }
-
-        // RECONCILE DATA FIELDS
-        function resolveProductData(item) {
-            const title = item.title || item.name || item.productName || "Apex-Hub Quality Item";
-            const price = item.price ? Number(item.price) : 0;
-            const category = item.category || "GENERAL STORE";
-            
-            let image = item.image || item.imageLink || item.imageUrl || "https://placehold.co/400x400/1e293b/94a3b8?text=Apex-Hub+Item";
-            
-            // Auto-convert ImgBB page link to direct file link
-            if (image.includes('ibb.co/') && !image.includes('i.ibb.co/')) {
-                const parts = image.split('ibb.co/')[1].split('/');
-                if (parts[0]) {
-                    image = `https://i.ibb.co/${parts[0]}/image.jpg`;
-                }
-            }
-
-            const description = item.description || "• Guaranteed high quality product\n• Fast delivery available across Kenya\n• Pay on delivery options available";
-
-            return { title, price, category, image, description };
-        }
-
-        // RENDER STOREFRONT GRID
-        function renderStorefront() {
-            const grid = document.getElementById('productGrid');
-            const countDisplay = document.getElementById('displayedCount');
-
-            const keys = Object.keys(globalProducts);
-            
-            const filteredKeys = keys.filter(key => {
-                const item = resolveProductData(globalProducts[key]);
-                const matchesCategory = (activeCategory === "ALL") || (item.category.toUpperCase() === activeCategory);
-                const matchesSearch = item.title.toLowerCase().includes(searchQuery) || item.category.toLowerCase().includes(searchQuery);
-                return matchesCategory && matchesSearch;
-            });
-
-            countDisplay.innerText = filteredKeys.length;
-
-            if (filteredKeys.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full py-16 text-center border border-dashed border-dark-border rounded-2xl">
-                        <i class="fa-solid fa-box-open text-4xl text-slate-600 mb-3"></i>
-                        <h3 class="text-white font-bold text-base">No products found</h3>
-                        <p class="text-slate-400 text-xs mt-1">Try switching categories or clearing search keywords.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '';
-            filteredKeys.forEach(key => {
-                const item = resolveProductData(globalProducts[key]);
-                const formattedPrice = item.price.toLocaleString();
-                
-                // Format description bullets
-                const bullets = item.description.split('\n').filter(b => b.trim().length > 0).slice(0, 3);
-                let descHtml = bullets.map(b => `<li class="truncate">${b}</li>`).join('');
-
-                // WhatsApp order URL
-                const waText = encodeURIComponent(`Hello Apex-Hub Kenya! I would like to order:\n\n*Product:* ${item.title}\n*Price:* KES ${formattedPrice}\n*Category:* ${item.category}`);
-                const waUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${waText}`;
-
-                html += `
-                    <div class="bg-dark-card border border-dark-border rounded-2xl overflow-hidden hover:border-brand-500/50 transition-all duration-300 flex flex-col group shadow-lg">
-                        <!-- Image Container -->
-                        <div class="relative aspect-square bg-slate-900/50 overflow-hidden">
-                            <img src="${item.image}" alt="${item.title}" 
-                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                onerror="this.onerror=null; this.src='https://placehold.co/400x400/1e293b/94a3b8?text=Image+Unavailable';">
-                            <span class="absolute top-3 left-3 bg-slate-950/80 backdrop-blur-md text-brand-300 text-[10px] font-extrabold px-2.5 py-1 rounded-lg border border-brand-500/30 uppercase tracking-wider">
-                                ${item.category}
-                            </span>
-                        </div>
-
-                        <!-- Card Body -->
-                        <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-                            <div>
-                                <h3 class="font-bold text-white text-sm line-clamp-2 leading-snug group-hover:text-brand-300 transition-colors">
-                                    ${item.title}
-                                </h3>
-                                <ul class="text-[11px] text-slate-400 mt-2 space-y-0.5">
-                                    ${descHtml}
-                                </ul>
-                            </div>
-
-                            <div class="pt-2 border-t border-dark-border/60 flex items-center justify-between gap-2">
-                                <div>
-                                    <span class="text-[10px] text-slate-400 uppercase font-semibold tracking-wider block">Price</span>
-                                    <span class="text-base font-extrabold text-emerald-400">KES ${formattedPrice}</span>
-                                </div>
-                                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" 
-                                    class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5 active:scale-95">
-                                    <i class="fa-brands fa-whatsapp text-sm"></i> Order
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            grid.innerHTML = html;
-        }
-
-        // CATEGORY & SEARCH HANDLERS
-        function filterByCategory(cat) {
-            activeCategory = cat;
-            document.querySelectorAll('.cat-pill').forEach(btn => {
-                btn.className = "cat-pill px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all border bg-dark-card text-slate-400 border-dark-border hover:border-slate-500";
-            });
-            const activeBtn = document.getElementById(`cat-${cat}`);
-            if (activeBtn) {
-                activeBtn.className = "cat-pill active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all border bg-brand-600 text-white border-brand-500 shadow-md shadow-brand-600/20";
-            }
-            renderStorefront();
-        }
-
-        function handleSearch(val) {
-            searchQuery = val.toLowerCase().trim();
-            // Sync inputs
-            document.getElementById('desktopSearchInput').value = val;
-            document.getElementById('mobileSearchInput').value = val;
-            renderStorefront();
-        }
-
-        // ADMIN MODAL CONTROLS
         function openAdminModal() {
-            document.getElementById('adminModal').classList.remove('hidden');
+            document.getElementById('adminModal').style.display = 'flex';
         }
 
         function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
+            document.getElementById('adminModal').style.display = 'none';
         }
 
-        function unlockAdmin() {
-            const pass = document.getElementById('adminPasscode').value;
-            if (pass === ADMIN_PASSCODE) {
-                isAdminAuthenticated = true;
-                document.getElementById('adminLockScreen').classList.add('hidden');
-                document.getElementById('adminUnlockedContent').classList.remove('hidden');
-                showToast("Admin access unlocked!", "success");
-                renderAdminInventory();
+        function authenticate() {
+            if (document.getElementById('passcode').value === PASSCODE) {
+                document.getElementById('authBox').style.display = 'none';
+                document.getElementById('adminControls').style.display = 'block';
+                loadAdminInventory();
             } else {
-                showToast("Invalid Passcode!", "error");
+                alert("Incorrect Passcode!");
             }
         }
 
-        // IMGBB URL SANITIZER
-        function sanitizeImgBBUrl() {
-            const input = document.getElementById('formImage');
-            let val = input.value.trim();
-            if (!val) return;
+        function runAIGenerator() {
+            const raw = document.getElementById('aiInput').value.trim();
+            if (!raw) {
+                alert("Please enter a brief product description first!");
+                return;
+            }
+
+            let words = raw.split(' ');
+            let price = words.find(w => !isNaN(w) && Number(w) > 99) || '';
+            let titleWords = words.filter(w => w !== price);
+            let title = titleWords.join(' ');
+
+            document.getElementById('title').value = title.charAt(0).toUpperCase() + title.slice(1);
+            if (price) document.getElementById('price').value = price;
+
+            let lower = raw.toLowerCase();
+            let cat = 'KITCHEN APPLIANCES';
+            if (lower.includes('tv') || lower.includes('woofer') || lower.includes('phone') || lower.includes('machine') || lower.includes('cooker')) {
+                cat = lower.includes('cooker') ? 'KITCHEN APPLIANCES' : 'HOME ELECTRONICS';
+            } else if (lower.includes('table') || lower.includes('sofa') || lower.includes('chair') || lower.includes('bed')) {
+                cat = 'LIVING & FURNITURE';
+            }
+            document.getElementById('category').value = cat;
+            document.getElementById('description').value = `• High performance ${title}\n• Built with premium quality materials\n• Energy efficient and reliable`;
+            
+            alert("AI Assistant successfully structured your listing!");
+        }
+
+        function convertImageUrl() {
+            let urlInput = document.getElementById('imageUrl');
+            let val = urlInput.value.trim();
 
             if (val.includes('ibb.co/') && !val.includes('i.ibb.co/')) {
-                const parts = val.split('ibb.co/')[1].split('/');
-                if (parts[0]) {
-                    input.value = `https://i.ibb.co/${parts[0]}/image.jpg`;
-                    showToast("Converted ImgBB page link to direct display image URL!", "success");
+                let code = val.split('ibb.co/')[1].split('/')[0];
+                urlInput.value = `https://i.ibb.co/${code}/image.jpg`;
+            }
+        }
+
+        function sanitizeImage(url) {
+            if (!url) return 'https://via.placeholder.com/300';
+            if (url.includes('ibb.co/') && !url.includes('i.ibb.co/')) {
+                let code = url.split('ibb.co/')[1].split('/')[0];
+                return `https://i.ibb.co/${code}/image.jpg`;
+            }
+            return url;
+        }
+
+        async function loadStorefront() {
+            const grid = document.getElementById('productGrid');
+            try {
+                const res = await fetch(`${DB_URL}.json`);
+                const data = await res.json();
+                if (!data) { grid.innerHTML = '<p>No products available.</p>'; return; }
+
+                let html = '';
+                for (let key in data) {
+                    const item = data[key];
+                    const name = item.name || item.title || item.productName || 'Unnamed Product';
+                    const price = item.price || 0;
+                    const img = sanitizeImage(item.image || item.imageLink || item.imageUrl);
+
+                    html += `
+                        <div class="product-card">
+                            <img src="${img}" onerror="this.src='https://via.placeholder.com/300'">
+                            <div class="product-card-body">
+                                <div class="product-title">${name}</div>
+                                <div class="product-price">KES ${Number(price).toLocaleString()}</div>
+                                <a class="buy-btn" href="https://wa.me/254700000000?text=I%20want%20to%20buy%20${encodeURIComponent(name)}" target="_blank">Order on WhatsApp</a>
+                            </div>
+                        </div>
+                    `;
                 }
+                grid.innerHTML = html;
+            } catch (e) {
+                grid.innerHTML = '<p>Error loading items.</p>';
             }
         }
 
-        // AI QUICK ENHANCER
-        function runAIEnhancer() {
-            const prompt = document.getElementById('aiInput').value.trim();
-            if (!prompt) {
-                showToast("Enter a quick product note first!", "error");
-                return;
+        async function loadAdminInventory() {
+            const list = document.getElementById('adminInventory');
+            const count = document.getElementById('itemCount');
+
+            try {
+                const res = await fetch(`${DB_URL}.json`);
+                const data = await res.json();
+                if (!data) { list.innerHTML = '<p>No products in database.</p>'; count.innerText = '0'; return; }
+
+                const keys = Object.keys(data);
+                count.innerText = keys.length;
+
+                let html = '';
+                keys.forEach(key => {
+                    const item = data[key];
+                    const name = item.name || item.title || item.productName || 'Unnamed Product';
+                    const price = item.price || 0;
+
+                    html += `
+                        <div class="inventory-item">
+                            <div>
+                                <strong>${name}</strong><br>
+                                <small>KES ${Number(price).toLocaleString()}</small>
+                            </div>
+                            <div class="action-btns">
+                                <button class="btn-edit" onclick="editProduct('${key}', ${JSON.stringify(item).replace(/"/g, '&quot;')})">Edit</button>
+                                <button class="btn-delete" onclick="deleteProduct('${key}')">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+            } catch (e) {
+                list.innerHTML = '<p>Error loading inventory.</p>';
             }
-
-            let priceMatch = prompt.match(/\b\d{3,6}\b/);
-            let price = priceMatch ? priceMatch[0] : "";
-
-            let cleanTitle = prompt;
-            if (price) cleanTitle = cleanTitle.replace(price, "").trim();
-
-            cleanTitle = cleanTitle.replace(/\b\w/g, l => l.toUpperCase());
-
-            if (!cleanTitle.toLowerCase().includes("electric") && cleanTitle.toLowerCase().includes("cooker")) {
-                cleanTitle = "ROCH " + cleanTitle + " (Heavy Duty)";
-            }
-
-            document.getElementById('formTitle').value = cleanTitle || "Apex-Hub Quality Item";
-            if (price) document.getElementById('formPrice').value = price;
-
-            const lower = prompt.toLowerCase();
-            const catSelect = document.getElementById('formCategory');
-            if (lower.includes("cooker") || lower.includes("fridge") || lower.includes("blender") || lower.includes("kitchen")) {
-                catSelect.value = "KITCHEN APPLIANCES";
-            } else if (lower.includes("tv") || lower.includes("hisense") || lower.includes("washing") || lower.includes("speaker")) {
-                catSelect.value = "HOME ELECTRONICS";
-            } else if (lower.includes("table") || lower.includes("chair") || lower.includes("sofa")) {
-                catSelect.value = "LIVING & FURNITURE";
-            }
-
-            document.getElementById('formDescription').value = `• High performance quality standard\n• Fast delivery available across Kenya\n• Official manufacturer warranty included`;
-            showToast("Fields enhanced by AI!", "success");
         }
 
-        // SAVE / UPDATE PRODUCT
         async function saveProduct() {
-            sanitizeImgBBUrl();
-
+            convertImageUrl();
             const key = document.getElementById('editKey').value;
-            const title = document.getElementById('formTitle').value.trim();
-            const price = document.getElementById('formPrice').value.trim();
-            const category = document.getElementById('formCategory').value;
-            const image = document.getElementById('formImage').value.trim();
-            const description = document.getElementById('formDescription').value.trim();
+            const title = document.getElementById('title').value;
+            const price = document.getElementById('price').value;
+            const category = document.getElementById('category').value;
+            const image = document.getElementById('imageUrl').value;
+            const description = document.getElementById('description').value;
 
             if (!title || !price || !image) {
-                showToast("Fill in Title, Price and Image URL", "error");
+                alert("Please complete Title, Price, and Image URL.");
                 return;
             }
 
-            // Save under both field variants to reconcile data schemas
-            const payload = {
-                name: title,
-                title: title,
-                price: Number(price),
-                category: category,
-                image: image,
-                imageLink: image,
-                imageUrl: image,
-                description: description,
-                updatedAt: new Date().toISOString()
-            };
-
+            const payload = { name: title, title: title, price: Number(price), category, image, imageLink: image, description };
             const method = key ? 'PUT' : 'POST';
             const url = key ? `${DB_URL}/${key}.json` : `${DB_URL}.json`;
 
-            const btn = document.getElementById('saveBtn');
-            const orig = btn.innerHTML;
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Saving...`;
-            btn.disabled = true;
-
-            try {
-                await fetch(url, {
-                    method: method,
-                    body: JSON.stringify(payload),
-                    headers: { 'Content-Type': 'application/json' }
-                });
-
-                showToast(key ? "Product updated successfully!" : "Product published to store!", "success");
-                resetAdminForm();
-                await fetchStoreProducts();
-            } catch (err) {
-                showToast("Failed to save to Firebase", "error");
-            } finally {
-                btn.innerHTML = orig;
-                btn.disabled = false;
-            }
-        }
-
-        // RENDER ADMIN INVENTORY LIST
-        function renderAdminInventory() {
-            const list = document.getElementById('adminInventoryList');
-            const badge = document.getElementById('adminItemBadge');
-
-            const keys = Object.keys(globalProducts);
-            badge.innerText = `${keys.length} Items`;
-
-            if (keys.length === 0) {
-                list.innerHTML = `<p class="text-xs text-slate-500 py-4 text-center">No store items in database.</p>`;
-                return;
-            }
-
-            let html = '';
-            keys.forEach(key => {
-                const item = resolveProductData(globalProducts[key]);
-                html += `
-                    <div class="flex items-center justify-between p-2.5 bg-dark-bg border border-dark-border rounded-xl text-xs gap-3">
-                        <div class="flex items-center gap-2.5 min-w-0">
-                            <img src="${item.image}" class="w-10 h-10 rounded-lg object-cover bg-slate-900 border border-dark-border flex-shrink-0"
-                                onerror="this.onerror=null; this.src='https://placehold.co/100x100/1e293b/94a3b8?text=Error';">
-                            <div class="min-w-0">
-                                <h5 class="font-bold text-white truncate">${item.title}</h5>
-                                <p class="text-[10px] text-slate-400">KES ${item.price.toLocaleString()} • <span class="text-brand-300">${item.category}</span></p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-1.5 flex-shrink-0">
-                            <button onclick="editProduct('${key}')" class="p-1.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-300 border border-brand-500/20 rounded-lg" title="Edit">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button onclick="deleteProduct('${key}')" class="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-lg" title="Delete">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
+            await fetch(url, {
+                method: method,
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'application/json' }
             });
 
-            list.innerHTML = html;
+            resetForm();
+            loadAdminInventory();
+            loadStorefront();
+            alert("Saved successfully!");
         }
 
-        // EDIT PRODUCT
-        function editProduct(key) {
-            const item = resolveProductData(globalProducts[key]);
+        function editProduct(key, item) {
             document.getElementById('editKey').value = key;
-            document.getElementById('formTitle').value = item.title;
-            document.getElementById('formPrice').value = item.price;
-            document.getElementById('formCategory').value = item.category;
-            document.getElementById('formImage').value = item.image;
-            document.getElementById('formDescription').value = item.description;
-
-            document.getElementById('formHeading').innerHTML = `<i class="fa-solid fa-pen-to-square text-accent-500"></i> Edit Product Item`;
-            document.getElementById('saveBtn').innerHTML = `<i class="fa-solid fa-rotate mr-1.5"></i> Update Product`;
-            document.getElementById('resetBtn').classList.remove('hidden');
-
-            showToast("Loaded product details into editor", "info");
+            document.getElementById('title').value = item.name || item.title || item.productName || '';
+            document.getElementById('price').value = item.price || '';
+            document.getElementById('category').value = item.category || 'KITCHEN APPLIANCES';
+            document.getElementById('imageUrl').value = item.image || item.imageLink || item.imageUrl || '';
+            document.getElementById('description').value = item.description || '';
+            document.getElementById('saveBtn').innerText = 'Update Product';
         }
 
-        // DELETE PRODUCT
         async function deleteProduct(key) {
-            const item = resolveProductData(globalProducts[key]);
-            if (!confirm(`Delete "${item.title}" from store?`)) return;
-
-            try {
+            if (confirm("Are you sure you want to delete this product?")) {
                 await fetch(`${DB_URL}/${key}.json`, { method: 'DELETE' });
-                showToast("Product deleted", "success");
-                await fetchStoreProducts();
-            } catch (err) {
-                showToast("Failed to delete product", "error");
+                loadAdminInventory();
+                loadStorefront();
             }
         }
 
-        // RESET ADMIN FORM
-        function resetAdminForm() {
+        function resetForm() {
             document.getElementById('editKey').value = '';
-            document.getElementById('productForm').reset();
             document.getElementById('aiInput').value = '';
-            document.getElementById('formHeading').innerHTML = `<i class="fa-solid fa-square-plus text-brand-400"></i> Post New Store Product`;
-            document.getElementById('saveBtn').innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Publish Product to Live Store`;
-            document.getElementById('resetBtn').classList.add('hidden');
+            document.getElementById('title').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('imageUrl').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('saveBtn').innerText = 'Save Product to Database';
         }
+
+        loadStorefront();
     </script>
 </body>
 </html>
-```
