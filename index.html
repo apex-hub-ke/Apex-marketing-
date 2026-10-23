@@ -1,752 +1,495 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex-Hub Kenya | Premium Storefront</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    /* Custom Scrollbar Utilities */
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex-Hub Kenya | Premier Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6b21a8;
+            --primary-hover: #581c87;
+            --bg: #f8fafc;
+            --text: #0f172a;
+            --border: #e2e8f0;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        header {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .admin-btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f1f5f9;
+        }
+
+        .product-card-body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .buy-btn {
+            margin-top: auto;
+            background: #25d366;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .ai-box {
+            background: #f3e8ff;
+            border: 1px solid #d8b4fe;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .ai-btn {
+            background: #9333ea;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .inventory-list {
+            margin-top: 2rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+
+        .inventory-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-edit { background: var(--primary); color: #fff; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; cursor: pointer; }
+        .btn-delete { background: #ef4444; color: #fff; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; cursor: pointer; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+<body>
 
-  <!-- HEADER -->
-  <header class="bg-white shadow-sm sticky top-0 z-40">
-    <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <div class="bg-purple-900 text-white w-9 h-9 rounded-xl flex items-center justify-center font-black text-xl shadow-md">A</div>
-        <h1 class="text-xl font-black tracking-wider text-purple-900 uppercase">Apex<span class="text-gray-900">-Hub</span></h1>
-      </div>
-      <button onclick="toggleSideNav()" class="p-2 text-purple-900 hover:text-purple-700 text-xl font-bold focus:outline-none transition" aria-label="Open Menu">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-    </div>
-  </header>
+    <header>
+        <div class="logo">APEX-HUB KENYA</div>
+        <button class="admin-btn" onclick="openAdminModal()">⚙️ Admin Panel</button>
+    </header>
 
-  <!-- SIDE NAVIGATION OVERLAY & DRAWER -->
-  <div id="navOverlay" onclick="toggleSideNav()" class="fixed inset-0 bg-black/50 z-50 hidden opacity-0 transition-opacity duration-300"></div>
-
-  <aside id="sideNav" class="fixed top-0 right-0 w-72 h-full bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
-    <div class="p-4 border-b flex justify-between items-center bg-purple-900 text-white">
-      <div class="flex items-center gap-2">
-        <i class="fa-solid fa-store"></i>
-        <h2 class="font-bold text-lg">Menu Navigation</h2>
-      </div>
-      <button onclick="toggleSideNav()" class="text-white hover:text-gray-200 text-xl font-bold p-1 focus:outline-none">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+    <div class="container">
+        <div id="productGrid" class="grid">Loading store inventory...</div>
     </div>
 
-    <div class="p-4 space-y-4 flex-1 overflow-y-auto">
-      <!-- Admin Button -->
-      <button onclick="toggleSideNav(); openAdminAuth();" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-between shadow-sm transition">
-        <span class="flex items-center gap-2">
-          <i class="fa-solid fa-user-shield"></i>
-          <span>Admin Dashboard</span>
-        </span>
-        <i class="fa-solid fa-chevron-right text-xs"></i>
-      </button>
-
-      <!-- WhatsApp Direct Contact -->
-      <a href="https://wa.me/254700000000" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-between shadow-sm transition">
-        <span class="flex items-center gap-2">
-          <i class="fa-brands fa-whatsapp text-base"></i>
-          <span>WhatsApp Support</span>
-        </span>
-        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-      </a>
-
-      <!-- Quick Categories in Menu -->
-      <div class="pt-4 border-t border-gray-100 space-y-2">
-        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block px-1">Categories</span>
-        <div id="sideNavCategories" class="space-y-1">
-          <!-- Dynamically populated -->
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- MAIN STOREFRONT CONTAINER -->
-  <main class="max-w-md mx-auto px-4 py-4 flex-grow w-full space-y-4">
-
-    <!-- SEARCH BAR -->
-    <div class="relative">
-      <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-purple-600 text-base">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </span>
-      <input type="text" id="searchInput" oninput="renderProducts()" placeholder="Search products, models, capacities..." class="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-sm outline-none focus:border-purple-600 transition">
-    </div>
-
-    <!-- CATEGORY FILTER BUTTONS -->
-    <div id="filterBar" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-      <button onclick="setCategoryFilter('ALL')" class="cat-btn bg-purple-900 text-white font-bold px-4 py-2 rounded-xl text-xs shrink-0 shadow-sm transition">All Products</button>
-    </div>
-
-    <!-- PRODUCT GRID CONTAINER -->
-    <div id="productGrid" class="space-y-4">
-      <div class="text-center py-12 text-gray-400 text-sm flex flex-col items-center gap-2">
-        <i class="fa-solid fa-spinner fa-spin text-2xl text-purple-700"></i>
-        <span>Loading products from database...</span>
-      </div>
-    </div>
-  </main>
-
-  <!-- ADMIN AUTH MODAL -->
-  <div id="adminAuthModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 w-full max-w-xs shadow-2xl space-y-4">
-      <div class="text-center space-y-1">
-        <div class="w-12 h-12 bg-purple-100 text-purple-900 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">
-          <i class="fa-solid fa-lock"></i>
-        </div>
-        <h3 class="font-extrabold text-lg text-gray-900">Admin Login</h3>
-        <p class="text-xs text-gray-500">Enter passcode to manage store inventory</p>
-      </div>
-      <input type="password" id="adminPasscode" placeholder="Enter Passcode" class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-purple-600 text-center tracking-widest font-bold">
-      <div class="flex gap-2">
-        <button onclick="closeAdminAuth()" class="w-1/2 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-xl text-xs">Cancel</button>
-        <button onclick="verifyAdminPasscode()" class="w-1/2 py-2.5 bg-purple-900 text-white font-bold rounded-xl text-xs shadow-sm">Login</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ADMIN DASHBOARD MODAL -->
-  <div id="adminDashboardModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-5 w-full max-w-md shadow-2xl space-y-4 my-auto max-h-[90vh] flex flex-col">
-      <div class="flex justify-between items-center border-b pb-3 shrink-0">
-        <h3 class="font-black text-base text-purple-900 flex items-center gap-2">
-          <i class="fa-solid fa-sliders"></i>
-          <span>Admin Store Management</span>
-        </h3>
-        <button onclick="closeAdminDashboard()" class="text-gray-400 hover:text-gray-600 text-lg font-bold">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <div class="overflow-y-auto pr-1 flex-1 space-y-6">
-        <!-- Product Form -->
-        <form id="productForm" onsubmit="saveProduct(event)" class="space-y-3">
-          <div class="flex justify-between items-center bg-purple-50 p-2.5 rounded-2xl border border-purple-100">
-            <span id="formModeTitle" class="text-xs font-bold text-purple-900 uppercase">Add New Product</span>
-            <button type="button" onclick="resetForm()" class="text-[10px] font-bold bg-white text-gray-600 px-2.5 py-1 rounded-lg border border-gray-200">Reset Form</button>
-          </div>
-
-          <input type="hidden" id="formProductId" value="">
-          
-          <div>
-            <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Product Title</label>
-            <input type="text" id="formTitle" required placeholder="e.g. ROCH 3.0L Electric Food Processor" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-purple-600">
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Category</label>
-              <input type="text" id="formCategory" required placeholder="KITCHEN APPLIANCES" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-purple-600 uppercase">
+    <!-- Admin Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚙️ Admin Store Management</h3>
+                <button class="close-btn" onclick="closeAdminModal()">&times;</button>
             </div>
-            <div>
-              <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Price (KES)</label>
-              <input type="number" id="formPrice" required placeholder="3500" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-purple-600">
+
+            <div id="authBox">
+                <p style="margin-bottom: 1rem;">Enter Passcode to Access Store Management:</p>
+                <input type="password" id="passcode" placeholder="Enter Admin Passcode">
+                <button class="submit-btn" onclick="authenticate()">Unlock Admin</button>
             </div>
-          </div>
 
-          <div>
-            <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Image Link (Direct File URL)</label>
-            <input type="text" id="formImageUrl" placeholder="https://i.ibb.co/Q377GwsB/1000006495.jpg" class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-purple-600">
-            <span class="text-[10px] text-gray-400 block mt-1">Use direct image links starting with <code class="bg-gray-100 px-1 py-0.5 rounded">https://i.ibb.co/...</code></span>
-          </div>
+            <div id="adminControls" style="display: none;">
+                
+                <!-- AI Assistant Quick Generator -->
+                <div class="ai-box">
+                    <label style="font-weight: 700; color: #6b21a8;">⚡ AI QUICK GENERATOR</label>
+                    <input type="text" id="aiInput" placeholder="e.g., 6L Roch pressure cooker 5000">
+                    <button class="ai-btn" onclick="runAIGenerator()">Enhance with AI</button>
+                </div>
 
-          <div>
-            <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Description</label>
-            <textarea id="formDescription" rows="3" placeholder="Product features, power specifications..." class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs outline-none focus:border-purple-600"></textarea>
-          </div>
+                <input type="hidden" id="editKey">
+                
+                <label>PRODUCT TITLE</label>
+                <input type="text" id="title" placeholder="e.g. ROCH 3.0L Electric Food Processor">
 
-          <!-- Variants Section -->
-          <div class="p-3 bg-purple-50 rounded-2xl space-y-2 border border-purple-100">
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-purple-900">Product Variants / Sizes</span>
-              <button type="button" onclick="addVariantRow()" class="text-[10px] font-bold bg-purple-900 text-white px-2.5 py-1 rounded-lg">+ Add Variant</button>
+                <div class="form-row">
+                    <div>
+                        <label>CATEGORY</label>
+                        <select id="category">
+                            <option value="KITCHEN APPLIANCES">KITCHEN APPLIANCES</option>
+                            <option value="HOME ELECTRONICS">HOME ELECTRONICS</option>
+                            <option value="LIVING & FURNITURE">LIVING & FURNITURE</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>PRICE (KES)</label>
+                        <input type="number" id="price" placeholder="3500">
+                    </div>
+                </div>
+
+                <label>IMAGE LINK (DIRECT FILE URL)</label>
+                <input type="text" id="imageUrl" placeholder="https://i.ibb.co/..." onchange="convertImageUrl()">
+
+                <label>DESCRIPTION</label>
+                <textarea id="description" rows="3" placeholder="Product features, power specifications..."></textarea>
+
+                <button class="submit-btn" id="saveBtn" onclick="saveProduct()">Save Product to Database</button>
+
+                <div class="inventory-list">
+                    <h4>EXISTING STORE INVENTORY (<span id="itemCount">0</span> Items)</h4>
+                    <div id="adminInventory">Loading...</div>
+                </div>
             </div>
-            <div id="variantsContainer" class="space-y-2">
-              <!-- Dynamic Variant Rows -->
-            </div>
-          </div>
-
-          <div class="pt-2">
-            <button type="submit" id="submitProductBtn" class="w-full py-3 bg-purple-900 hover:bg-purple-800 text-white font-bold rounded-xl text-xs shadow-sm transition">Save Product to Database</button>
-          </div>
-        </form>
-
-        <!-- Existing Products Inventory Section -->
-        <div class="pt-4 border-t border-gray-200 space-y-3">
-          <div class="flex justify-between items-center">
-            <h4 class="font-bold text-xs uppercase text-gray-500 tracking-wider">Existing Store Inventory</h4>
-            <span id="inventoryCount" class="text-[10px] bg-purple-100 text-purple-900 font-bold px-2 py-0.5 rounded-full">0 Items</span>
-          </div>
-          <div id="adminInventoryList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-            <!-- Dynamic inventory list for edit/delete -->
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <!-- REVIEWS MODAL -->
-  <div id="reviewsModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-5 w-full max-w-sm shadow-2xl space-y-4 my-auto max-h-[85vh] flex flex-col">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 id="reviewProductTitle" class="font-bold text-sm text-gray-900 truncate">Customer Reviews</h3>
-        <button onclick="closeReviewsModal()" class="text-gray-400 hover:text-gray-600 text-lg font-bold">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
+    <script>
+        const DB_URL = "https://apex-hub-c6d50-default-rtdb.firebaseio.com/products";
+        const PASSCODE = "Milano254!+";
 
-      <div id="reviewsList" class="space-y-3 overflow-y-auto flex-1 pr-1 text-xs">
-        <!-- Dynamic list of reviews -->
-      </div>
+        function openAdminModal() {
+            document.getElementById('adminModal').style.display = 'flex';
+        }
 
-      <!-- Add Review Form -->
-      <form id="reviewForm" onsubmit="submitReview(event)" class="border-t pt-3 space-y-2">
-        <input type="hidden" id="reviewProductKey" value="">
-        <div class="grid grid-cols-2 gap-2">
-          <input type="text" id="reviewerName" required placeholder="Your Name" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs outline-none">
-          <select id="reviewerRating" class="px-3 py-1.5 border border-gray-200 rounded-xl text-xs outline-none bg-white">
-            <option value="5">★★★★★ (5/5)</option>
-            <option value="4">★★★★☆ (4/5)</option>
-            <option value="3">★★★☆☆ (3/5)</option>
-            <option value="2">★★☆☆☆ (2/5)</option>
-            <option value="1">★☆☆☆☆ (1/5)</option>
-          </select>
-        </div>
-        <textarea id="reviewerComment" required rows="2" placeholder="Write your honest feedback..." class="w-full px-3 py-1.5 border border-gray-200 rounded-xl text-xs outline-none"></textarea>
-        <button type="submit" class="w-full py-2 bg-purple-900 text-white font-bold rounded-xl text-xs shadow-sm">Post Review</button>
-      </form>
-    </div>
-  </div>
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
 
-  <!-- JAVASCRIPT LOGIC -->
-  <script>
-    const DB_ROOT = "https://apex-hub-c6d50-default-rtdb.firebaseio.com/";
-    const ADMIN_PASSCODE = "Milano254!+";
-    const DEFAULT_FALLBACK_IMG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='100%25' height='100%25' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='45%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='900' font-size='22' fill='%23581c87'%3EAPEX-HUB KENYA%3C/text%3E%3Ctext x='50%25' y='58%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-weight='600' font-size='12' fill='%239ca3af'%3EProduct Image Preview%3C/text%3E%3C/svg%3E";
-
-    const INITIAL_SAMPLE_PRODUCTS = {
-      "prod_001": {
-        name: "ROCH 3.0L Electric Food Processor & Meat/Vegetable Chopper (Model: RFP-7030-D)",
-        category: "KITCHEN APPLIANCES",
-        price: 2800,
-        imageUrl: "https://i.ibb.co/Q377GwsB/1000006495.jpg",
-        description: "3.0 Litres stainless steel bowl with 250W energy-efficient motor and 4 sharp stainless steel blades for quick mincing and chopping.",
-        variants: [
-          { name: "3.0 Litres Standard", price: 2800 }
-        ],
-        reviews: [
-          { reviewer: "Mercy K.", rating: 5, comment: "Chops meat and vegetables in seconds. Very durable bowl." }
-        ]
-      },
-      "prod_002": {
-        name: "Reki Digital Pressure Cooker",
-        category: "KITCHEN APPLIANCES",
-        price: 6800,
-        imageUrl: "",
-        description: "6L high pressure multi-cooker with preset menus for tender meat and quick beans.",
-        variants: [
-          { name: "6 Litres", price: 6800 },
-          { name: "8 Litres", price: 8200 }
-        ]
-      },
-      "prod_003": {
-        name: "Modern Marble Top Nesting Coffee Tables (2-Piece Set)",
-        category: "HOME APPLIANCES",
-        price: 5500,
-        imageUrl: "",
-        description: "Elegant 2-piece round nesting coffee table set featuring a stylish grey marble-finish top paired with a sturdy metallic frame.",
-        variants: [
-          { name: "Grey Marble Top", price: 5500 }
-        ]
-      }
-    };
-
-    let rawProducts = {};
-    let activeCategory = 'ALL';
-
-    function toggleSideNav() {
-      const nav = document.getElementById('sideNav');
-      const overlay = document.getElementById('navOverlay');
-      const isHidden = nav.classList.contains('translate-x-full');
-      if (isHidden) {
-        overlay.classList.remove('hidden');
-        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-        nav.classList.remove('translate-x-full');
-      } else {
-        overlay.classList.add('opacity-0');
-        nav.classList.add('translate-x-full');
-        setTimeout(() => overlay.classList.add('hidden'), 300);
-      }
-    }
-
-    // Sanitizer function to detect and purge corrupt SVG/HTML database strings
-    function formatImageUrl(url) {
-      if (!url || typeof url !== 'string') return DEFAULT_FALLBACK_IMG;
-      let cleanUrl = url.trim();
-
-      // Check for raw HTML/SVG text corrupting the database string
-      if (
-        cleanUrl.includes('class=') || 
-        cleanUrl.includes('onerror=') || 
-        cleanUrl.includes('<svg') || 
-        cleanUrl.includes('dominant-baseline') ||
-        cleanUrl.includes('text-anchor') ||
-        cleanUrl.length > 300
-      ) {
-        return DEFAULT_FALLBACK_IMG;
-      }
-
-      // Check for non-direct ImgBB webpage link
-      if (cleanUrl.includes('ibb.co/') && !cleanUrl.includes('i.ibb.co/')) {
-        return DEFAULT_FALLBACK_IMG;
-      }
-
-      return cleanUrl;
-    }
-
-    async function fetchProducts() {
-      try {
-        const baseUrl = DB_ROOT.endsWith('/') ? DB_ROOT.slice(0, -1) : DB_ROOT;
-        const res = await fetch(`${baseUrl}/.json?cacheBust=${Date.now()}`);
-        const data = await res.json();
-        
-        rawProducts = {};
-        if (data && typeof data === 'object') {
-          Object.keys(data).forEach(key => {
-            if (key === 'products' && typeof data.products === 'object') {
-              Object.keys(data.products || {}).forEach(pKey => {
-                rawProducts[`products/${pKey}`] = data.products[pKey];
-              });
-            } else if (typeof data[key] === 'object' && data[key] !== null) {
-              if (data[key].name || data[key].title) {
-                rawProducts[key] = data[key];
-              }
+        function authenticate() {
+            if (document.getElementById('passcode').value === PASSCODE) {
+                document.getElementById('authBox').style.display = 'none';
+                document.getElementById('adminControls').style.display = 'block';
+                loadAdminInventory();
+            } else {
+                alert("Incorrect Passcode!");
             }
-          });
         }
 
-        if (Object.keys(rawProducts).length === 0) {
-          rawProducts = INITIAL_SAMPLE_PRODUCTS;
+        function runAIGenerator() {
+            const raw = document.getElementById('aiInput').value.trim();
+            if (!raw) {
+                alert("Please enter a brief product description first!");
+                return;
+            }
+
+            let words = raw.split(' ');
+            let price = words.find(w => !isNaN(w) && Number(w) > 99) || '';
+            let titleWords = words.filter(w => w !== price);
+            let title = titleWords.join(' ');
+
+            document.getElementById('title').value = title.charAt(0).toUpperCase() + title.slice(1);
+            if (price) document.getElementById('price').value = price;
+
+            let lower = raw.toLowerCase();
+            let cat = 'KITCHEN APPLIANCES';
+            if (lower.includes('tv') || lower.includes('woofer') || lower.includes('phone') || lower.includes('machine') || lower.includes('cooker')) {
+                cat = lower.includes('cooker') ? 'KITCHEN APPLIANCES' : 'HOME ELECTRONICS';
+            } else if (lower.includes('table') || lower.includes('sofa') || lower.includes('chair') || lower.includes('bed')) {
+                cat = 'LIVING & FURNITURE';
+            }
+            document.getElementById('category').value = cat;
+            document.getElementById('description').value = `• High performance ${title}\n• Built with premium quality materials\n• Energy efficient and reliable`;
+            
+            alert("AI Assistant successfully structured your listing!");
         }
 
-        renderCategoryFilters();
-        renderProducts();
-        renderAdminInventoryList();
-      } catch (err) {
-        rawProducts = INITIAL_SAMPLE_PRODUCTS;
-        renderCategoryFilters();
-        renderProducts();
-        renderAdminInventoryList();
-      }
-    }
+        function convertImageUrl() {
+            let urlInput = document.getElementById('imageUrl');
+            let val = urlInput.value.trim();
 
-    function renderCategoryFilters() {
-      const categories = new Set(['ALL']);
-      Object.values(rawProducts).forEach(p => {
-        if (p && p.category) {
-          categories.add(p.category.toUpperCase().trim());
-        }
-      });
-
-      const filterBar = document.getElementById('filterBar');
-      const sideNavCategories = document.getElementById('sideNavCategories');
-      
-      filterBar.innerHTML = '';
-      sideNavCategories.innerHTML = '';
-
-      categories.forEach(cat => {
-        const btn = document.createElement('button');
-        const isActive = activeCategory === cat;
-        btn.className = `cat-btn ${isActive ? 'bg-purple-900 text-white font-bold' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'} px-4 py-2 rounded-xl text-xs shrink-0 shadow-sm transition`;
-        btn.innerText = cat === 'ALL' ? 'All Products' : cat;
-        btn.onclick = () => setCategoryFilter(cat);
-        filterBar.appendChild(btn);
-
-        if (cat !== 'ALL') {
-          const sideBtn = document.createElement('button');
-          sideBtn.className = "w-full text-left px-3 py-2 text-xs font-semibold text-gray-600 hover:bg-purple-50 hover:text-purple-900 rounded-lg transition flex justify-between items-center";
-          sideBtn.innerHTML = `<span>${cat}</span> <i class="fa-solid fa-chevron-right text-[10px] text-gray-300"></i>`;
-          sideBtn.onclick = () => {
-            toggleSideNav();
-            setCategoryFilter(cat);
-          };
-          sideNavCategories.appendChild(sideBtn);
-        }
-      });
-    }
-
-    function setCategoryFilter(cat) {
-      activeCategory = cat;
-      renderCategoryFilters();
-      renderProducts();
-    }
-
-    function renderProducts() {
-      const grid = document.getElementById('productGrid');
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-      grid.innerHTML = '';
-
-      const keys = Object.keys(rawProducts || {});
-      let count = 0;
-
-      keys.forEach(path => {
-        const p = rawProducts[path];
-        if (!p) return;
-
-        const title = p.name || p.title || 'Untitled Product';
-        const rawImg = p.imageUrl || p.image || '';
-        const image = formatImageUrl(rawImg);
-        const catUpper = (p.category || 'GENERAL').toUpperCase();
-        const price = p.price || 0;
-        const desc = p.description || '';
-
-        if (activeCategory !== 'ALL' && catUpper !== activeCategory) return;
-        if (searchTerm && !title.toLowerCase().includes(searchTerm) && !desc.toLowerCase().includes(searchTerm)) return;
-
-        count++;
-
-        // Guard against variant parsing errors
-        let variantsHTML = '';
-        if (p.variants && Array.isArray(p.variants) && p.variants.length > 0) {
-          variantsHTML = `<div class="flex flex-wrap gap-1.5 mt-2.5">` + 
-            p.variants.map(v => {
-              if (v && typeof v === 'object') {
-                const vName = v.name || v.title || 'Option';
-                const vPrice = v.price ? `KES ${Number(v.price).toLocaleString()}` : '';
-                return `<span class="bg-purple-50 text-purple-900 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-purple-100 flex items-center gap-1">
-                  <span>${vName}</span>
-                  ${vPrice ? `<span class="text-purple-600 font-normal">(${vPrice})</span>` : ''}
-                </span>`;
-              }
-              return '';
-            }).join('') + `</div>`;
+            if (val.includes('ibb.co/') && !val.includes('i.ibb.co/')) {
+                let code = val.split('ibb.co/')[1].split('/')[0];
+                urlInput.value = `https://i.ibb.co/${code}/image.jpg`;
+            }
         }
 
-        const reviewsArr = (p.reviews && Array.isArray(p.reviews)) ? p.reviews : [];
-        const revCount = reviewsArr.length;
-        const avgRating = revCount > 0 ? (reviewsArr.reduce((acc, r) => acc + Number(r.rating || 5), 0) / revCount).toFixed(1) : '5.0';
-
-        const card = document.createElement('div');
-        card.className = "bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden p-3.5 space-y-3";
-        card.innerHTML = `
-          <div class="relative rounded-2xl overflow-hidden bg-gray-50 h-56 flex items-center justify-center border border-gray-100">
-            <span class="absolute top-3 left-3 bg-purple-900 text-white text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-wider z-10 shadow-sm">${catUpper}</span>
-            <img src="${image}" alt="${title}" class="object-contain w-full h-full p-2" onerror="this.onerror=null; this.src='${DEFAULT_FALLBACK_IMG}';">
-          </div>
-
-          <div class="space-y-1.5">
-            <h3 class="font-bold text-gray-900 text-base leading-snug">${title}</h3>
-            <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">${desc}</p>
-            ${variantsHTML}
-          </div>
-
-          <div class="flex items-center justify-between text-xs pt-1">
-            <div class="flex items-center gap-1 text-amber-500 font-bold">
-              <i class="fa-solid fa-star"></i>
-              <span class="text-gray-900 font-extrabold">${avgRating}</span>
-              <span class="text-gray-400 font-normal">(${revCount})</span>
-            </div>
-            <button onclick="openReviewsModal('${path}')" class="text-purple-700 hover:text-purple-900 font-bold flex items-center gap-1">
-              <span>Reviews</span>
-              <i class="fa-regular fa-comment"></i>
-            </button>
-          </div>
-
-          <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-            <div>
-              <span class="text-[10px] uppercase font-extrabold text-gray-400 block leading-none">Price</span>
-              <span class="text-base font-black text-purple-900">KES ${Number(price).toLocaleString()}</span>
-            </div>
-            <a href="https://wa.me/254700000000?text=Hello%20Apex-Hub%20Kenya,%20I%20am%20interested%20in%20buying:%20${encodeURIComponent(title)}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
-              <i class="fa-brands fa-whatsapp text-sm"></i>
-              <span>Order via WhatsApp</span>
-            </a>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-
-      if (count === 0) {
-        grid.innerHTML = '<div class="text-center py-12 text-gray-400 text-sm font-medium">No matching products found.</div>';
-      }
-    }
-
-    function renderAdminInventoryList() {
-      const container = document.getElementById('adminInventoryList');
-      const countBadge = document.getElementById('inventoryCount');
-      if (!container) return;
-
-      container.innerHTML = '';
-      const keys = Object.keys(rawProducts || {});
-      countBadge.innerText = `${keys.length} Items`;
-
-      if (keys.length === 0) {
-        container.innerHTML = '<div class="text-center py-4 text-gray-400 text-xs">No items in store.</div>';
-        return;
-      }
-
-      keys.forEach(path => {
-        const p = rawProducts[path];
-        if (!p) return;
-
-        const title = p.name || p.title || 'Untitled Product';
-        const price = p.price || 0;
-
-        const row = document.createElement('div');
-        row.className = "p-2.5 bg-gray-50 rounded-xl border border-gray-200 flex justify-between items-center text-xs gap-2";
-        row.innerHTML = `
-          <div class="truncate flex-1">
-            <span class="font-bold text-gray-900 block truncate">${title}</span>
-            <span class="text-[10px] text-gray-500 font-semibold">KES ${Number(price).toLocaleString()}</span>
-          </div>
-          <div class="flex items-center gap-1 shrink-0">
-            <button onclick="editProduct('${path}')" class="bg-purple-900 hover:bg-purple-800 text-white px-2.5 py-1 rounded-lg font-bold text-[10px] shadow-sm flex items-center gap-1">
-              <i class="fa-solid fa-pen-to-square"></i> Edit
-            </button>
-            <button onclick="deleteProduct('${path}')" class="bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded-lg font-bold text-[10px] flex items-center gap-1">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-        `;
-        container.appendChild(row);
-      });
-    }
-
-    function openAdminAuth() {
-      document.getElementById('adminAuthModal').classList.remove('hidden');
-    }
-    function closeAdminAuth() {
-      document.getElementById('adminAuthModal').classList.add('hidden');
-      document.getElementById('adminPasscode').value = '';
-    }
-    function verifyAdminPasscode() {
-      const input = document.getElementById('adminPasscode').value;
-      if (input === ADMIN_PASSCODE) {
-        closeAdminAuth();
-        openAdminDashboard();
-      } else {
-        alert('Incorrect passcode!');
-      }
-    }
-
-    function openAdminDashboard() {
-      resetForm();
-      renderAdminInventoryList();
-      document.getElementById('adminDashboardModal').classList.remove('hidden');
-    }
-    function closeAdminDashboard() {
-      document.getElementById('adminDashboardModal').classList.add('hidden');
-    }
-
-    function addVariantRow(name = '', price = '') {
-      const container = document.getElementById('variantsContainer');
-      const row = document.createElement('div');
-      row.className = "flex gap-2 items-center variant-row";
-      row.innerHTML = `
-        <input type="text" placeholder="Size/Capacity (e.g. 3L)" value="${name}" class="v-name w-1/2 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs outline-none">
-        <input type="number" placeholder="Price" value="${price}" class="v-price w-1/2 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs outline-none">
-        <button type="button" onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700 px-1"><i class="fa-solid fa-trash text-xs"></i></button>
-      `;
-      container.appendChild(row);
-    }
-
-    function editProduct(path) {
-      const p = rawProducts[path];
-      if (!p) return;
-
-      document.getElementById('formModeTitle').innerText = 'Edit Existing Product';
-      document.getElementById('formProductId').value = path;
-      document.getElementById('formTitle').value = p.name || p.title || '';
-      document.getElementById('formCategory').value = (p.category || 'KITCHEN APPLIANCES').toUpperCase();
-      document.getElementById('formPrice').value = p.price || '';
-      
-      const rawImg = p.imageUrl || p.image || '';
-      document.getElementById('formImageUrl').value = formatImageUrl(rawImg) === DEFAULT_FALLBACK_IMG ? '' : rawImg;
-      document.getElementById('formDescription').value = p.description || '';
-
-      const container = document.getElementById('variantsContainer');
-      container.innerHTML = '';
-      if (p.variants && Array.isArray(p.variants)) {
-        p.variants.forEach(v => {
-          if (v && typeof v === 'object') {
-            addVariantRow(v.name || v.title || '', v.price || '');
-          }
-        });
-      }
-
-      document.getElementById('submitProductBtn').innerText = 'Update Product in Database';
-    }
-
-    async function deleteProduct(path) {
-      if (!confirm('Are you sure you want to delete this product from database?')) return;
-
-      try {
-        const baseUrl = DB_ROOT.endsWith('/') ? DB_ROOT.slice(0, -1) : DB_ROOT;
-        await fetch(`${baseUrl}/${path}.json`, {
-          method: 'DELETE'
-        });
-
-        delete rawProducts[path];
-        renderCategoryFilters();
-        renderProducts();
-        renderAdminInventoryList();
-      } catch (err) {
-        alert('Failed to delete product.');
-      }
-    }
-
-    function resetForm() {
-      document.getElementById('formModeTitle').innerText = 'Add New Product';
-      document.getElementById('formProductId').value = '';
-      document.getElementById('formTitle').value = '';
-      document.getElementById('formCategory').value = 'KITCHEN APPLIANCES';
-      document.getElementById('formPrice').value = '';
-      document.getElementById('formImageUrl').value = '';
-      document.getElementById('formDescription').value = '';
-      document.getElementById('variantsContainer').innerHTML = '';
-      document.getElementById('submitProductBtn').innerText = 'Save Product to Database';
-    }
-
-    async function saveProduct(event) {
-      event.preventDefault();
-      let path = document.getElementById('formProductId').value;
-      
-      if (!path) {
-        const customKey = `prod_${Date.now()}`;
-        path = `products/${customKey}`;
-      }
-
-      const title = document.getElementById('formTitle').value.trim();
-      const category = document.getElementById('formCategory').value.trim().toUpperCase();
-      const price = Number(document.getElementById('formPrice').value);
-      const imageUrl = document.getElementById('formImageUrl').value.trim();
-      const description = document.getElementById('formDescription').value.trim();
-
-      const variantRows = document.querySelectorAll('.variant-row');
-      const variants = [];
-      variantRows.forEach(row => {
-        const vName = row.querySelector('.v-name').value.trim();
-        const vPrice = row.querySelector('.v-price').value;
-        if (vName) {
-          variants.push({
-            name: vName,
-            price: vPrice ? Number(vPrice) : price
-          });
+        function sanitizeImage(url) {
+            if (!url) return 'https://via.placeholder.com/300';
+            if (url.includes('ibb.co/') && !url.includes('i.ibb.co/')) {
+                let code = url.split('ibb.co/')[1].split('/')[0];
+                return `https://i.ibb.co/${code}/image.jpg`;
+            }
+            return url;
         }
-      });
 
-      const existingReviews = (rawProducts[path] && rawProducts[path].reviews) ? rawProducts[path].reviews : [];
+        async function loadStorefront() {
+            const grid = document.getElementById('productGrid');
+            try {
+                const res = await fetch(`${DB_URL}.json`);
+                const data = await res.json();
+                if (!data) { grid.innerHTML = '<p>No products available.</p>'; return; }
 
-      const productPayload = {
-        name: title,
-        category: category,
-        price: price,
-        imageUrl: imageUrl,
-        description: description,
-        variants: variants,
-        reviews: existingReviews
-      };
+                let html = '';
+                for (let key in data) {
+                    const item = data[key];
+                    const name = item.name || item.title || item.productName || 'Unnamed Product';
+                    const price = item.price || 0;
+                    const img = sanitizeImage(item.image || item.imageLink || item.imageUrl);
 
-      try {
-        const baseUrl = DB_ROOT.endsWith('/') ? DB_ROOT.slice(0, -1) : DB_ROOT;
-        await fetch(`${baseUrl}/${path}.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(productPayload)
-        });
+                    html += `
+                        <div class="product-card">
+                            <img src="${img}" onerror="this.src='https://via.placeholder.com/300'">
+                            <div class="product-card-body">
+                                <div class="product-title">${name}</div>
+                                <div class="product-price">KES ${Number(price).toLocaleString()}</div>
+                                <a class="buy-btn" href="https://wa.me/254700000000?text=I%20want%20to%20buy%20${encodeURIComponent(name)}" target="_blank">Order on WhatsApp</a>
+                            </div>
+                        </div>
+                    `;
+                }
+                grid.innerHTML = html;
+            } catch (e) {
+                grid.innerHTML = '<p>Error loading items.</p>';
+            }
+        }
 
-        rawProducts[path] = productPayload;
-        renderCategoryFilters();
-        renderProducts();
-        renderAdminInventoryList();
-        resetForm();
-        alert('Product updated successfully!');
-      } catch (err) {
-        alert('Failed to save product to database.');
-      }
-    }
+        async function loadAdminInventory() {
+            const list = document.getElementById('adminInventory');
+            const count = document.getElementById('itemCount');
 
-    function openReviewsModal(path) {
-      const p = rawProducts[path];
-      if (!p) return;
+            try {
+                const res = await fetch(`${DB_URL}.json`);
+                const data = await res.json();
+                if (!data) { list.innerHTML = '<p>No products in database.</p>'; count.innerText = '0'; return; }
 
-      document.getElementById('reviewProductKey').value = path;
-      document.getElementById('reviewProductTitle').innerText = p.name || 'Reviews';
-      
-      const reviewsList = document.getElementById('reviewsList');
-      reviewsList.innerHTML = '';
+                const keys = Object.keys(data);
+                count.innerText = keys.length;
 
-      const reviewsArr = (p.reviews && Array.isArray(p.reviews)) ? p.reviews : [];
-      if (reviewsArr.length === 0) {
-        reviewsList.innerHTML = '<div class="text-center py-6 text-gray-400">No reviews yet. Be the first to review!</div>';
-      } else {
-        reviewsArr.forEach(r => {
-          const item = document.createElement('div');
-          item.className = "p-2.5 bg-gray-50 rounded-2xl border border-gray-100 space-y-1";
-          item.innerHTML = `
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-gray-900">${r.reviewer || 'Customer'}</span>
-              <span class="text-amber-500 font-bold">★ ${r.rating || 5}/5</span>
-            </div>
-            <p class="text-gray-600">${r.comment || ''}</p>
-          `;
-          reviewsList.appendChild(item);
-        });
-      }
+                let html = '';
+                keys.forEach(key => {
+                    const item = data[key];
+                    const name = item.name || item.title || item.productName || 'Unnamed Product';
+                    const price = item.price || 0;
 
-      document.getElementById('reviewsModal').classList.remove('hidden');
-    }
+                    html += `
+                        <div class="inventory-item">
+                            <div>
+                                <strong>${name}</strong><br>
+                                <small>KES ${Number(price).toLocaleString()}</small>
+                            </div>
+                            <div class="action-btns">
+                                <button class="btn-edit" onclick="editProduct('${key}', ${JSON.stringify(item).replace(/"/g, '&quot;')})">Edit</button>
+                                <button class="btn-delete" onclick="deleteProduct('${key}')">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+            } catch (e) {
+                list.innerHTML = '<p>Error loading inventory.</p>';
+            }
+        }
 
-    function closeReviewsModal() {
-      document.getElementById('reviewsModal').classList.add('hidden');
-    }
+        async function saveProduct() {
+            convertImageUrl();
+            const key = document.getElementById('editKey').value;
+            const title = document.getElementById('title').value;
+            const price = document.getElementById('price').value;
+            const category = document.getElementById('category').value;
+            const image = document.getElementById('imageUrl').value;
+            const description = document.getElementById('description').value;
 
-    async function submitReview(event) {
-      event.preventDefault();
-      const path = document.getElementById('reviewProductKey').value;
-      const name = document.getElementById('reviewerName').value.trim();
-      const rating = Number(document.getElementById('reviewerRating').value);
-      const comment = document.getElementById('reviewerComment').value.trim();
+            if (!title || !price || !image) {
+                alert("Please complete Title, Price, and Image URL.");
+                return;
+            }
 
-      const p = rawProducts[path];
-      if (!p) return;
+            const payload = { name: title, title: title, price: Number(price), category, image, imageLink: image, description };
+            const method = key ? 'PUT' : 'POST';
+            const url = key ? `${DB_URL}/${key}.json` : `${DB_URL}.json`;
 
-      const currentReviews = (p.reviews && Array.isArray(p.reviews)) ? p.reviews : [];
-      currentReviews.push({ reviewer: name, rating: rating, comment: comment });
+            await fetch(url, {
+                method: method,
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'application/json' }
+            });
 
-      try {
-        const baseUrl = DB_ROOT.endsWith('/') ? DB_ROOT.slice(0, -1) : DB_ROOT;
-        await fetch(`${baseUrl}/${path}/reviews.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(currentReviews)
-        });
+            resetForm();
+            loadAdminInventory();
+            loadStorefront();
+            alert("Saved successfully!");
+        }
 
-        p.reviews = currentReviews;
-        renderProducts();
-        openReviewsModal(path);
-        document.getElementById('reviewerName').value = '';
-        document.getElementById('reviewerComment').value = '';
-      } catch (err) {
-        alert('Could not submit review.');
-      }
-    }
+        function editProduct(key, item) {
+            document.getElementById('editKey').value = key;
+            document.getElementById('title').value = item.name || item.title || item.productName || '';
+            document.getElementById('price').value = item.price || '';
+            document.getElementById('category').value = item.category || 'KITCHEN APPLIANCES';
+            document.getElementById('imageUrl').value = item.image || item.imageLink || item.imageUrl || '';
+            document.getElementById('description').value = item.description || '';
+            document.getElementById('saveBtn').innerText = 'Update Product';
+        }
 
-    window.onload = function() {
-      fetchProducts();
-    };
-  </script>
+        async function deleteProduct(key) {
+            if (confirm("Are you sure you want to delete this product?")) {
+                await fetch(`${DB_URL}/${key}.json`, { method: 'DELETE' });
+                loadAdminInventory();
+                loadStorefront();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('editKey').value = '';
+            document.getElementById('aiInput').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('imageUrl').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('saveBtn').innerText = 'Save Product to Database';
+        }
+
+        loadStorefront();
+    </script>
 </body>
 </html>
-```
