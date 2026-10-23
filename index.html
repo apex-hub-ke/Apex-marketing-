@@ -347,23 +347,26 @@
             databaseURL: "https://apex-hub-c6d50-default-rtdb.firebaseio.com"
         };
 
-        // Initialize Firebase
+        // Initialize Firebase safely
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
-        
+
+        // Setup global Firebase services
         const db = firebase.database();
         const auth = firebase.auth();
 
-        // Auth state listener AFTER auth is initialized
+        // Auth State Listener
         auth.onAuthStateChanged(user => {
+            const authBox = document.getElementById('authBox');
+            const adminControls = document.getElementById('adminControls');
             if (user) {
-                document.getElementById('authBox').style.display = 'none';
-                document.getElementById('adminControls').style.display = 'block';
+                authBox.style.display = 'none';
+                adminControls.style.display = 'block';
                 loadAdminInventory();
             } else {
-                document.getElementById('authBox').style.display = 'block';
-                document.getElementById('adminControls').style.display = 'none';
+                authBox.style.display = 'block';
+                adminControls.style.display = 'none';
             }
         });
 
