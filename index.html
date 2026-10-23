@@ -285,7 +285,7 @@
                 <button class="close-btn" onclick="closeAdminModal()">&times;</button>
             </div>
 
-            <!-- Firebase Authentication Panel -->
+            <!-- Authentication Panel -->
             <div id="authBox">
                 <p style="margin-bottom: 1rem;">Sign in with Admin Credentials:</p>
                 <input type="email" id="adminEmail" placeholder="Admin Email">
@@ -346,11 +346,16 @@
         const firebaseConfig = {
             databaseURL: "https://apex-hub-c6d50-default-rtdb.firebaseio.com"
         };
-        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
         const db = firebase.database();
         const auth = firebase.auth();
 
-        // Check Auth Status
+        // Auth state listener AFTER auth is initialized
         auth.onAuthStateChanged(user => {
             if (user) {
                 document.getElementById('authBox').style.display = 'none';
@@ -368,8 +373,13 @@
         function closeLightbox() { document.getElementById('lightboxModal').style.display = 'none'; }
 
         async function authenticate() {
-            const email = document.getElementById('adminEmail').value;
-            const pass = document.getElementById('adminPass').value;
+            const email = document.getElementById('adminEmail').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
+
+            if (!email || !pass) {
+                return alert("Please enter both email and password.");
+            }
+
             try {
                 await auth.signInWithEmailAndPassword(email, pass);
             } catch (err) {
