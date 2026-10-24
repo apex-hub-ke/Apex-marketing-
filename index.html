@@ -58,7 +58,7 @@
     <div>
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-          <span>Active Inventory</span>
+          <span>Active Storefront Items</span>
           <span id="itemCount" class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-purple-400 font-bold">0 items</span>
         </h2>
       </div>
@@ -202,7 +202,7 @@
                 ✨ AI Auto-Generate Details
               </button>
             </div>
-            <input type="text" id="pTitle" placeholder="e.g. Nunix Coffee Maker or Hisense 55 Inch TV" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+            <input type="text" id="pTitle" placeholder="e.g. Nunix Coffee Maker" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
           </div>
 
           <div class="grid grid-cols-2 gap-3">
@@ -218,7 +218,7 @@
 
           <div>
             <label class="block text-[11px] font-semibold text-slate-400 mb-1">Variants & Options (Comma-separated)</label>
-            <input type="text" id="pVariants" placeholder="e.g. 11 kg, 14 kg, 9 kg OR 6 Litres, 8 Litres" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+            <input type="text" id="pVariants" placeholder="e.g. 11 kg, 14 kg, 9 kg" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
           </div>
 
           <div>
@@ -240,7 +240,7 @@
   </div>
 
   <script>
-    // Clean Stock Catalog Syntax
+    // Exact Product Data mapped directly from Database Screenshots
     const defaultProducts = [
       {
         id: "p1",
@@ -248,34 +248,34 @@
         price: 3000,
         badge: "Kitchen Appliances",
         variants: [],
-        image: "https://images.unsplash.com/photo-1517668808822-9e428d098528?auto=format&fit=crop&w=800&q=80",
-        desc: "Upgrade your kitchen with the stylish Nunix 2.0L Glass Electric Kettle / Coffee Maker."
+        image: "https://m.media-amazon.com/images/I/61I4483Y4GL._AC_SL1200_.jpg",
+        desc: "Upgrade your kitchen with the stylish Nunix 2.0L Glass Electric Kettle."
       },
       {
         id: "p2",
         title: "Hisense Top Load Fully Automatic Washing Machine",
         price: 35500,
-        badge: "Washing Machines",
+        badge: "Washing machine",
         variants: ["11 kg", "14 kg", "9 kg"],
-        image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=800&q=80",
+        image: "https://m.media-amazon.com/images/I/71P73N53tBL._AC_SL1500_.jpg",
         desc: "Upgrade your laundry routine with the powerful, energy-efficient Hisense Top Load Fully Automatic Washing Machine."
       },
       {
         id: "p3",
-        title: "60*60 Roch Full Gas Standing Cooker",
+        title: "🔥 Hot deal 60*60 Roch full gas standing cooker",
         price: 19000,
         badge: "Kitchen Appliances",
         variants: [],
-        image: "https://images.unsplash.com/photo-1588854337236-6889d631faa8?auto=format&fit=crop&w=800&q=80",
+        image: "https://m.media-amazon.com/images/I/71Y9K-G9WTL._AC_SL1500_.jpg",
         desc: "Upgrade your kitchen with the premium Roch 60x60 Free-Standing Cooking Range."
       },
       {
         id: "p4",
-        title: "Vismart Double Door Energy-Efficient Refrigerator",
+        title: "Vismart Double Door Energy-Efficient Refrigerator (Model: VL-BCD211)",
         price: 21000,
         badge: "Kitchen Appliances",
-        variants: ["118 Litres", "138 Litres", "172 Litres", "210 Litres"],
-        image: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80",
+        variants: ["118 Litres Double Door", "138 Litres Double Door", "172 Litres Double Door", "210 Litres Double Door"],
+        image: "https://m.media-amazon.com/images/I/71+24pA27-L._AC_SL1500_.jpg",
         desc: "Keep your food fresh and beverages ice-cold with the stylish Vismart Double Door Energy-Efficient Refrigerator."
       },
       {
@@ -284,16 +284,16 @@
         price: 38500,
         badge: "Washing Machines",
         variants: [],
-        image: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=800&q=80",
+        image: "https://m.media-amazon.com/images/I/71Xm3xQWkCL._AC_SL1500_.jpg",
         desc: "Experience ultimate fabric care with the Sylinx 8KG Fully Automatic Front Load Washing Machine."
       },
       {
         id: "p6",
-        title: "Hammac 20L Digital Solo Microwave Oven",
+        title: "Hammac 20L Digital Solo Microwave Oven with Defrost & Auto-Menus",
         price: 7000,
         badge: "Kitchen Appliances",
         variants: [],
-        image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=800&q=80",
+        image: "https://m.media-amazon.com/images/I/61N+E2OOn0L._AC_SL1200_.jpg",
         desc: "Upgrade your kitchen efficiency with the compact and powerful Hammac 20L Digital Solo Microwave Oven."
       },
       {
@@ -302,8 +302,8 @@
         price: 5500,
         badge: "Kitchen Appliances",
         variants: [],
-        image: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80",
-        desc: "Cook healthier, oil-free meals with the premium JP Jamespot Heavy-Duty Non-Stick Granite Cookware Set."
+        image: "https://m.media-amazon.com/images/I/714+r6M00dL._AC_SL1500_.jpg",
+        desc: "Cook healthier, oil-free meals with the premium JP Jamespot Heavy Duty Non-Stick Granite Cookware Set."
       },
       {
         id: "p8",
@@ -311,7 +311,7 @@
         price: 26500,
         badge: "Refrigerators & Freezers",
         variants: [],
-        image: "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=800&q=80",
+        image: "https://m.media-amazon.com/images/I/61V1A6mJ6UL._AC_SL1500_.jpg",
         desc: "Keep your food fresh and drinks frozen for days with the Hammac 200 Litre Deep Freezer."
       },
       {
@@ -320,16 +320,16 @@
         price: 9000,
         badge: "Kitchen Appliances",
         variants: [],
-        image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=800&q=80",
+        image: "https://m.media-amazon.com/images/I/61kM5A1qFfL._AC_SL1200_.jpg",
         desc: "Simplify your daily meal prep with the Haier 20L Manual Microwave Oven."
       },
       {
         id: "p10",
-        title: "Nunix 2200W Professional Hair Dryer Set",
+        title: "Nunix 2200W Professional Hair Dryer Set with Grooming Accessories (HD-01C)",
         price: 3000,
         badge: "Personal Care & Beauty",
         variants: [],
-        image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
+        image: "https://m.media-amazon.com/images/I/718y9S-+2nL._AC_SL1500_.jpg",
         desc: "Get salon-quality styling at home with the Nunix 2200W Professional Hair Dryer."
       },
       {
@@ -338,7 +338,7 @@
         price: 76000,
         badge: "Refrigerators & Freezers",
         variants: [],
-        image: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80",
+        image: "https://m.media-amazon.com/images/I/711y3eF2DGL._AC_SL1500_.jpg",
         desc: "Experience maximum fresh-food storage with the TLAC 430L Side-by-Side Refrigerator."
       },
       {
@@ -347,4 +347,9 @@
         price: 5500,
         badge: "Kitchen Appliances",
         variants: ["6 Litres (6-in-1)", "8 Litres (10-in-1)"],
-        image: "https://images.unsplash.com/photo-
+        image: "https://m.media-amazon.com/images/I/71g0n3B-2yL._AC_SL1500_.jpg",
+        desc: "Cook up to 80% faster while locking in taste and nutrients with the Riki Electric Pressure Cooker."
+      },
+      {
+        id: "p13",
+        title: 
