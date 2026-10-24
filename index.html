@@ -1,77 +1,22 @@
-
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex-Hub KE | Official Direct Storefront</title>
-  <!-- Tailwind CSS -->
+  <title>Apex-Hub Kenya | Official Storefront</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Font: Plus Jakarta Sans -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#f5f3ff',
-              500: '#8b5cf6',
-              600: '#7c3aed',
-              700: '#6d28d9',
-              900: '#4c1d95',
-            }
-          }
-        }
-      }
-    }
-  </script>
   <style>
-    body { 
-      font-family: 'Plus Jakarta Sans', sans-serif; 
-      background-color: #0b0f19; 
-      color: #f1f5f9; 
-    }
-    .glass { 
-      background: rgba(15, 23, 42, 0.85); 
-      backdrop-filter: blur(16px); 
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08); 
-    }
-    .glass-card { 
-      background: rgba(30, 41, 59, 0.5); 
-      backdrop-filter: blur(12px); 
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08); 
-    }
-    .glass-card:hover { 
-      border-color: rgba(168, 85, 247, 0.4); 
-      transform: translateY(-2px); 
-    }
-    /* Custom scrollbar for AI chat and modals */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.6);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(139, 92, 246, 0.4);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(139, 92, 246, 0.7);
-    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f1f5f9; }
+    .glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card:hover { border-color: rgba(168, 85, 247, 0.5); transform: translateY(-2px); }
   </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col selection:bg-purple-500 selection:text-white">
 
-  <!-- ================= HEADER & NAVIGATION ================= -->
-  <header class="sticky top-0 z-40 glass border-b border-slate-800/80">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 glass border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-purple-500/30">
@@ -83,159 +28,136 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <button onclick="toggleModal('adminModal', true)" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-purple-950/80 text-purple-300 hover:bg-purple-900/90 transition-all flex items-center gap-2 border border-purple-500/30 shadow-md">
-          <span id="lockStatusDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
-          <span id="lockStatusText">Admin Access</span>
-        </button>
-      </div>
+      <button onclick="toggleModal('adminModal', true)" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-purple-950/80 text-purple-300 hover:bg-purple-900 transition-colors flex items-center gap-2 border border-purple-500/30 cursor-pointer">
+        <span id="lockStatusDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+        <span id="lockStatusText">Admin Access</span>
+      </button>
     </div>
   </header>
 
-  <!-- ================= MAIN CONTENT AREA ================= -->
+  <!-- Main Content -->
   <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-10">
     
-    <!-- Hero / Live Search Header Banner -->
-    <div class="relative overflow-hidden rounded-3xl glass p-6 sm:p-10 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl">
-      <div class="max-w-xl z-10">
+    <!-- Hero / Search -->
+    <div class="relative overflow-hidden rounded-3xl glass p-6 sm:p-10 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="max-w-xl">
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20 mb-3">
           ✨ Authentic Appliances • Instant Doorstep Kenya Delivery
         </span>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">Explore Live Direct Inventory</h1>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Explore Live Direct Inventory</h1>
         <p class="text-slate-400 text-xs sm:text-sm mt-2">Browse guaranteed original products with KES pricing, selection variants, and instant 1-tap WhatsApp checkout.</p>
       </div>
 
-      <div class="relative w-full md:w-80 z-10">
-        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search title, category, variant..." class="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-slate-900/90 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm text-white placeholder-slate-500 transition-all shadow-inner">
-        <span class="absolute left-3.5 top-3.5 text-slate-400 text-base">🔍</span>
+      <div class="relative w-full md:w-80">
+        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search title, category, variant..." class="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-900/90 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm text-white placeholder-slate-500">
+        <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">🔍</span>
       </div>
-
-      <!-- Subtle Decorative Gradient Glow -->
-      <div class="absolute -right-20 -top-20 w-72 h-72 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
     </div>
 
-    <!-- Product Grid Section -->
+    <!-- Product Grid -->
     <div>
       <div class="flex items-center justify-between mb-6">
-        <div class="flex items-center gap-3">
-          <h2 class="text-xl font-bold text-white tracking-tight">Active Storefront Items</h2>
-          <span id="itemCount" class="text-xs px-3 py-1 rounded-full bg-slate-800/90 text-purple-400 font-bold border border-slate-700/80">0 items</span>
-        </div>
+        <h2 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+          <span>Active Storefront Items</span>
+          <span id="itemCount" class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-purple-400 font-bold">0 items</span>
+        </h2>
       </div>
 
-      <!-- Grid Container -->
-      <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <!-- Products populated via JS -->
-      </div>
+      <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
     </div>
 
-    <!-- Customer Reviews Section -->
-    <section class="glass rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6 shadow-xl">
+    <!-- Customer Reviews -->
+    <section class="glass rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
         <div>
           <div class="flex items-center gap-2 mb-1">
             <h2 class="text-2xl font-bold text-white tracking-tight">Customer Feedback</h2>
-            <span id="avgRatingBadge" class="text-amber-400 font-bold text-xs bg-amber-400/10 px-2.5 py-1 rounded-lg border border-amber-400/20">5.0 ★</span>
+            <span id="avgRatingBadge" class="text-amber-400 font-bold text-sm bg-amber-400/10 px-2.5 py-0.5 rounded-lg border border-amber-400/20">5.0 ★</span>
           </div>
           <p class="text-slate-400 text-xs">Authentic buyer reviews and testimonials</p>
         </div>
-        <button onclick="toggleModal('reviewModal', true)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white transition-all shadow-lg shadow-purple-600/20 flex items-center justify-center gap-2">
-          <span>✍️</span> Leave a Review
+        <button onclick="toggleModal('reviewModal', true)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white transition-colors shadow-lg shadow-purple-600/20">
+          ✍️ Leave a Review
         </button>
       </div>
 
-      <div id="reviewsList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Customer reviews rendered dynamically -->
-      </div>
-      <div id="noReviewsMsg" class="hidden text-center py-6 text-slate-500 text-xs italic">
+      <div id="reviewsList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+      <div id="noReviewsMsg" class="text-center py-6 text-slate-500 text-xs italic">
         No customer reviews submitted yet. Be the first to leave a review!
       </div>
     </section>
 
   </main>
 
-  <!-- ================= FLOATING AI SALES ASSISTANT WIDGET ================= -->
+  <!-- AI Sales Assistant Chat Widget -->
   <div class="fixed bottom-6 right-6 z-50">
-    <div id="aiChatBox" class="hidden glass rounded-2xl w-80 sm:w-96 p-4 shadow-2xl border border-slate-700/80 mb-3 flex flex-col h-96 transition-all">
+    <div id="aiChatBox" class="hidden glass rounded-2xl w-80 sm:w-96 p-4 shadow-2xl border border-slate-700 mb-3 flex flex-col h-96">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-lg">
-            🤖
-          </div>
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🤖</span>
           <div>
-            <h4 class="text-xs font-bold text-white">Apex AI Assistant</h4>
-            <span class="text-[10px] text-emerald-400 block font-semibold flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online • Kenya Sales Support
-            </span>
+            <h4 class="text-sm font-bold text-white">Apex AI Assistant</h4>
+            <span class="text-[10px] text-emerald-400 block font-semibold">Online • Kenya Sales & Support</span>
           </div>
         </div>
-        <button onclick="toggleAiChat(false)" class="text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+        <button onclick="toggleAiChat(false)" class="text-slate-400 hover:text-white text-lg">&times;</button>
       </div>
 
       <div id="aiMessages" class="flex-grow overflow-y-auto py-3 space-y-3 text-xs text-slate-300">
-        <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700/50">
-          Hello! I'm your Apex-Hub Assistant. Ask me about stock availability, pricing, variants, or delivery choices across Kenya! 🇰🇪
+        <div class="bg-slate-800 p-3 rounded-xl border border-slate-700/50">
+          Hello! I'm your Apex-Hub Assistant. Ask me about stock availability, variants, specifications, or delivery options across Kenya! 🇰🇪
         </div>
       </div>
 
       <div class="pt-2 border-t border-slate-800 flex gap-2">
-        <input type="text" id="aiInput" onkeypress="if(event.key==='Enter') sendAiMessage()" placeholder="Ask about items, delivery, price..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:ring-1 focus:ring-purple-500">
-        <button onclick="sendAiMessage()" class="px-3 py-2 bg-purple-600 text-white font-bold rounded-xl text-xs hover:bg-purple-500 transition-colors">Send</button>
+        <input type="text" id="aiInput" onkeypress="if(event.key==='Enter') sendAiMessage()" placeholder="Type item query or question..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:ring-1 focus:ring-purple-500">
+        <button onclick="sendAiMessage()" class="px-3 py-2 bg-purple-600 text-white font-bold rounded-xl text-xs hover:bg-purple-500">Send</button>
       </div>
     </div>
 
-    <button onclick="toggleAiChat()" class="w-14 h-14 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-full flex items-center justify-center text-2xl text-white shadow-xl shadow-purple-600/40 border border-purple-400/30 hover:scale-105 transition-all">
+    <button onclick="toggleAiChat()" class="w-14 h-14 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-full flex items-center justify-center text-2xl text-white shadow-xl shadow-purple-600/30 border border-purple-400/30 hover:scale-105 transition-transform">
       🤖
     </button>
   </div>
 
-  <!-- ================= WRITE REVIEW MODAL ================= -->
+  <!-- Review Modal -->
   <div id="reviewModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
         <h3 class="font-bold text-white text-base">Write a Customer Review</h3>
-        <button onclick="toggleModal('reviewModal', false)" class="text-slate-400 hover:text-white text-xl">&times;</button>
+        <button onclick="toggleModal('reviewModal', false)" class="text-slate-400 hover:text-white">&times;</button>
       </div>
       <form onsubmit="handleAddReview(event)" class="space-y-3">
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Your Name & Location</label>
-          <input type="text" id="rName" required placeholder="e.g. John K. - Nairobi" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
-        </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Rating</label>
-          <select id="rRating" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
-            <option value="5">5 Stars (Excellent)</option>
-            <option value="4">4 Stars (Good)</option>
-            <option value="3">3 Stars (Average)</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Your Review</label>
-          <textarea id="rComment" required placeholder="Share your purchase and delivery experience..." rows="3" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500"></textarea>
-        </div>
-        <button type="submit" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs transition-colors shadow-md">Submit Review</button>
+        <input type="text" id="rName" required placeholder="Your Name & Location (e.g. John K. - Nairobi)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none">
+        <select id="rRating" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none">
+          <option value="5">5 Stars (Excellent)</option>
+          <option value="4">4 Stars (Good)</option>
+          <option value="3">3 Stars (Average)</option>
+        </select>
+        <textarea id="rComment" required placeholder="Your order experience..." rows="3" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none"></textarea>
+        <button type="submit" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs">Submit Feedback</button>
       </form>
     </div>
   </div>
 
-  <!-- ================= ADMIN CONTROL CENTER MODAL ================= -->
+  <!-- Admin Modal -->
   <div id="adminModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-        <div class="flex items-center gap-2.5">
-          <span class="text-xl">🔑</span>
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🔑</span>
           <div>
             <h3 class="text-lg font-bold text-white">Admin Control Center</h3>
-            <p class="text-[11px] text-slate-400">Apex-Hub KE Management Panel</p>
+            <p class="text-[11px] text-slate-400">Apex-Hub Management Panel</p>
           </div>
         </div>
         <button onclick="toggleModal('adminModal', false)" class="text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
       </div>
 
-      <!-- Password Login Form (Shown when locked) -->
+      <!-- Auth Unlock Form -->
       <form id="loginForm" onsubmit="handleAdminLogin(event)" class="mt-6 space-y-4">
         <div id="loginError" class="hidden p-3 bg-red-950/80 border border-red-500/40 rounded-xl text-red-300 text-xs font-semibold">
-          Incorrect passcode! Please enter <strong>Milano254-plus</strong>
+          Incorrect passcode! Please enter Milano254-plus
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Admin Email</label>
@@ -250,14 +172,14 @@
         </button>
       </form>
 
-      <!-- Dashboard Panel (Shown when unlocked) -->
+      <!-- Unlocked Dashboard -->
       <div id="adminDashboard" class="hidden mt-6 space-y-5">
         <div class="flex items-center justify-between p-3.5 bg-purple-950/40 rounded-2xl border border-purple-500/20">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
             <span class="text-xs font-semibold text-purple-200">Active: timothymatheka03@gmail.com</span>
           </div>
-          <button onclick="handleLockAdmin()" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-900 border border-red-500/30 text-red-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors">
+          <button onclick="handleLockAdmin()" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-900 border border-red-500/30 text-red-300 rounded-xl text-xs font-bold flex items-center gap-1.5">
             <span>🔒</span> Lock Admin
           </button>
         </div>
@@ -273,7 +195,7 @@
             <div class="flex items-center justify-between mb-1">
               <label class="block text-[11px] font-semibold text-slate-400">Product Title</label>
               <button type="button" onclick="aiAutoFillProduct()" class="text-[10px] font-bold text-purple-400 hover:text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
-                ✨ AI Auto-Generate Details
+                ✨ AI Auto-Generate
               </button>
             </div>
             <input type="text" id="pTitle" placeholder="e.g. Nunix Coffee Maker" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
@@ -285,24 +207,24 @@
               <input type="number" id="pPrice" placeholder="3000" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
             </div>
             <div>
-              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Category Badge</label>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Category</label>
               <input type="text" id="pBadge" placeholder="e.g. Kitchen Appliances" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
             </div>
           </div>
 
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Variants & Options (Comma-separated)</label>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Variants (Comma-separated)</label>
             <input type="text" id="pVariants" placeholder="e.g. 11 kg, 14 kg, 9 kg" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
           </div>
 
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Product Image URL</label>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Direct Image URL</label>
             <input type="url" id="pImage" placeholder="https://images.unsplash.com/..." required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
           </div>
 
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Specifications & Description</label>
-            <textarea id="pDesc" placeholder="Key technical specifications..." rows="3" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500"></textarea>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Description</label>
+            <textarea id="pDesc" placeholder="Key specifications..." rows="3" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500"></textarea>
           </div>
           
           <button type="submit" id="saveBtn" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition-colors shadow-md">
@@ -313,9 +235,7 @@
     </div>
   </div>
 
-  <!-- ================= APPLICATION JAVASCRIPT ================= -->
   <script>
-    // Complete 16 items matching database specs with stable high-resolution images
     const defaultProducts = [
       {
         id: "p1",
@@ -323,14 +243,14 @@
         price: 3000,
         badge: "Kitchen Appliances",
         variants: [],
-        image: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?auto=format&fit=crop&w=800&q=80",
-        desc: "Upgrade your kitchen with the stylish Nunix 2.0L Glass Electric Kettle and coffee maker."
+        image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80",
+        desc: "Upgrade your kitchen with the stylish Nunix 2.0L Glass Electric Kettle."
       },
       {
         id: "p2",
         title: "Hisense Top Load Fully Automatic Washing Machine",
         price: 35500,
-        badge: "Washing Machine",
+        badge: "Washing machine",
         variants: ["11 kg", "14 kg", "9 kg"],
         image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=800&q=80",
         desc: "Upgrade your laundry routine with the powerful, energy-efficient Hisense Top Load Fully Automatic Washing Machine."
@@ -350,7 +270,7 @@
         price: 21000,
         badge: "Kitchen Appliances",
         variants: ["118 Litres Double Door", "138 Litres Double Door", "172 Litres Double Door", "210 Litres Double Door"],
-        image: "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80",
         desc: "Keep your food fresh and beverages ice-cold with the stylish Vismart Double Door Energy-Efficient Refrigerator."
       },
       {
@@ -360,4 +280,408 @@
         badge: "Washing Machines",
         variants: [],
         image: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=800&q=80",
-        desc: "Experience ultimate fabr
+        desc: "Experience ultimate fabric care with the Sylinx 8KG Fully Automatic Front Load Washing Machine."
+      },
+      {
+        id: "p6",
+        title: "Hammac 20L Digital Solo Microwave Oven with Defrost & Auto-Menus",
+        price: 7000,
+        badge: "Kitchen Appliances",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=800&q=80",
+        desc: "Upgrade your kitchen efficiency with the compact and powerful Hammac 20L Digital Solo Microwave Oven."
+      },
+      {
+        id: "p7",
+        title: "JP Jamespot Heavy-Duty Non-Stick Granite Cookware Set",
+        price: 5500,
+        badge: "Kitchen Appliances",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?auto=format&fit=crop&w=800&q=80",
+        desc: "Cook healthier, oil-free meals with the premium JP Jamespot Heavy Duty Non-Stick Granite Cookware Set."
+      },
+      {
+        id: "p8",
+        title: "Hammac 200L Heavy Duty Energy-Saving Chest Deep Freezer",
+        price: 26500,
+        badge: "Refrigerators & Freezers",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=800&q=80",
+        desc: "Keep your food fresh and drinks frozen for days with the Hammac 200 Litre Deep Freezer."
+      },
+      {
+        id: "p9",
+        title: "Haier 20L Manual Microwave Oven (HMW20MB)",
+        price: 9000,
+        badge: "Kitchen Appliances",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=800&q=80",
+        desc: "Simplify your daily meal prep with the Haier 20L Manual Microwave Oven."
+      },
+      {
+        id: "p10",
+        title: "Nunix 2200W Professional Hair Dryer Set with Grooming Accessories (HD-01C)",
+        price: 3000,
+        badge: "Personal Care & Beauty",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
+        desc: "Get salon-quality styling at home with the Nunix 2200W Professional Hair Dryer."
+      },
+      {
+        id: "p11",
+        title: "TLAC 430L Side-by-Side NoFrost Refrigerator (Grey Finish)",
+        price: 76000,
+        badge: "Refrigerators & Freezers",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80",
+        desc: "Experience maximum fresh-food storage with the TLAC 430L Side-by-Side Refrigerator."
+      },
+      {
+        id: "p12",
+        title: "Riki Multi-Function Digital Electric Pressure Cooker",
+        price: 5500,
+        badge: "Kitchen Appliances",
+        variants: ["6 Litres (6-in-1)", "8 Litres (10-in-1)"],
+        image: "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?auto=format&fit=crop&w=800&q=80",
+        desc: "Cook up to 80% faster while locking in taste and nutrients with the Riki Electric Pressur
+                {
+        id: "p13",
+        title: "Roch 3.1 CH Bluetooth Home Theater System (RS-PRO35)",
+        price: 5000,
+        badge: "Audio & Sound Systems",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=800&q=80",
+        desc: "Transform your home entertainment with the Roch 3.1 Channel Super Power Speaker System."
+      },
+      {
+        id: "p14",
+        title: "Globalstar 6.5L Automatic Ugali & Meal Cooker (GS-CK01)",
+        price: 7700,
+        badge: "Kitchen Appliances",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
+        desc: "Take the hard work out of meal preparation with the Globalstar 800W Electric Ugali Cooker."
+      },
+      {
+        id: "p15",
+        title: "Riki Digital Air Fryer with Viewing Window & Rapid Air Technology",
+        price: 5000,
+        badge: "Kitchen Appliances",
+        variants: ["5 Litres Air Fryer", "12 Litres Air Fryer"],
+        image: "https://images.unsplash.com/photo-1585515320310-259814833e62?auto=format&fit=crop&w=800&q=80",
+        desc: "Enjoy delicious, guilt-free fried foods with up to 85% less oil! The Riki Digital Air Fryer."
+      },
+      {
+        id: "p16",
+        title: "Modern Marble Top Nesting Coffee Tables (2-Piece Set)",
+        price: 5500,
+        badge: "Home Appliances",
+        variants: ["Grey Marble Top / Gold Frame"],
+        image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=800&q=80",
+        desc: "Product Description: Elegant 2-piece round nesting coffee table set featuring a stylish marble design."
+      }
+    ];
+
+    function loadProducts() {
+      localStorage.removeItem('apex_products');
+      return [...defaultProducts];
+    }
+
+    function saveProductsLocally() {
+      localStorage.setItem('apex_products', JSON.stringify(products));
+    }
+
+    function loadReviews() {
+      const saved = localStorage.getItem('apex_reviews');
+      if (saved) {
+        try { return JSON.parse(saved); } catch(e) {}
+      }
+      return [{ name: "Clement", rating: 5, comment: "Good quality and epic design" }];
+    }
+
+    function saveReviewsLocally() {
+      localStorage.setItem('apex_reviews', JSON.stringify(reviews));
+    }
+
+    let products = loadProducts();
+    let reviews = loadReviews();
+    let selectedVariants = {};
+    let isAdminUnlocked = false;
+
+    function renderProducts(list) {
+      const grid = document.getElementById('productGrid');
+      document.getElementById('itemCount').innerText = `${list.length} items`;
+
+      grid.innerHTML = list.map(p => {
+        const variantsArr = p.variants || [];
+        const activeVariant = selectedVariants[p.id] || (variantsArr.length ? variantsArr[0] : '');
+
+        return `
+          <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-300">
+            <div>
+              <div class="relative overflow-hidden bg-slate-900/80 h-52 group">
+                <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://via.placeholder.com/400x300/0f172a/cbd5e1?text=Apex+Store+Item'">
+                <span class="absolute top-3 left-3 bg-purple-600/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-md shadow-md border border-purple-400/30">
+                  ${p.badge || 'Kitchen Appliances'}
+                </span>
+                <span class="absolute bottom-2 right-2 text-[9px] font-mono text-slate-400 bg-slate-950/80 px-2 py-0.5 rounded">
+                  ID: ${p.id}
+                </span>
+              </div>
+              
+              <div class="p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Genuine Stock</span>
+                </div>
+
+                <div>
+                  <h3 class="font-bold text-slate-100 text-base line-clamp-2">${p.title}</h3>
+                  <p class="text-purple-400 font-extrabold text-lg mt-0.5">KES ${Number(p.price).toLocaleString()}</p>
+                </div>
+
+                ${variantsArr.length > 0 ? `
+                  <div class="space-y-1">
+                    <span class="text-[10px] uppercase font-bold text-slate-400">Choose Option:</span>
+                    <div class="flex flex-wrap gap-1.5">
+                      ${variantsArr.map(v => `
+                        <button onclick="selectVariant('${p.id}', '${v}')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${v === activeVariant ? 'bg-purple-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:text-white border border-slate-700'}">
+                          ${v}
+                        </button>
+                      `).join('')}
+                    </div>
+                  </div>
+                ` : ''}
+
+                ${p.desc ? `<p class="text-slate-400 text-xs line-clamp-2 leading-relaxed">${p.desc}</p>` : ''}
+              </div>
+            </div>
+
+            <div class="p-4 pt-0 space-y-2">
+              <a href="https://wa.me/254700000000?text=${encodeURIComponent('Hello Apex-Hub Kenya, I would like to order: ' + p.title + (activeVariant ? ' (Option: ' + activeVariant + ')' : '') + ' - Price: KES ' + p.price)}" 
+                 target="_blank" 
+                 class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 text-xs transition-colors shadow-lg shadow-emerald-600/20">
+                <span>💬 Order via WhatsApp</span>
+              </a>
+              
+              ${isAdminUnlocked ? `
+                <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800">
+                  <button onclick="editItem('${p.id}')" class="py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg text-[11px] border border-slate-700">
+                    ✏️ Edit Item
+                  </button>
+                  <button onclick="deleteItem('${p.id}')" class="py-1.5 bg-red-950/60 hover:bg-red-900/60 text-red-300 font-bold rounded-lg text-[11px] border border-red-500/30">
+                    🗑️ Delete Item
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+        function renderReviews() {
+      const container = document.getElementById('reviewsList');
+      const emptyMsg = document.getElementById('noReviewsMsg');
+      const avgBadge = document.getElementById('avgRatingBadge');
+
+      if (!reviews.length) {
+        container.innerHTML = '';
+        emptyMsg.classList.remove('hidden');
+        avgBadge.innerText = '5.0 ★';
+        return;
+      }
+
+      emptyMsg.classList.add('hidden');
+      const totalStars = reviews.reduce((acc, r) => acc + Number(r.rating || 5), 0);
+      const avg = (totalStars / reviews.length).toFixed(1);
+      avgBadge.innerText = `${avg} / 5.0 ★`;
+
+      container.innerHTML = reviews.map(r => `
+        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-slate-200">${r.name}</span>
+            <span class="text-amber-400 text-xs">${'★'.repeat(Number(r.rating || 5))}</span>
+          </div>
+          <p class="text-slate-400 text-xs leading-relaxed">"${r.comment}"</p>
+          <span class="text-[10px] text-purple-400 font-semibold block">✓ Verified Buyer</span>
+        </div>
+      `).join('');
+    }
+
+    function selectVariant(productId, variantValue) {
+      selectedVariants[productId] = variantValue;
+      renderProducts(products);
+    }
+
+    function toggleModal(id, show) {
+      document.getElementById(id).classList.toggle('hidden', !show);
+    }
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      const pass = document.getElementById('adminPassword').value;
+      const errBox = document.getElementById('loginError');
+
+      if (pass !== 'Milano254-plus') {
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      errBox.classList.add('hidden');
+      isAdminUnlocked = true;
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('adminDashboard').classList.remove('hidden');
+      document.getElementById('lockStatusDot').className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+      document.getElementById('lockStatusText').innerText = "Admin Unlocked";
+      renderProducts(products);
+      toggleModal('adminModal', false);
+    }
+
+    function handleLockAdmin() {
+      isAdminUnlocked = false;
+      document.getElementById('adminPassword').value = '';
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('adminDashboard').classList.add('hidden');
+      document.getElementById('lockStatusDot').className = "w-2 h-2 rounded-full bg-slate-500";
+      document.getElementById('lockStatusText').innerText = "Admin Access";
+      renderProducts(products);
+      toggleModal('adminModal', false);
+    }
+
+    function aiAutoFillProduct() {
+      const title = document.getElementById('pTitle').value.trim();
+      if (!title) {
+        alert("Please enter a product title first");
+        return;
+      }
+
+      document.getElementById('pPrice').value = 15000;
+      document.getElementById('pBadge').value = "Kitchen Appliances";
+      document.getElementById('pDesc').value = `Premium quality ${title}. Energy-efficient, durable design with official 1-year warranty across Kenya.`;
+      if (!document.getElementById('pImage').value) {
+        document.getElementById('pImage').value = "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80";
+      }
+    }
+
+    function handleSaveProduct(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editId').value;
+      const title = document.getElementById('pTitle').value;
+      const price = Number(document.getElementById('pPrice').value);
+      const badge = document.getElementById('pBadge').value || 'Kitchen Appliances';
+      const variantsRaw = document.getElementById('pVariants').value;
+      const image = document.getElementById('pImage').value;
+      const desc = document.getElementById('pDesc').value;
+
+      const variants = variantsRaw ? variantsRaw.split(',').map(v => v.trim()).filter(Boolean) : [];
+
+      if (editId) {
+        const index = products.findIndex(p => p.id === editId);
+        if (index !== -1) {
+          products[index] = { id: editId, title, price, badge, variants, image, desc };
+        }
+      } else {
+        products.unshift({
+          id: 'p' + (products.length + 1),
+          title, price, badge, variants, image, desc
+        });
+      }
+
+      saveProductsLocally();
+      resetForm();
+      renderProducts(products);
+      toggleModal('adminModal', false);
+    }
+
+    function editItem(id) {
+      const item = products.find(p => p.id === id);
+      if (!item) return;
+
+      document.getElementById('editId').value = item.id;
+      document.getElementById('pTitle').value = item.title;
+      document.getElementById('pPrice').value = item.price;
+      document.getElementById('pBadge').value = item.badge || '';
+      document.getElementById('pVariants').value = (item.variants || []).join(', ');
+      document.getElementById('pImage').value = item.image;
+      document.getElementById('pDesc').value = item.desc || '';
+
+      document.getElementById('formTitle').innerText = "✏️ EDIT ITEM DETAILS";
+      document.getElementById('saveBtn').innerText = "Save Changes to Storefront";
+
+      toggleModal('adminModal', true);
+    }
+
+    function deleteItem(id) {
+      if (confirm('Delete this item from the live storefront?')) {
+        products = products.filter(p => p.id !== id);
+        saveProductsLocally();
+        renderProducts(products);
+      }
+    }
+
+    function resetForm() {
+      document.getElementById('editId').value = '';
+      document.getElementById('pTitle').value = '';
+      document.getElementById('pPrice').value = '';
+      document.getElementById('pBadge').value = '';
+      document.getElementById('pVariants').value = '';
+      document.getElementById('pImage').value = '';
+      document.getElementById('pDesc').value = '';
+      document.getElementById('formTitle').innerText = "+ ADD NEW STORE ITEM";
+      document.getElementById('saveBtn').innerText = "Publish Item to Live Store";
+    }
+
+    function filterProducts() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = products.filter(p => 
+        p.title.toLowerCase().includes(q) || 
+        (p.desc && p.desc.toLowerCase().includes(q)) ||
+        (p.variants && p.variants.some(v => v.toLowerCase().includes(q)))
+      );
+      renderProducts(filtered);
+    }
+
+    function toggleAiChat(show) {
+      const box = document.getElementById('aiChatBox');
+      box.classList.toggle('hidden', show !== undefined ? !show : !box.classList.contains('hidden'));
+    }
+
+    function sendAiMessage() {
+      const input = document.getElementById('aiInput');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const msgs = document.getElementById('aiMessages');
+      msgs.innerHTML += `<div class="bg-purple-900/50 p-2.5 rounded-xl text-right text-white font-medium border border-purple-500/30 ml-8">${val}</div>`;
+      input.value = '';
+
+      setTimeout(() => {
+        let reply = "We offer fast doorstep delivery across Nairobi and courier shipping across Kenya! Tap 'Order via WhatsApp' on any product card to confirm order details.";
+        const q = val.toLowerCase();
+        if (q.includes('washing') || q.includes('hisense')) reply = "The Hisense Washing Machine is KES 35,500 with 11kg, 14kg, and 9kg variant options.";
+        if (q.includes('coffee') || q.includes('nunix')) reply = "The Nunix Coffee Maker / Kettle is KES 3,000.";
+
+        msgs.innerHTML += `<div class="bg-slate-800 p-3 rounded-xl border border-slate-700/50 mr-8">${reply}</div>`;
+        msgs.scrollTop = msgs.scrollHeight;
+      }, 500);
+    }
+
+    function handleAddReview(e) {
+      e.preventDefault();
+      const name = document.getElementById('rName').value;
+      const rating = document.getElementById('rRating').value;
+      const comment = document.getElementById('rComment').value;
+
+      reviews.unshift({ name, rating, comment });
+      saveReviewsLocally();
+      renderReviews();
+
+      e.target.reset();
+      toggleModal('reviewModal', false);
+    }
+
+    // Initial load
+    renderProducts(products);
+    renderReviews();
+  </script>
+</body>
+</html>
