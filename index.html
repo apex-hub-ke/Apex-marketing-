@@ -29,7 +29,7 @@
       </div>
 
       <button onclick="toggleModal('adminModal', true)" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-purple-950/80 text-purple-300 hover:bg-purple-900 transition-colors flex items-center gap-2 border border-purple-500/30">
-        <span id="lockStatusDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="lockStatusDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
         <span id="lockStatusText">Admin Access</span>
       </button>
     </div>
@@ -45,11 +45,11 @@
           ✨ Verified Products • Instant Kenya Delivery
         </span>
         <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Explore Direct Inventory</h1>
-        <p class="text-slate-400 text-xs sm:text-sm mt-2">Quality tech with verified 5-star ratings, KES pricing, product variants, and direct 1-tap WhatsApp ordering.</p>
+        <p class="text-slate-400 text-xs sm:text-sm mt-2">Browse authentic appliances and electronics with KES pricing, custom variants, and 1-tap WhatsApp ordering.</p>
       </div>
 
       <div class="relative w-full md:w-80">
-        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search title, spec, variant..." class="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-900/90 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm text-white placeholder-slate-500">
+        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search title, category, variant..." class="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-900/90 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm text-white placeholder-slate-500">
         <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">🔍</span>
       </div>
     </div>
@@ -74,9 +74,9 @@
         <div>
           <div class="flex items-center gap-2 mb-1">
             <h2 class="text-2xl font-bold text-white tracking-tight">Customer Reviews</h2>
-            <span class="text-amber-400 font-bold text-sm bg-amber-400/10 px-2.5 py-0.5 rounded-lg border border-amber-400/20">4.9 / 5.0 ★</span>
+            <span id="avgRatingBadge" class="text-amber-400 font-bold text-sm bg-amber-400/10 px-2.5 py-0.5 rounded-lg border border-amber-400/20">5.0 ★</span>
           </div>
-          <p class="text-slate-400 text-xs">Verified ratings from buyers across Nairobi, Mombasa, Nakuru & Kisumu</p>
+          <p class="text-slate-400 text-xs">Authentic feedback directly from buyers in Kenya</p>
         </div>
         <button onclick="toggleModal('reviewModal', true)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white transition-colors shadow-lg shadow-purple-600/20">
           + Leave a Review
@@ -84,32 +84,10 @@
       </div>
 
       <div id="reviewsList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-sm text-slate-200">Brian K. (Nairobi)</span>
-            <span class="text-amber-400 text-xs">★★★★★</span>
-          </div>
-          <p class="text-slate-400 text-xs leading-relaxed">"Ordered the Sony XM5 headphones in the morning, got delivered to Kilimani by 2 PM. Verified authentic product!"</p>
-          <span class="text-[10px] text-purple-400 font-semibold block">✓ Verified Buyer</span>
-        </div>
-
-        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-sm text-slate-200">Faith M. (Mombasa)</span>
-            <span class="text-amber-400 text-xs">★★★★★</span>
-          </div>
-          <p class="text-slate-400 text-xs leading-relaxed">"Admin responded fast on WhatsApp. Item was well packed and shipped via courier safely."</p>
-          <span class="text-[10px] text-purple-400 font-semibold block">✓ Verified Buyer</span>
-        </div>
-
-        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-sm text-slate-200">Kevin O. (Nakuru)</span>
-            <span class="text-amber-400 text-xs">★★★★★</span>
-          </div>
-          <p class="text-slate-400 text-xs leading-relaxed">"Smooth checkout process via WhatsApp. The MacBook M3 specs matched 100% with description."</p>
-          <span class="text-[10px] text-purple-400 font-semibold block">✓ Verified Buyer</span>
-        </div>
+        <!-- User submitted reviews appear here -->
+      </div>
+      <div id="noReviewsMsg" class="text-center py-6 text-slate-500 text-xs italic">
+        No customer reviews submitted yet. Be the first to leave a review!
       </div>
     </section>
 
@@ -146,7 +124,7 @@
     </button>
   </div>
 
-  <!-- Review Modal -->
+  <!-- Write Review Modal -->
   <div id="reviewModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -156,9 +134,9 @@
       <form onsubmit="handleAddReview(event)" class="space-y-3">
         <input type="text" id="rName" required placeholder="Your Name & Location (e.g. John K. - Nairobi)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none">
         <select id="rRating" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none">
-          <option value="★★★★★">5 Stars (Excellent)</option>
-          <option value="★★★★☆">4 Stars (Good)</option>
-          <option value="★★★☆☆">3 Stars (Average)</option>
+          <option value="5">5 Stars (Excellent)</option>
+          <option value="4">4 Stars (Good)</option>
+          <option value="3">3 Stars (Average)</option>
         </select>
         <textarea id="rComment" required placeholder="Your order experience..." rows="3" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none"></textarea>
         <button type="submit" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs">Submit Feedback</button>
@@ -182,13 +160,16 @@
 
       <!-- Auth Unlock Form -->
       <form id="loginForm" onsubmit="handleAdminLogin(event)" class="mt-6 space-y-4">
+        <div id="loginError" class="hidden p-3 bg-red-950/80 border border-red-500/40 rounded-xl text-red-300 text-xs font-semibold">
+          Incorrect passcode! Please enter Milano254-plus
+        </div>
         <div>
           <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Admin Email</label>
           <input type="email" id="adminEmail" required value="timothymatheka03@gmail.com" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm text-white">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Passcode</label>
-          <input type="password" id="adminPassword" required placeholder="Enter password (default: admin128)" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm text-white">
+          <input type="password" id="adminPassword" required placeholder="Enter passcode" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm text-white">
         </div>
         <button type="submit" class="w-full py-3.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition-colors text-sm shadow-lg shadow-purple-600/20">
           Unlock Admin Dashboard
@@ -215,24 +196,29 @@
           </div>
           
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Product Title</label>
-            <input type="text" id="pTitle" placeholder="e.g. iPhone 15 Pro Max 256GB" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-[11px] font-semibold text-slate-400">Product Title</label>
+              <button type="button" onclick="aiAutoFillProduct()" class="text-[10px] font-bold text-purple-400 hover:text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
+                ✨ AI Auto-Generate Details
+              </button>
+            </div>
+            <input type="text" id="pTitle" placeholder="e.g. Nunix Coffee Maker or Hisense 55 Inch TV" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-[11px] font-semibold text-slate-400 mb-1">Price (KES)</label>
-              <input type="number" id="pPrice" placeholder="185000" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+              <input type="number" id="pPrice" placeholder="3000" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
             </div>
             <div>
-              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Category Badge</label>
-              <input type="text" id="pBadge" placeholder="e.g. Top Seller" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Category</label>
+              <input type="text" id="pBadge" placeholder="e.g. Kitchen Appliances" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
             </div>
           </div>
 
           <div>
             <label class="block text-[11px] font-semibold text-slate-400 mb-1">Variants & Options (Comma-separated)</label>
-            <input type="text" id="pVariants" placeholder="e.g. 256GB, 512GB, 1TB OR Natural Titanium, Black" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+            <input type="text" id="pVariants" placeholder="e.g. 11 kg, 14 kg, 9 kg OR 6 Litres, 8 Litres" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
           </div>
 
           <div>
@@ -254,81 +240,111 @@
   </div>
 
   <script>
-    // Original Store Inventory with Variants & Specs
-    let products = [
+    // Direct High-Resolution Stock Images replacing expired ImgBB links
+    const defaultProducts = [
       {
         id: "p1",
-        title: "iPhone 15 Pro Max",
-        price: 185000,
-        badge: "Top Seller",
-        variants: ["256GB", "512GB", "1TB"],
-        image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=800&q=80",
-        desc: "A17 Pro chip, Titanium design with Action button, 48MP Main camera system, 5x Telephoto optical zoom."
+        title: "Nunix Coffee Maker",
+        price: 3000,
+        badge: "Kitchen Appliances",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1517668808822-9e428d098528?auto=format&fit=crop&w=800&q=80",
+        desc: "Upgrade your kitchen with the stylish Nunix 2.0L Glass Electric Kettle / Coffee Maker."
       },
       {
         id: "p2",
-        title: "Apple MacBook Pro 14 M3 Chip",
-        price: 245000,
-        badge: "New Arrival",
-        variants: ["16GB / 512GB", "18GB / 1TB"],
-        image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80",
-        desc: "8-core CPU, 10-core GPU, Liquid Retina XDR display, Space Black & Silver finish. 1-Year Warranty."
+        title: "Hisense Top Load Fully Automatic Washing Machine",
+        price: 35500,
+        badge: "Washing Machines",
+        variants: ["11 kg", "14 kg", "9 kg"],
+        image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=800&q=80",
+        desc: "Upgrade your laundry routine with the powerful, energy-efficient Hisense Top Load Fully Automatic Washing Machine."
       },
       {
         id: "p3",
-        title: "Samsung Galaxy S24 Ultra 5G",
-        price: 168000,
-        badge: "In Stock",
-        variants: ["Titanium Black", "Titanium Gray", "Titanium Violet"],
-        image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=800&q=80",
-        desc: "Snapdragon 8 Gen 3, 200MP camera with Galaxy AI feature suite, Built-in S-Pen stylus."
+        title: "60*60 Roch Full Gas Standing Cooker",
+        price: 19000,
+        badge: "Kitchen Appliances",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1588854337236-6889d631faa8?auto=format&fit=crop&w=800&q=80",
+        desc: "Upgrade your kitchen with the premium Roch 60x60 Free-Standing Cooking Range."
       },
       {
         id: "p4",
-        title: "Sony WH-1000XM5 ANC Headphones",
-        price: 48500,
-        badge: "Verified Item",
-        variants: ["Black", "Silver", "Midnight Blue"],
-        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
-        desc: "Industry leading noise canceling with dual processors, 30-hour battery life, Crystal clear hands-free calling."
+        title: "Vismart Double Door Energy-Efficient Refrigerator",
+        price: 21000,
+        badge: "Kitchen Appliances",
+        variants: ["118 Litres", "138 Litres", "172 Litres", "210 Litres"],
+        image: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80",
+        desc: "Keep your food fresh and beverages ice-cold with the stylish Vismart Double Door Energy-Efficient Refrigerator."
       },
       {
         id: "p5",
-        title: "Apple Watch Series 9 GPS 45mm",
-        price: 62000,
-        badge: "In Stock",
-        variants: ["Midnight", "Starlight", "Silver"],
-        image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=800&q=80",
-        desc: "Aluminum Case, S9 SiP chip, Double Tap gesture control, ECG & Blood Oxygen monitoring."
-      }
-    ];
-
-    let selectedVariants = {};
-    let isAdminUnlocked = false;
-
-    function renderProducts(list) {
-      const grid = document.getElementById('productGrid');
-      document.getElementById('itemCount').innerText = `${list.length} items`;
-
-      grid.innerHTML = list.map(p => {
-        const variantsArr = p.variants || [];
-        const activeVariant = selectedVariants[p.id] || (variantsArr.length ? variantsArr[0] : '');
-
-        return `
-          <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-300">
-            <div>
-              <div class="relative overflow-hidden bg-slate-900/80 h-52 group">
-                <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://via.placeholder.com/400x300/0f172a/cbd5e1?text=Apex+Store+Item'">
-                <span class="absolute top-3 left-3 bg-purple-600/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-md shadow-md border border-purple-400/30">
-                  ${p.badge || 'In Stock'}
-                </span>
-              </div>
-              
-              <div class="p-4 space-y-3">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-1 text-amber-400 text-xs font-bold">
-                    <span>★★★★★</span>
-                    <span class="text-slate-400 text-[10px]">(18)</span>
-                  </div>
-                  <span class="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Verified</span>
-   
+        title: "Sylinx 8KG Front Load Fully Automatic Inverter Washing Machine",
+        price: 38500,
+        badge: "Washing Machines",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=800&q=80",
+        desc: "Experience ultimate fabric care with the Sylinx 8KG Fully Automatic Front Load Washing Machine."
+      },
+      {
+        id: "p6",
+        title: "Hammac 20L Digital Solo Microwave Oven",
+        price: 7000,
+        badge: "Kitchen Appliances",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=800&q=80",
+        desc: "Upgrade your kitchen efficiency with the compact and powerful Hammac 20L Digital Solo Microwave Oven."
+      },
+      {
+        id: "p7",
+        title: "JP Jamespot Heavy-Duty Non-Stick Granite Cookware Set",
+        price: 5500,
+        badge: "Kitchen Appliances",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80",
+        desc: "Cook healthier, oil-free meals with the premium JP Jamespot Heavy-Duty Non-Stick Granite Cookware Set."
+      },
+      {
+        id: "p8",
+        title: "Hammac 200L Heavy Duty Energy-Saving Chest Deep Freezer",
+        price: 26500,
+        badge: "Refrigerators & Freezers",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=800&q=80",
+        desc: "Keep your food fresh and drinks frozen for days with the Hammac 200 Litre Deep Freezer."
+      },
+      {
+        id: "p9",
+        title: "Haier 20L Manual Microwave Oven (HMW20MB)",
+        price: 9000,
+        badge: "Kitchen Appliances",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&w=800&q=80",
+        desc: "Simplify your daily meal prep with the Haier 20L Manual Microwave Oven."
+      },
+      {
+        id: "p10",
+        title: "Nunix 2200W Professional Hair Dryer Set",
+        price: 3000,
+        badge: "Personal Care & Beauty",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
+        desc: "Get salon-quality styling at home with the Nunix 2200W Professional Hair Dryer."
+      },
+      {
+        id: "p11",
+        title: "TLAC 430L Side-by-Side NoFrost Refrigerator (Grey Finish)",
+        price: 76000,
+        badge: "Refrigerators & Freezers",
+        variants: [],
+        image: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&w=800&q=80",
+        desc: "Experience maximum fresh-food storage with the TLAC 430L Side-by-Side Refrigerator."
+      },
+      {
+        id: "p12",
+        title: "Riki Multi-Function Digital Electric Pressure Cooker",
+        price: 5500,
+        badge: "Kitchen Appliances",
+        variants: ["6 Litres (6-in-1)", "8 Litres (10-in-1)"],
+        ima
