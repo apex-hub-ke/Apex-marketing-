@@ -1,1126 +1,334 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex-Hub Kenya | Premier Store & Customer Reviews</title>
-    
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
-    <style>
-        :root {
-            --primary: #6b21a8;
-            --primary-hover: #581c87;
-            --bg: #f8fafc;
-            --text: #0f172a;
-            --border: #e2e8f0;
-            --card-bg: #ffffff;
-            --star-gold: #f59e0b;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-        }
-
-        header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: -0.5px;
-        }
-
-        .admin-btn {
-            background: var(--primary);
-            color: #ffffff;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .admin-btn:hover {
-            background: var(--primary-hover);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .product-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-        }
-
-        .img-wrapper {
-            width: 100%;
-            height: 240px;
-            background: #f1f5f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-card img {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            padding: 0.75rem;
-        }
-
-        .zoom-hint {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: rgba(0,0,0,0.6);
-            color: #fff;
-            font-size: 0.7rem;
-            padding: 3px 8px;
-            border-radius: 6px;
-            backdrop-filter: blur(2px);
-        }
-
-        .category-badge {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background: rgba(107, 33, 168, 0.9);
-            color: #fff;
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
-            text-transform: uppercase;
-        }
-
-        .product-card-body {
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .product-title {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-            line-height: 1.3;
-        }
-
-        .product-price {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .buy-btn {
-            margin-top: auto;
-            background: #25d366;
-            color: #fff;
-            text-align: center;
-            text-decoration: none;
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: background 0.2s;
-        }
-
-        .buy-btn:hover {
-            background: #1da851;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            backdrop-filter: blur(3px);
-        }
-
-        .modal-content {
-            background: #fff;
-            border-radius: 16px;
-            max-width: 650px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #64748b;
-        }
-
-        #lightboxModal {
-            background: rgba(0,0,0,0.9);
-            z-index: 200;
-        }
-
-        #lightboxModal img {
-            max-width: 90vw;
-            max-height: 85vh;
-            border-radius: 8px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .ai-box {
-            background: #f3e8ff;
-            border: 1px solid #d8b4fe;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-        }
-
-        .submit-btn {
-            width: 100%;
-            background: var(--primary);
-            color: #fff;
-            padding: 0.85rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .ai-btn {
-            background: #9333ea;
-            color: #fff;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 0.5rem;
-        }
-
-        /* Review Styles */
-        .star-rating-picker span {
-            font-size: 1.8rem;
-            color: #cbd5e1;
-            cursor: pointer;
-            transition: color 0.15s;
-        }
-
-        .star-rating-picker span.active,
-        .star-rating-picker span:hover {
-            color: var(--star-gold);
-        }
-
-        .star-display {
-            color: var(--star-gold);
-            font-weight: bold;
-        }
-
-        .review-card {
-            background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
-
-        .verified-badge {
-            background: #dcfce7;
-            color: #15803d;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-        }
-
-        .filter-chip {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            background: #e2e8f0;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            color: #475569;
-        }
-
-        .filter-chip.active {
-            background: var(--primary);
-            color: #ffffff;
-        }
-
-        .admin-tab-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            border: 1px solid var(--border);
-            background: #f8fafc;
-            color: #64748b;
-            cursor: pointer;
-        }
-
-        .admin-tab-btn.active {
-            background: var(--primary);
-            color: #ffffff;
-            border-color: var(--primary);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex-Hub Kenya | Official Storefront</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f1f5f9; }
+    .glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card:hover { border-color: rgba(168, 85, 247, 0.5); transform: translateY(-2px); }
+  </style>
 </head>
-<body>
+<body class="antialiased min-h-screen flex flex-col selection:bg-purple-500 selection:text-white">
 
-    <!-- Header Navigation -->
-    <header>
-        <div class="logo">APEX-HUB KENYA</div>
-        <div class="flex items-center gap-3">
-            <button class="text-sm font-semibold text-purple-800 hover:underline hidden sm:block" onclick="scrollToReviews()">⭐ Customer Reviews</button>
-            <button class="admin-btn" onclick="openAdminModal()">⚙️ Admin Panel</button>
+  <!-- Header / Navigation -->
+  <header class="sticky top-0 z-40 glass border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-purple-500/30">
+          A
         </div>
-    </header>
-
-    <!-- Main Container -->
-    <div class="container">
-        
-        <!-- Category Filter Chips -->
-        <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
-            <button class="filter-chip active" onclick="filterCategory('ALL', this)">All Items</button>
-            <button class="filter-chip" onclick="filterCategory('KITCHEN APPLIANCES', this)">Kitchen Appliances</button>
-            <button class="filter-chip" onclick="filterCategory('HOME ELECTRONICS', this)">Home Electronics</button>
-            <button class="filter-chip" onclick="filterCategory('LIVING & FURNITURE', this)">Living & Furniture</button>
+        <div>
+          <span class="text-xl font-extrabold text-white tracking-tight block">Apex-Hub <span class="text-purple-400">KE</span></span>
+          <span class="text-[10px] uppercase font-semibold text-slate-400 tracking-widest block -mt-1">Official Direct Storefront</span>
         </div>
+      </div>
 
-        <!-- Storefront Product Grid -->
-        <div id="productGrid" class="grid-layout mb-12">
-            <!-- Products render dynamically here -->
-        </div>
+      <button onclick="toggleModal('adminModal', true)" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-purple-950/80 text-purple-300 hover:bg-purple-900 transition-colors flex items-center gap-2 border border-purple-500/30">
+        <span id="lockStatusDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="lockStatusText">Admin Access</span>
+      </button>
+    </div>
+  </header>
 
-        <!-- ================= CUSTOMER REVIEWS SECTION ================= -->
-        <section id="reviewsSection" class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm my-10">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 pb-6 border-b border-slate-200">
-                <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800">Customer Reviews & Ratings</h2>
-                    <p class="text-slate-500 text-sm mt-1">Real feedback from verified buyers across Kenya</p>
-                </div>
+  <!-- Main Storefront Content -->
+  <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+    
+    <!-- Hero / Live Search -->
+    <div class="relative overflow-hidden rounded-3xl glass p-6 sm:p-10 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="max-w-xl">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20 mb-3">
+          ✨ Verified Products • Instant Kenya Delivery
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Explore Direct Inventory</h1>
+        <p class="text-slate-400 text-xs sm:text-sm mt-2">Quality tech with verified 5-star ratings, KES pricing, product variants, and direct 1-tap WhatsApp ordering.</p>
+      </div>
 
-                <!-- Rating Stats Overview -->
-                <div class="flex items-center gap-6">
-                    <div class="text-center">
-                        <div class="text-4xl font-extrabold text-slate-900" id="avgRatingDisplay">4.9</div>
-                        <div class="star-display text-lg" id="avgStarsDisplay">★★★★★</div>
-                        <div class="text-xs font-semibold text-slate-500 mt-0.5" id="totalReviewsCount">Based on 0 reviews</div>
-                    </div>
-                    <button class="bg-purple-700 hover:bg-purple-800 text-white font-bold px-5 py-3 rounded-xl shadow-md transition flex items-center gap-2 text-sm" onclick="openReviewModal()">
-                        ✍️ Leave a Review
-                    </button>
-                </div>
-            </div>
-
-            <!-- Customer Reviews Grid -->
-            <div id="reviewsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Reviews dynamically render here -->
-            </div>
-        </section>
+      <div class="relative w-full md:w-80">
+        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="Search title, spec, variant..." class="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-900/90 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm text-white placeholder-slate-500">
+        <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">🔍</span>
+      </div>
     </div>
 
-    <!-- Lightbox Image Modal -->
-    <div id="lightboxModal" class="modal" onclick="closeLightbox()">
-        <img id="lightboxImg" src="" alt="Product Image View">
+    <!-- Product Grid -->
+    <div>
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+          <span>Active Inventory</span>
+          <span id="itemCount" class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-purple-400 font-bold">0 items</span>
+        </h2>
+      </div>
+
+      <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Products render dynamically here -->
+      </div>
     </div>
 
-    <!-- ================= LEAVE A REVIEW MODAL ================= -->
-    <div id="reviewModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="font-bold text-lg text-slate-800">✍️ Write a Customer Review</h3>
-                <button class="close-btn" onclick="closeReviewModal()">&times;</button>
-            </div>
-
-            <form onsubmit="submitCustomerReview(event)">
-                <label class="text-xs font-bold text-slate-600">YOUR RATING</label>
-                <div class="star-rating-picker mb-4 flex gap-1" id="starPicker">
-                    <span onclick="setRating(1)">★</span>
-                    <span onclick="setRating(2)">★</span>
-                    <span onclick="setRating(3)">★</span>
-                    <span onclick="setRating(4)">★</span>
-                    <span onclick="setRating(5)">★</span>
-                </div>
-                <input type="hidden" id="selectedRating" value="5">
-
-                <div class="form-row">
-                    <div>
-                        <label class="text-xs font-bold text-slate-600">FULL NAME</label>
-                        <input type="text" id="reviewerName" placeholder="e.g. Timothy M." required>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-600">EMAIL ADDRESS (PRIVATE)</label>
-                        <input type="email" id="reviewerEmail" placeholder="yourname@gmail.com" required>
-                    </div>
-                </div>
-
-                <label class="text-xs font-bold text-slate-600">PRODUCT PURCHASED</label>
-                <select id="reviewerProduct" required>
-                    <option value="">-- Select Product --</option>
-                    <!-- Options populated dynamically -->
-                </select>
-
-                <label class="text-xs font-bold text-slate-600">OPTIONAL PHOTO LINK (DIRECT URL)</label>
-                <input type="text" id="reviewerImage" placeholder="https://i.ibb.co/...">
-
-                <label class="text-xs font-bold text-slate-600">DETAILED REVIEW COMMENT</label>
-                <textarea id="reviewerComment" rows="4" placeholder="Share your experience regarding item delivery, product quality, or service..." required></textarea>
-
-                <button type="submit" class="submit-btn bg-purple-700 hover:bg-purple-800">Submit Review</button>
-            </form>
+    <!-- Customer Reviews Section -->
+    <section class="glass rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <h2 class="text-2xl font-bold text-white tracking-tight">Customer Reviews</h2>
+            <span class="text-amber-400 font-bold text-sm bg-amber-400/10 px-2.5 py-0.5 rounded-lg border border-amber-400/20">4.9 / 5.0 ★</span>
+          </div>
+          <p class="text-slate-400 text-xs">Verified ratings from buyers across Nairobi, Mombasa, Nakuru & Kisumu</p>
         </div>
-    </div>
+        <button onclick="toggleModal('reviewModal', true)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white transition-colors shadow-lg shadow-purple-600/20">
+          + Leave a Review
+        </button>
+      </div>
 
-    <!-- ================= ADMIN PANEL OVERLAY ================= -->
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="font-bold text-lg text-slate-800">⚙️ Admin Management Console</h3>
-                <button class="close-btn" onclick="closeAdminModal()">&times;</button>
-            </div>
-
-            <!-- Authentication Box -->
-            <div id="authBox">
-                <p style="margin-bottom: 1rem;" class="text-sm text-slate-600">Sign in with Admin Credentials:</p>
-                <input type="email" id="adminEmail" placeholder="Admin Email" value="admin@apexhub.co.ke">
-                <input type="password" id="adminPass" placeholder="Admin Password" value="123456">
-                <button class="submit-btn" onclick="authenticate()">Sign In</button>
-            </div>
-
-            <!-- Admin Dashboard -->
-            <div id="adminControls" style="display: none;">
-                <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-3">
-                    <span style="font-size: 0.85rem; color: #16a34a; font-weight: 700;">● Authenticated Session</span>
-                    <button onclick="logoutAdmin()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Sign Out</button>
-                </div>
-
-                <!-- Admin Navigation Tabs -->
-                <div class="flex gap-2 mb-6">
-                    <button class="admin-tab-btn active" id="tabProductsBtn" onclick="switchAdminTab('products')">📦 Products (<span id="itemCount">0</span>)</button>
-                    <button class="admin-tab-btn" id="tabReviewsBtn" onclick="switchAdminTab('reviews')">💬 Manage Reviews (<span id="reviewAdminCount">0</span>)</button>
-                </div>
-
-                <!-- TAB 1: PRODUCT MANAGEMENT -->
-                <div id="adminProductsSection">
-                    <div class="ai-box">
-                        <label style="font-weight: 700; color: #6b21a8; font-size: 0.85rem;">⚡ AI QUICK GENERATOR</label>
-                        <input type="text" id="aiInput" placeholder="e.g., 6L Roch pressure cooker 5000" class="mt-1">
-                        <button class="ai-btn" onclick="runAIGenerator()">Enhance with AI</button>
-                    </div>
-
-                    <input type="hidden" id="editKey">
-                    
-                    <label class="text-xs font-bold text-slate-600">PRODUCT TITLE</label>
-                    <input type="text" id="title" placeholder="e.g. ROCH 3.0L Electric Food Processor">
-
-                    <div class="form-row">
-                        <div>
-                            <label class="text-xs font-bold text-slate-600">CATEGORY</label>
-                            <select id="category">
-                                <option value="KITCHEN APPLIANCES">KITCHEN APPLIANCES</option>
-                                <option value="HOME ELECTRONICS">HOME ELECTRONICS</option>
-                                <option value="LIVING & FURNITURE">LIVING & FURNITURE</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-slate-600">PRICE (KES)</label>
-                            <input type="number" id="price" placeholder="3500">
-                        </div>
-                    </div>
-
-                    <label class="text-xs font-bold text-slate-600">IMAGE LINK (DIRECT FILE URL)</label>
-                    <input type="text" id="imageUrl" placeholder="https://..." onchange="convertImageUrl()">
-
-                    <label class="text-xs font-bold text-slate-600">DESCRIPTION</label>
-                    <textarea id="description" rows="3" placeholder="Product features, power specifications..."></textarea>
-
-                    <button class="submit-btn mb-6" id="saveBtn" onclick="saveProduct()">Save Product to Database</button>
-
-                    <div class="border-t border-slate-200 pt-4">
-                        <h4 class="font-bold text-slate-700 text-sm mb-2">STORE INVENTORY LIST</h4>
-                        <div id="adminInventory">Loading inventory...</div>
-                    </div>
-                </div>
-
-                <!-- TAB 2: REVIEWS MANAGEMENT -->
-                <div id="adminReviewsSection" style="display: none;">
-                    <div class="bg-slate-100 p-3 rounded-xl mb-4 flex justify-between items-center text-xs font-bold text-slate-700">
-                        <span>REQUIRE ADMIN APPROVAL BEFORE PUBLIC DISPLAY</span>
-                        <input type="checkbox" id="requireApprovalToggle" class="w-4 h-4 cursor-pointer" onchange="toggleRequireApproval(this.checked)">
-                    </div>
-
-                    <div id="adminReviewsList" class="flex flex-col gap-3">
-                        <!-- Reviews moderation items render here -->
-                    </div>
-                </div>
-
-            </div>
+      <div id="reviewsList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-slate-200">Brian K. (Nairobi)</span>
+            <span class="text-amber-400 text-xs">★★★★★</span>
+          </div>
+          <p class="text-slate-400 text-xs leading-relaxed">"Ordered the Sony XM5 headphones in the morning, got delivered to Kilimani by 2 PM. Verified authentic product!"</p>
+          <span class="text-[10px] text-purple-400 font-semibold block">✓ Verified Buyer</span>
         </div>
+
+        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-slate-200">Faith M. (Mombasa)</span>
+            <span class="text-amber-400 text-xs">★★★★★</span>
+          </div>
+          <p class="text-slate-400 text-xs leading-relaxed">"Admin responded fast on WhatsApp. Item was well packed and shipped via courier safely."</p>
+          <span class="text-[10px] text-purple-400 font-semibold block">✓ Verified Buyer</span>
+        </div>
+
+        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-slate-200">Kevin O. (Nakuru)</span>
+            <span class="text-amber-400 text-xs">★★★★★</span>
+          </div>
+          <p class="text-slate-400 text-xs leading-relaxed">"Smooth checkout process via WhatsApp. The MacBook M3 specs matched 100% with description."</p>
+          <span class="text-[10px] text-purple-400 font-semibold block">✓ Verified Buyer</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- AI Sales Assistant Floating Widget -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <div id="aiChatBox" class="hidden glass rounded-2xl w-80 sm:w-96 p-4 shadow-2xl border border-slate-700 mb-3 flex flex-col h-96">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🤖</span>
+          <div>
+            <h4 class="text-sm font-bold text-white">Apex AI Assistant</h4>
+            <span class="text-[10px] text-emerald-400 block font-semibold">Online • Kenya Sales & Support</span>
+          </div>
+        </div>
+        <button onclick="toggleAiChat(false)" class="text-slate-400 hover:text-white text-lg">&times;</button>
+      </div>
+
+      <div id="aiMessages" class="flex-grow overflow-y-auto py-3 space-y-3 text-xs text-slate-300">
+        <div class="bg-slate-800 p-3 rounded-xl border border-slate-700/50">
+          Hello! I'm your Apex-Hub Assistant. Ask me about stock availability, variants, specifications, or delivery options across Kenya! 🇰🇪
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-slate-800 flex gap-2">
+        <input type="text" id="aiInput" onkeypress="if(event.key==='Enter') sendAiMessage()" placeholder="Type item query or question..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:ring-1 focus:ring-purple-500">
+        <button onclick="sendAiMessage()" class="px-3 py-2 bg-purple-600 text-white font-bold rounded-xl text-xs hover:bg-purple-500">Send</button>
+      </div>
     </div>
 
-    <!-- Javascript Application Logic -->
-    <script>
-        // Sample Products
-        let storeProducts = {
-            "p1": {
-                name: "ROCH 3.0L Electric Food Processor",
-                title: "ROCH 3.0L Electric Food Processor",
-                category: "KITCHEN APPLIANCES",
-                price: 3500,
-                image: "https://placehold.co/600x600/f3e8ff/6b21a8?text=ROCH+Food+Processor",
-                description: "• High speed 300W pure copper motor\n• Stainless steel 4-blade assembly"
-            },
-            "p2": {
-                name: "Smart LED 43-Inch Ultra HD TV",
-                title: "Smart LED 43-Inch Ultra HD TV",
-                category: "HOME ELECTRONICS",
-                price: 24500,
-                image: "https://placehold.co/600x600/e0f2fe/0284c7?text=43%22+Smart+TV",
-                description: "• Full HD 1080p resolution\n• Built-in WiFi, YouTube, and Netflix"
-            }
-        };
-
-        // Sample Customer Reviews
-        let storeReviews = {
-            "r1": {
-                name: "Kamau N.",
-                email: "kamau@gmail.com",
-                rating: 5,
-                product: "ROCH 3.0L Electric Food Processor",
-                comment: "Extremely powerful food processor! Delivered to Nairobi CBD in less than 2 hours. Highly recommended storefront.",
-                date: "2026-10-20",
-                verified: true,
-                approved: true,
-                featured: true,
-                helpful: 12
-            },
-            "r2": {
-                name: "Achieng O.",
-                email: "achieng@gmail.com",
-                rating: 5,
-                product: "Smart LED 43-Inch Ultra HD TV",
-                comment: "Crisp clear picture display and excellent customer support on WhatsApp. Will buy again!",
-                date: "2026-10-22",
-                verified: true,
-                approved: true,
-                featured: false,
-                helpful: 7
-            }
-        };
-
-        let activeCategory = 'ALL';
-        let isAuthenticated = false;
-        let requireApproval = false;
-
-        // Firebase Setup
-        const firebaseConfig = {
-            databaseURL: "https://apex-hub-c6d50-default-rtdb.firebaseio.com"
-        };
-
-        let db = null;
-        try {
-            if (typeof firebase !== 'undefined') {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
-                db = firebase.database();
-                
-                // Firebase Auth Listener
-                firebase.auth().onAuthStateChanged(user => {
-                    if (user) {
-                        isAuthenticated = true;
-                        document.getElementById('authBox').style.display = 'none';
-                        document.getElementById('adminControls').style.display = 'block';
-                        loadAdminInventory();
-                        loadAdminReviews();
-                    } else {
-                        isAuthenticated = false;
-                        document.getElementById('authBox').style.display = 'block';
-                        document.getElementById('adminControls').style.display = 'none';
-                    }
-                });
-            }
-        } catch (e) {
-            console.log("Running in local sample mode");
-        }
-
-        // Navigation & Display Controls
-        function openAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
-        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
-        function openReviewModal() { 
-            populateProductDropdown();
-            setRating(5);
-            document.getElementById('reviewModal').style.display = 'flex'; 
-        }
-        function closeReviewModal() { document.getElementById('reviewModal').style.display = 'none'; }
-        function openLightbox(url) { 
-            document.getElementById('lightboxImg').src = url; 
-            document.getElementById('lightboxModal').style.display = 'flex'; 
-        }
-        function closeLightbox() { document.getElementById('lightboxModal').style.display = 'none'; }
-        function scrollToReviews() {
-            document.getElementById('reviewsSection').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Category Filtering
-        function filterCategory(cat, btn) {
-            activeCategory = cat;
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            renderStorefront();
-        }
-
-        // Admin Tab Switcher
-        function switchAdminTab(tab) {
-            if (tab === 'products') {
-                document.getElementById('adminProductsSection').style.display = 'block';
-                document.getElementById('adminReviewsSection').style.display = 'none';
-                document.getElementById('tabProductsBtn').classList.add('active');
-                document.getElementById('tabReviewsBtn').classList.remove('active');
-            } else {
-                document.getElementById('adminProductsSection').style.display = 'none';
-                document.getElementById('adminReviewsSection').style.display = 'block';
-                document.getElementById('tabReviewsBtn').classList.add('active');
-                document.getElementById('tabProductsBtn').classList.remove('active');
-                loadAdminReviews();
-            }
-        }
-
-        // Auth Logic
-        async function authenticate() {
-            const email = document.getElementById('adminEmail').value.trim();
-            const pass = document.getElementById('adminPass').value.trim();
-
-            if (!email || !pass) return alert("Please enter credentials.");
-
-            try {
-                if (typeof firebase !== 'undefined' && firebase.auth) {
-                    await firebase.auth().signInWithEmailAndPassword(email, pass);
-                } else {
-                    isAuthenticated = true;
-                    document.getElementById('authBox').style.display = 'none';
-                    document.getElementById('adminControls').style.display = 'block';
-                    loadAdminInventory();
-                    loadAdminReviews();
-                }
-            } catch (err) {
-                alert("Auth Notice: " + err.message);
-                isAuthenticated = true;
-                document.getElementById('authBox').style.display = 'none';
-                document.getElementById('adminControls').style.display = 'block';
-                loadAdminInventory();
-                loadAdminReviews();
-            }
-        }
-
-        function logoutAdmin() {
-            if (typeof firebase !== 'undefined' && firebase.auth) {
-                firebase.auth().signOut();
-            }
-            isAuthenticated = false;
-            document.getElementById('authBox').style.display = 'block';
-            document.getElementById('adminControls').style.display = 'none';
-        }
-
-        // Star Picker Logic
-        function setRating(val) {
-            document.getElementById('selectedRating').value = val;
-            const stars = document.getElementById('starPicker').children;
-            for (let i = 0; i < stars.length; i++) {
-                if (i < val) stars[i].classList.add('active');
-                else stars[i].classList.remove('active');
-            }
-        }
-
-        function populateProductDropdown() {
-            const select = document.getElementById('reviewerProduct');
-            select.innerHTML = '<option value="General Storefront Service">General Storefront Service</option>';
-            Object.keys(storeProducts).forEach(k => {
-                const name = storeProducts[k].name || storeProducts[k].title;
-                select.innerHTML += `<option value="${name}">${name}</option>`;
-            });
-        }
-
-        // Submit Customer Review
-        async function submitCustomerReview(e) {
-            e.preventDefault();
-            const rating = Number(document.getElementById('selectedRating').value);
-            const name = document.getElementById('reviewerName').value.trim();
-            const email = document.getElementById('reviewerEmail').value.trim();
-            const product = document.getElementById('reviewerProduct').value;
-            const image = document.getElementById('reviewerImage').value.trim();
-            const comment = document.getElementById('reviewerComment').value.trim();
-
-            const reviewPayload = {
-                name,
-                email,
-                rating,
-                product,
-                image,
-                comment,
-                date: new Date().toISOString().split('T')[0],
-                verified: true,
-                approved: !requireApproval,
-                featured: false,
-                helpful: 0
-            };
-
-            const newKey = 'r_' + Date.now();
-
-            if (db) {
-                try {
-                    await db.ref(`reviews/${newKey}`).set(reviewPayload);
-                } catch (e) {
-                    console.log("Firebase sync notice: Saved to local state.");
-                }
-            }
-
-            storeReviews[newKey] = reviewPayload;
-            closeReviewModal();
-            renderReviews();
-            alert(requireApproval ? "Thank you! Your review has been submitted for admin verification." : "Thank you! Your review is live.");
-        }
-
-        // Render Reviews Section
-        function renderReviews() {
-            const grid = document.getElementById('reviewsGrid');
-            const avgDisplay = document.getElementById('avgRatingDisplay');
-            const avgStars = document.getElementById('avgStarsDisplay');
-            const totalDisplay = document.getElementById('totalReviewsCount');
-
-            let keys = Object.keys(storeReviews).filter(k => storeReviews[k].approved !== false);
-
-            if (keys.length === 0) {
-                grid.innerHTML = '<p class="col-span-full text-slate-500 text-sm">No reviews yet. Be the first to share your experience!</p>';
-                avgDisplay.innerText = "5.0";
-                totalDisplay.innerText = "Based on 0 reviews";
-                return;
-            }
-
-            let totalRating = 0;
-            let html = '';
-
-            keys.forEach(k => {
-                const r = storeReviews[k];
-                totalRating += r.rating;
-
-                const starStr = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-                const avatar = r.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(r.name)}&background=6b21a8&color=fff`;
-
-                html += `
-                    <div class="review-card">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <img src="${avatar}" class="w-10 h-10 rounded-full object-cover border border-purple-200" onerror="this.src='https://ui-avatars.com/api/?name=User'">
-                                <div>
-                                    <div class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                        ${r.name}
-                                        ${r.verified ? '<span class="verified-badge">✓ Verified Buyer</span>' : ''}
-                                    </div>
-                                    <div class="text-xs text-slate-400">${r.date}</div>
-                                </div>
-                            </div>
-                            <div class="star-display text-sm">${starStr}</div>
-                        </div>
-
-                        <div class="text-xs font-semibold text-purple-800 bg-purple-50 px-2.5 py-1 rounded-md inline-block self-start">
-                            📦 ${r.product}
-                        </div>
-
-                        <p class="text-slate-600 text-sm leading-relaxed">${r.comment}</p>
-
-                        ${r.image ? `<img src="${r.image}" class="w-20 h-20 rounded-lg object-cover cursor-pointer border border-slate-200 mt-1" onclick="openLightbox('${r.image}')">` : ''}
-
-                        <div class="flex justify-between items-center text-xs text-slate-400 pt-2 border-t border-slate-100 mt-auto">
-                            <span>Was this review helpful?</span>
-                            <button onclick="upvoteHelpful('${k}')" class="text-slate-600 hover:text-purple-700 font-bold flex items-center gap-1 bg-slate-100 px-2 py-1 rounded">
-                                👍 ${r.helpful || 0}
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            const avg = (totalRating / keys.length).toFixed(1);
-            avgDisplay.innerText = avg;
-            avgStars.innerText = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
-            totalDisplay.innerText = `Based on ${keys.length} verified review${keys.length > 1 ? 's' : ''}`;
-
-            grid.innerHTML = html;
-        }
-
-        async function upvoteHelpful(key) {
-            if (!storeReviews[key]) return;
-            storeReviews[key].helpful = (storeReviews[key].helpful || 0) + 1;
-            if (db) {
-                try {
-                    await db.ref(`reviews/${key}/helpful`).set(storeReviews[key].helpful);
-                } catch(e) {}
-            }
-            renderReviews();
-        }
-
-        // Admin Review Moderation List
-        function loadAdminReviews() {
-            const list = document.getElementById('adminReviewsList');
-            const count = document.getElementById('reviewAdminCount');
-
-            const keys = Object.keys(storeReviews);
-            count.innerText = keys.length;
-
-            if (keys.length === 0) {
-                list.innerHTML = '<p class="text-sm text-slate-500">No reviews found.</p>';
-                return;
-            }
-
-            let html = '';
-            keys.forEach(k => {
-                const r = storeReviews[k];
-                html += `
-                    <div class="p-3 border border-slate-200 rounded-xl bg-white flex flex-col gap-2">
-                        <div class="flex justify-between items-center text-xs">
-                            <strong class="text-slate-800">${r.name} (${r.email})</strong>
-                            <span class="star-display">${'★'.repeat(r.rating)}</span>
-                        </div>
-                        <p class="text-xs text-slate-600">${r.comment}</p>
-                        <div class="flex justify-between items-center pt-2 border-t border-slate-100">
-                            <span class="text-xs font-semibold ${r.approved !== false ? 'text-green-600' : 'text-amber-600'}">
-                                ${r.approved !== false ? '● Published' : '○ Pending Approval'}
-                            </span>
-                            <div class="action-btns">
-                                <button class="btn-edit" onclick="toggleApproveReview('${k}')">${r.approved !== false ? 'Unpublish' : 'Approve'}</button>
-                                <button class="btn-delete" onclick="deleteReview('${k}')">Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            list.innerHTML = html;
-        }
-
-        async function toggleApproveReview(key) {
-            storeReviews[key].approved = !storeReviews[key].approved;
-            if (db) {
-                try {
-                    await db.ref(`reviews/${key}/approved`).set(storeReviews[key].approved);
-                } catch (e) {}
-            }
-            renderReviews();
-            loadAdminReviews();
-        }
-
-        async function deleteReview(key) {
-            if (confirm("Delete this review permanently?")) {
-                delete storeReviews[key];
-                if (db) {
-                    try {
-                        await db.ref(`reviews/${key}`).remove();
-                    } catch (e) {}
-                }
-                renderReviews();
-                loadAdminReviews();
-            }
-        }
-
-        function toggleRequireApproval(val) {
-            requireApproval = val;
-        }
-
-        // Storefront Product Rendering
-        function renderStorefront() {
-            const grid = document.getElementById('productGrid');
-            let html = '';
-
-            let keys = Object.keys(storeProducts);
-            let filteredKeys = keys.filter(k => {
-                if (activeCategory === 'ALL') return true;
-                return storeProducts[k].category === activeCategory;
-            });
-
-            if (filteredKeys.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center py-12 text-slate-500 font-semibold">No items available.</div>';
-                return;
-            }
-
-            filteredKeys.forEach(key => {
-                const item = storeProducts[key];
-                const name = item.name || item.title || 'Product Item';
-                const price = item.price || 0;
-                const cat = item.category || 'GENERAL';
-                const img = item.image || item.imageLink || item.imageUrl || 'https://placehold.co/600x600';
-
-                html += `
-                    <div class="product-card">
-                        <div class="img-wrapper" onclick="openLightbox('${img}')">
-                            <span class="category-badge">${cat}</span>
-                            <img src="${img}" alt="${name}" onerror="this.src='https://placehold.co/600x600'">
-                            <span class="zoom-hint">🔍 Expand</span>
-                        </div>
-                        <div class="product-card-body">
-                            <div class="product-title">${name}</div>
-                            <div class="product-price">KES ${Number(price).toLocaleString()}</div>
-                            <a class="buy-btn" href="https://wa.me/254700000000?text=Hello%20Apex-Hub,%20I%20want%20to%20order:%20${encodeURIComponent(name)}" target="_blank">
-                                💬 Order on WhatsApp
-                            </a>
-                        </div>
-                    </div>
-                `;
-            });
-            grid.innerHTML = html;
-        }
-
-        // Admin Products List
-        function loadAdminInventory() {
-            const list = document.getElementById('adminInventory');
-            const count = document.getElementById('itemCount');
-
-            const keys = Object.keys(storeProducts);
-            count.innerText = keys.length;
-
-            if (keys.length === 0) {
-                list.innerHTML = '<p class="text-sm text-slate-500">No products in inventory.</p>';
-                return;
-            }
-
-            let html = '';
-            keys.forEach(key => {
-                const item = storeProducts[key];
-                const name = item.name || item.title || 'Unnamed Item';
-                const price = item.price || 0;
-
-                html += `
-                    <div class="inventory-item">
-                        <div>
-                            <strong class="text-slate-800 text-sm">${name}</strong><br>
-                            <small class="text-purple-700 font-bold">KES ${Number(price).toLocaleString()}</small>
-                        </div>
-                        <div class="action-btns">
-                            <button class="btn-edit" onclick="editProduct('${key}')">Edit</button>
-                            <button class="btn-delete" onclick="deleteProduct('${key}')">Delete</button>
-                        </div>
-                    </div>
-                `;
-            });
-            list.innerHTML = html;
-        }
-
-        // Save Product
-        async function saveProduct() {
-            const key = document.getElementById('editKey').value;
-            const title = document.getElementById('title').value;
-            const price = document.getElementById('price').value;
-            const category = document.getElementById('category').value;
-            const image = document.getElementById('imageUrl').value;
-            const description = document.getElementById('description').value;
-
-            if (!title || !price || !image) return alert("Please complete Title, Price, and Image URL.");
-
-            const payload = { name: title, title: title, price: Number(price), category, image, imageLink: image, description };
-
-            if (db) {
-                try {
-                    if (key) await db.ref(`products/${key}`).update(payload);
-                    else await db.ref('products').push(payload);
-                } catch (e) {}
-            }
-
-            const targetKey = key || 'p_' + Date.now();
-            storeProducts[targetKey] = payload;
-
-            resetForm();
-            renderStorefront();
-            loadAdminInventory();
-            alert("Product saved successfully!");
-        }
-
-        function editProduct(key) {
-            const item = storeProducts[key];
-            if (!item) return;
-
-            document.getElementById('editKey').value = key;
-            document.getElementById('title').value = item.name || item.title || '';
-            document.getElementById('price').value = item.price || '';
-            document.getElementById('category').value = item.category || 'KITCHEN APPLIANCES';
-            document.getElementById('imageUrl').value = item.image || item.imageLink || '';
-            document.getElementById('description').value = item.description || '';
-            document.getElementById('saveBtn').innerText = 'Update Product';
-        }
-
-        async function deleteProduct(key) {
-            if (confirm("Delete this product?")) {
-                if (db) {
-                    try { await db.ref(`products/${key}`).remove(); } catch (e) {}
-                }
-                delete storeProducts[key];
-                renderStorefront();
-                loadAdminInventory();
-            }
-        }
-
-        function resetForm() {
-            document.getElementById('editKey').value = '';
-            document.getElementById('aiInput').value = '';
-            document.getElementById('title').value = '';
-            document.getElementById('price').value = '';
-            document.getElementById('imageUrl').value = '';
-            document.getElementById('description').value = '';
-            document.getElementById('saveBtn').innerText = 'Save Product to Database';
-        }
-
-        function runAIGenerator() {
-            const raw = document.getElementById('aiInput').value.trim();
-            if (!raw) return alert("Enter a description prompt!");
-
-            let words = raw.split(' ');
-            let price = words.find(w => !isNaN(w) && Number(w) > 99) || '';
-            let titleWords = words.filter(w => w !== price);
-            let title = titleWords.join(' ');
-
-            document.getElementById('title').value = title.charAt(0).toUpperCase() + title.slice(1);
-            if (price) document.getElementById('price').value = price;
-            document.getElementById('description').value = `• High performance ${title}\n• Manufactured with durable components`;
-            document.getElementById('imageUrl').value = `https://placehold.co/600x600/f3e8ff/6b21a8?text=${encodeURIComponent(title)}`;
-        }
-
-        function convertImageUrl() {
-            let urlInput = document.getElementById('imageUrl');
-            let val = urlInput.value.trim();
-            if (val.includes('ibb.co/') && !val.includes('i.ibb.co/')) {
-                let code = val.split('ibb.co/')[1].split('/')[0];
-                urlInput.value = `https://i.ibb.co/${code}/image.jpg`;
-            }
-        }
-
-        // Live Realtime Firebase Listeners
-        if (db) {
-            db.ref('products').on('value', snapshot => {
-                const data = snapshot.val();
-                if (data) {
-                    storeProducts = data;
-                    renderStorefront();
-                    if (isAuthenticated) loadAdminInventory();
-                }
-            });
-
-            db.ref('reviews').on('value', snapshot => {
-                const data = snapshot.val();
-                if (data) {
-                    storeReviews = data;
-                    renderReviews();
-                    if (isAuthenticated) loadAdminReviews();
-                }
-            });
-        }
-
-        // Initial Initialization
-        renderStorefront();
-        renderReviews();
-    </script>
-</body>
-</html>
-```
-
-***
-
-### Summary of Updated Features:
-1. **Interactive Customer Reviews Hub**: Customers can read verified buyer reviews, upvote helpful comments, and submit their own rating and photos.
-2. **Admin Moderation Tab**: Administrators can approve pending reviews or delete inappropriate submissions from within the Admin Panel.
-3. **Live Firebase Realtime Database Sync**: Listens directly to `/reviews` to keep feedback updated across all devices.
-```
+    <button onclick="toggleAiChat()" class="w-14 h-14 bg-gradient-to-tr from-purple-600 to-indigo-600 rounded-full flex items-center justify-center text-2xl text-white shadow-xl shadow-purple-600/30 border border-purple-400/30 hover:scale-105 transition-transform">
+      🤖
+    </button>
+  </div>
+
+  <!-- Review Modal -->
+  <div id="reviewModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="font-bold text-white text-base">Write a Customer Review</h3>
+        <button onclick="toggleModal('reviewModal', false)" class="text-slate-400 hover:text-white">&times;</button>
+      </div>
+      <form onsubmit="handleAddReview(event)" class="space-y-3">
+        <input type="text" id="rName" required placeholder="Your Name & Location (e.g. John K. - Nairobi)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none">
+        <select id="rRating" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none">
+          <option value="★★★★★">5 Stars (Excellent)</option>
+          <option value="★★★★☆">4 Stars (Good)</option>
+          <option value="★★★☆☆">3 Stars (Average)</option>
+        </select>
+        <textarea id="rComment" required placeholder="Your order experience..." rows="3" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none"></textarea>
+        <button type="submit" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-xs">Submit Feedback</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Modal (Locked by Default) -->
+  <div id="adminModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🔑</span>
+          <div>
+            <h3 class="text-lg font-bold text-white">Admin Control Center</h3>
+            <p class="text-[11px] text-slate-400">Apex-Hub Management Panel</p>
+          </div>
+        </div>
+        <button onclick="toggleModal('adminModal', false)" class="text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+      </div>
+
+      <!-- Auth Unlock Form -->
+      <form id="loginForm" onsubmit="handleAdminLogin(event)" class="mt-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Admin Email</label>
+          <input type="email" id="adminEmail" required value="timothymatheka03@gmail.com" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Passcode</label>
+          <input type="password" id="adminPassword" required placeholder="Enter password (default: admin128)" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm text-white">
+        </div>
+        <button type="submit" class="w-full py-3.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition-colors text-sm shadow-lg shadow-purple-600/20">
+          Unlock Admin Dashboard
+        </button>
+      </form>
+
+      <!-- Unlocked Dashboard CRUD Form -->
+      <div id="adminDashboard" class="hidden mt-6 space-y-5">
+        <div class="flex items-center justify-between p-3.5 bg-purple-950/40 rounded-2xl border border-purple-500/20">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="text-xs font-semibold text-purple-200">Active: timothymatheka03@gmail.com</span>
+          </div>
+          <button onclick="handleLockAdmin()" class="px-3 py-1.5 bg-red-950/80 hover:bg-red-900 border border-red-500/30 text-red-300 rounded-xl text-xs font-bold flex items-center gap-1.5">
+            <span>🔒</span> Lock Admin Panel
+          </button>
+        </div>
+
+        <form onsubmit="handleSaveProduct(event)" class="space-y-3">
+          <input type="hidden" id="editId" value="">
+          <div class="flex items-center justify-between">
+            <h4 id="formTitle" class="font-bold text-xs text-purple-400 uppercase tracking-wider">+ ADD NEW STORE ITEM</h4>
+            <button type="button" onclick="resetForm()" class="text-[11px] text-slate-400 hover:text-white underline">Reset Form</button>
+          </div>
+          
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Product Title</label>
+            <input type="text" id="pTitle" placeholder="e.g. iPhone 15 Pro Max 256GB" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Price (KES)</label>
+              <input type="number" id="pPrice" placeholder="185000" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Category Badge</label>
+              <input type="text" id="pBadge" placeholder="e.g. Top Seller" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Variants & Options (Comma-separated)</label>
+            <input type="text" id="pVariants" placeholder="e.g. 256GB, 512GB, 1TB OR Natural Titanium, Black" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Direct Image URL</label>
+            <input type="url" id="pImage" placeholder="https://images.unsplash.com/..." required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Specifications & Description</label>
+            <textarea id="pDesc" placeholder="Key technical specifications..." rows="3" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white focus:outline-none focus:border-purple-500"></textarea>
+          </div>
+          
+          <button type="submit" id="saveBtn" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition-colors shadow-md">
+            Publish Item to Live Store
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Original Store Inventory with Variants & Specs
+    let products = [
+      {
+        id: "p1",
+        title: "iPhone 15 Pro Max",
+        price: 185000,
+        badge: "Top Seller",
+        variants: ["256GB", "512GB", "1TB"],
+        image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=800&q=80",
+        desc: "A17 Pro chip, Titanium design with Action button, 48MP Main camera system, 5x Telephoto optical zoom."
+      },
+      {
+        id: "p2",
+        title: "Apple MacBook Pro 14 M3 Chip",
+        price: 245000,
+        badge: "New Arrival",
+        variants: ["16GB / 512GB", "18GB / 1TB"],
+        image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80",
+        desc: "8-core CPU, 10-core GPU, Liquid Retina XDR display, Space Black & Silver finish. 1-Year Warranty."
+      },
+      {
+        id: "p3",
+        title: "Samsung Galaxy S24 Ultra 5G",
+        price: 168000,
+        badge: "In Stock",
+        variants: ["Titanium Black", "Titanium Gray", "Titanium Violet"],
+        image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=800&q=80",
+        desc: "Snapdragon 8 Gen 3, 200MP camera with Galaxy AI feature suite, Built-in S-Pen stylus."
+      },
+      {
+        id: "p4",
+        title: "Sony WH-1000XM5 ANC Headphones",
+        price: 48500,
+        badge: "Verified Item",
+        variants: ["Black", "Silver", "Midnight Blue"],
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
+        desc: "Industry leading noise canceling with dual processors, 30-hour battery life, Crystal clear hands-free calling."
+      },
+      {
+        id: "p5",
+        title: "Apple Watch Series 9 GPS 45mm",
+        price: 62000,
+        badge: "In Stock",
+        variants: ["Midnight", "Starlight", "Silver"],
+        image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=800&q=80",
+        desc: "Aluminum Case, S9 SiP chip, Double Tap gesture control, ECG & Blood Oxygen monitoring."
+      }
+    ];
+
+    let selectedVariants = {};
+    let isAdminUnlocked = false;
+
+    function renderProducts(list) {
+      const grid = document.getElementById('productGrid');
+      document.getElementById('itemCount').innerText = `${list.length} items`;
+
+      grid.innerHTML = list.map(p => {
+        const variantsArr = p.variants || [];
+        const activeVariant = selectedVariants[p.id] || (variantsArr.length ? variantsArr[0] : '');
+
+        return `
+          <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-300">
+            <div>
+              <div class="relative overflow-hidden bg-slate-900/80 h-52 group">
+                <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://via.placeholder.com/400x300/0f172a/cbd5e1?text=Apex+Store+Item'">
+                <span class="absolute top-3 left-3 bg-purple-600/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-md shadow-md border border-purple-400/30">
+                  ${p.badge || 'In Stock'}
+                </span>
+              </div>
+              
+              <div class="p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1 text-amber-400 text-xs font-bold">
+                    <span>★★★★★</span>
+                    <span class="text-slate-400 text-[10px]">(18)</span>
+                  </div>
+                  <span class="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Verified</span>
+   
