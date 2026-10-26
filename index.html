@@ -1,560 +1,674 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex-Hub | Admin Portal</title>
-    
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex-Hub | Admin Portal & Storefront</title>
 
-    <style>
-        :root {
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --primary: #0d9488;
-            --primary-hover: #0f766e;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-        }
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 20px;
-        }
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-card: #1e293b;
+      --primary: #0d9488;
+      --primary-hover: #0f766e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
 
-        /* Lock Screen Modal */
-        #lockScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: var(--bg-dark);
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
-        .login-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 30px;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 380px;
-            text-align: center;
-        }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-        .login-card h2 {
-            margin-bottom: 10px;
-            color: var(--text-main);
-        }
+    /* Public Customer Storefront Styles */
+    .public-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 25px;
+    }
 
-        .login-card p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
+    .public-header h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            background-color: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-main);
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            outline: none;
-        }
+    .public-header h1 span {
+      color: var(--primary);
+    }
 
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--primary);
-        }
+    .public-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
 
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-        .btn:hover {
-            background-color: var(--primary-hover);
-        }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
 
-        /* Main Container */
-        .admin-container {
-            max-width: 900px;
-            margin: 0 auto;
-            display: none; /* Shown after unlock */
-        }
+    .card-title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
+    .card-price {
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
 
-        .section-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+    }
 
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .btn-wa {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: #16a34a;
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-align: center;
+    }
 
-        /* Category Selector Layout */
-        .category-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+    /* Lock Screen Modal */
+    #lockScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--bg-dark);
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
 
-        .category-group select, .category-group input {
-            margin-bottom: 15px;
-        }
+    .login-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 30px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
 
-        /* Variant Builder Row */
-        .variant-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
+    .login-card h2 {
+      margin-bottom: 10px;
+      color: var(--text-main);
+    }
 
-        .variant-row input {
-            margin-bottom: 0;
-        }
+    .login-card p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
 
-        .btn-remove-variant {
-            background-color: var(--danger);
-            color: white;
-            border: none;
-            padding: 0 15px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      background-color: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-main);
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      outline: none;
+    }
 
-        /* Existing Inventory List */
-        .product-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background-color: #0f172a;
-        }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+    }
 
-        .product-item img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 6px;
-        }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
 
-        .product-info {
-            flex: 1;
-        }
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
 
-        .product-actions {
-            display: flex;
-            gap: 8px;
-        }
+    /* Main Container */
+    .admin-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: none; /* Shown after unlock */
+    }
 
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            border-radius: 6px;
-            cursor: pointer;
-            border: none;
-            font-weight: 600;
-        }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+    }
 
-        .btn-edit { background-color: var(--warning); color: #000; }
-        .btn-delete { background-color: var(--danger); color: #fff; }
+    .section-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
 
-        .img-preview {
-            max-width: 100%;
-            max-height: 150px;
-            border-radius: 8px;
-            margin-top: 10px;
-            display: none;
-        }
-    </style>
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Category Selector Layout */
+    .category-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .category-group select, .category-group input {
+      margin-bottom: 15px;
+    }
+
+    /* Variant Builder Row */
+    .variant-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .variant-row input {
+      margin-bottom: 0;
+    }
+
+    .btn-remove-variant {
+      background-color: var(--danger);
+      color: white;
+      border: none;
+      padding: 0 15px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* Existing Inventory List */
+    .product-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background-color: #0f172a;
+    }
+
+    .product-item img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .product-info {
+      flex: 1;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+    }
+
+    .btn-edit { background-color: var(--warning); color: #000; }
+    .btn-delete { background-color: var(--danger); color: #fff; }
+
+    .img-preview {
+      max-width: 100%;
+      max-height: 150px;
+      border-radius: 8px;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Lock Screen -->
-    <div id="lockScreen">
-        <div class="login-card">
-            <h2><i class="fa-solid fa-lock"></i> Admin Login</h2>
-            <p>Enter your security passcode to access Apex-Hub Management</p>
-            <input type="password" id="passcodeInput" placeholder="Enter Passcode (Default: 1234)">
-            <button class="btn" onclick="unlockAdmin()">Unlock Dashboard</button>
-            <p id="loginError" style="color: var(--danger); margin-top: 10px; display: none;">Incorrect passcode!</p>
+  <!-- Public Customer Storefront -->
+  <div class="public-header">
+    <h1>Apex-Hub <span>KE</span></h1>
+    <button class="btn-sm btn-edit" onclick="document.getElementById('lockScreen').style.display = 'flex'">
+      <i class="fa-solid fa-lock"></i> Admin Portal
+    </button>
+  </div>
+
+  <div id="customerGrid" class="public-grid">
+    <p style="color: var(--text-muted);">Loading storefront inventory...</p>
+  </div>
+
+  <!-- Lock Screen Modal -->
+  <div id="lockScreen" style="display: none;">
+    <div class="login-card">
+      <h2><i class="fa-solid fa-lock"></i> Admin Login</h2>
+      <p>Enter your security passcode to access Apex-Hub Management</p>
+      <input type="password" id="passcodeInput" placeholder="Enter Passcode (Default: 1234)">
+      <button class="btn" onclick="unlockAdmin()">Unlock Dashboard</button>
+      <button class="btn-sm" style="margin-top: 10px; background: transparent; color: var(--text-muted);" onclick="document.getElementById('lockScreen').style.display = 'none'">Cancel</button>
+      <p id="loginError" style="color: var(--danger); margin-top: 10px; display: none;">Incorrect passcode!</p>
+    </div>
+  </div>
+
+  <!-- Main Admin Dashboard -->
+  <div class="admin-container" id="adminContainer">
+    <header>
+      <h2><i class="fa-solid fa-gauge-high"></i> Apex-Hub Admin</h2>
+      <button class="btn-sm btn-delete" onclick="location.reload()"><i class="fa-solid fa-right-from-bracket"></i> Lock</button>
+    </header>
+
+    <!-- Product Form -->
+    <div class="section-card">
+      <div class="section-title">
+        <i class="fa-solid fa-plus"></i> <span id="formTitle">Add / Edit Product</span>
+      </div>
+
+      <form id="productForm" onsubmit="saveProduct(event)">
+        <input type="hidden" id="editProductId">
+
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Product Category</label>
+        <select id="prodCategory" onchange="toggleCustomCategory(this.value)">
+          <option value="Kitchen Appliances">Kitchen Appliances</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Home & Office">Home & Office</option>
+          <option value="_NEW_">+ Add Custom Category...</option>
+        </select>
+
+        <input type="text" id="customCategoryInput" placeholder="Enter new category name (e.g. Washing Machines)" style="display: none;">
+
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Product Name</label>
+        <input type="text" id="prodName" placeholder="e.g., Nunix Glass Kettle or Hisense Washing Machine" required>
+
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Base Price (KES) - Used if no variants added</label>
+        <input type="number" id="prodPrice" placeholder="e.g., 3000">
+
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Description</label>
+        <textarea id="prodDesc" rows="3" placeholder="Enter product details..."></textarea>
+
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Image Upload (Select File OR Paste Web URL)</label>
+        <input type="file" id="fileInput" accept="image/*" onchange="uploadImageToImgBB(event)">
+        <p id="uploadStatus" style="font-size: 0.8rem; color: var(--primary); margin-bottom: 8px;"></p>
+
+        <input type="url" id="imageUrlInput" placeholder="OR paste Direct Image URL (https://i.ibb.co/...)">
+        <img id="imagePreview" class="img-preview" alt="Preview">
+
+        <!-- Variants Section -->
+        <div style="margin-top: 20px; margin-bottom: 15px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <label style="font-size: 0.85rem; font-weight: 700;">Variants / Capacities (Optional)</label>
+            <button type="button" class="btn-sm btn-edit" onclick="addVariantRow()">+ Add Variant</button>
+          </div>
+          <div id="variantsContainer"></div>
         </div>
+
+        <button type="submit" class="btn" id="saveBtn">Publish Product Live</button>
+      </form>
     </div>
 
-    <!-- Main Admin Dashboard -->
-    <div class="admin-container" id="adminContainer">
-        <header>
-            <h2><i class="fa-solid fa-gauge-high"></i> Apex-Hub Admin</h2>
-            <button class="btn-sm btn-delete" onclick="location.reload()"><i class="fa-solid fa-right-from-bracket"></i> Lock</button>
-        </header>
-
-        <!-- Product Form -->
-        <div class="section-card">
-            <div class="section-title">
-                <i class="fa-solid fa-plus-node"></i> <span id="formTitle">Add / Edit Product</span>
-            </div>
-
-            <form id="productForm" onsubmit="saveProduct(event)">
-                <input type="hidden" id="editProductId">
-
-                <label style="font-size: 0.8rem; color: var(--text-muted);">Product Category</label>
-                <select id="prodCategory" onchange="toggleCustomCategory(this.value)">
-                    <option value="Kitchen Appliances">Kitchen Appliances</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Home & Office">Home & Office</option>
-                    <option value="__NEW__">+ Add Custom Category...</option>
-                </select>
-
-                <input type="text" id="customCategoryInput" placeholder="Enter new category name (e.g. Washing Machines)" style="display: none;">
-
-                <label style="font-size: 0.8rem; color: var(--text-muted);">Product Name</label>
-                <input type="text" id="prodName" placeholder="e.g., Nunix Glass Kettle or Hisense Washing Machine" required>
-
-                <label style="font-size: 0.8rem; color: var(--text-muted);">Base Price (KES) - Used if no variants added</label>
-                <input type="number" id="prodPrice" placeholder="e.g., 3000">
-
-                <label style="font-size: 0.8rem; color: var(--text-muted);">Description</label>
-                <textarea id="prodDesc" rows="3" placeholder="Enter product details..."></textarea>
-
-                <label style="font-size: 0.8rem; color: var(--text-muted);">Image Upload (Select File OR Paste Web URL)</label>
-                <input type="file" id="fileInput" accept="image/*" onchange="uploadImageToImgBB(event)">
-                <p id="uploadStatus" style="font-size: 0.8rem; color: var(--primary); margin-bottom: 8px;"></p>
-                
-                <input type="url" id="imageUrlInput" placeholder="OR paste Direct Image URL (https://i.ibb.co/...)">
-                <img id="imagePreview" class="img-preview" alt="Preview">
-
-                <!-- Variants Section -->
-                <div style="margin-top: 20px; margin-bottom: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <label style="font-size: 0.85rem; font-weight: 700;">Variants / Capacities (Optional)</label>
-                        <button type="button" class="btn-sm btn-edit" onclick="addVariantRow()">+ Add Variant</button>
-                    </div>
-                    <div id="variantsContainer"></div>
-                </div>
-
-                <button type="submit" class="btn" id="saveBtn">Publish Product Live</button>
-            </form>
-        </div>
-
-        <!-- Inventory List -->
-        <div class="section-card">
-            <div class="section-title"><i class="fa-solid fa-boxes-stacked"></i> Live Products</div>
-            <div id="productList">Loading inventory...</div>
-        </div>
+    <!-- Inventory List -->
+    <div class="section-card">
+      <div class="section-title"><i class="fa-solid fa-boxes-stacked"></i> Live Products</div>
+      <div id="productList">Loading inventory...</div>
     </div>
+  </div>
 
-    <script>
-        // CONFIGURATION
-        const PASSCODE = "Milano254!+"; // CHANGE YOUR PASSWORD HERE
-        const IMGBB_API_KEY = "8c668ef1df1846b0a887a0fbca0a334d"; // Free public upload key
+  <script>
+    // CONFIGURATION
+    const PASSCODE = "Wilano254+"; // CHANGE YOUR PASSWORD HERE
+    const IMGBB_API_KEY = "8c668ef1d46b0a887a0fbca0a334d"; // Free public upload key
 
-        // Firebase Setup
-        const firebaseConfig = {
-            databaseURL: "https://apex-hub-c6d50-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+    // Firebase Setup
+    const firebaseConfig = {
+      databaseURL: "https://apex-hub-c6d50-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-        let currentProducts = {};
-        let existingCategories = new Set(["Kitchen Appliances", "Electronics", "Home & Office"]);
+    let currentProducts = {};
+    let existingCategories = new Set(["Kitchen Appliances", "Electronics", "Home & Office"]);
 
-        // Passcode Unlock Function
-        function unlockAdmin() {
-            const input = document.getElementById("passcodeInput").value;
-            if (input === PASSCODE) {
-                document.getElementById("lockScreen").style.display = "none";
-                document.getElementById("adminContainer").style.display = "block";
-                loadProducts();
-            } else {
-                document.getElementById("loginError").style.display = "block";
-            }
-        }
+    // Passcode Unlock Function
+    function unlockAdmin() {
+      const input = document.getElementById("passcodeInput").value;
+      if (input === PASSCODE) {
+        document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("adminContainer").style.display = "block";
+        loadProducts();
+      } else {
+        document.getElementById("loginError").style.display = "block";
+      }
+    }
 
-        // Allow pressing Enter key on login input
-        document.getElementById("passcodeInput").addEventListener("keyup", function(event) {
-            if (event.key === "Enter") {
-                unlockAdmin();
-            }
+    // Allow pressing Enter key on login input
+    document.getElementById("passcodeInput").addEventListener("keyup", function(event) {
+      if (event.key === "Enter") {
+        unlockAdmin();
+      }
+    });
+
+    // Category Toggle
+    function toggleCustomCategory(val) {
+      const customInput = document.getElementById("customCategoryInput");
+      if (val === "_NEW_") {
+        customInput.style.display = "block";
+        customInput.focus();
+      } else {
+        customInput.style.display = "none";
+        customInput.value = "";
+      }
+    }
+
+    // Automatic ImgBB Image Upload
+    async function uploadImageToImgBB(event) {
+      const file = event.target.files[0];
+      const status = document.getElementById("uploadStatus");
+      if (!file) return;
+
+      status.innerText = "⏳ Uploading image...";
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+          method: "POST",
+          body: formData
         });
+        const data = await res.json();
+        if (data.success) {
+          const url = data.data.url;
+          document.getElementById("imageUrlInput").value = url;
+          const preview = document.getElementById("imagePreview");
+          preview.src = url;
+          preview.style.display = "block";
+          status.innerText = "✅ Image uploaded successfully!";
+        } else {
+          status.innerText = "❌ Upload failed. Please paste direct URL.";
+        }
+      } catch (err) {
+        status.innerText = "❌ Upload failed. Check internet connection.";
+      }
+    }
 
-        // Category Toggle
-        function toggleCustomCategory(val) {
-            const customInput = document.getElementById("customCategoryInput");
-            if (val === "__NEW__") {
-                customInput.style.display = "block";
-                customInput.focus();
-            } else {
-                customInput.style.display = "none";
-                customInput.value = "";
-            }
+    // Variants UI Logic
+    function addVariantRow(name = "", price = "") {
+      const container = document.getElementById("variantsContainer");
+      const div = document.createElement("div");
+      div.className = "variant-row";
+      div.innerHTML = `
+        <input type="text" placeholder="Size/Capacity (e.g. 9kg)" value="${name}" class="var-name" required>
+        <input type="number" placeholder="Price (KES)" value="${price}" class="var-price" required>
+        <button type="button" class="btn-remove-variant" onclick="this.parentElement.remove()">X</button>
+      `;
+      container.appendChild(div);
+    }
+
+    // Load Products and Populate Dynamic Category Dropdown
+    function loadProducts() {
+      db.ref('products').on('value', snapshot => {
+        currentProducts = snapshot.val() || {};
+        const list = document.getElementById("productList");
+        const customerGrid = document.getElementById("customerGrid");
+
+        // Build Dynamic Categories
+        existingCategories = new Set(["Kitchen Appliances", "Electronics", "Home & Office"]);
+
+        if (Object.keys(currentProducts).length === 0) {
+          list.innerHTML = `<p style="color:var(--text-muted);">No products listed yet.</p>`;
+          customerGrid.innerHTML = `<p style="color:var(--text-muted);">No products available right now.</p>`;
+          refreshCategoryDropdown();
+          return;
         }
 
-        // Automatic ImgBB Image Upload
-        async function uploadImageToImgBB(event) {
-            const file = event.target.files[0];
-            const status = document.getElementById("uploadStatus");
-            if (!file) return;
+        // Render Public Customer Storefront Cards
+        customerGrid.innerHTML = Object.keys(currentProducts).map(id => {
+          const p = currentProducts[id];
+          const displayPrice = p.price ? `KES ${Number(p.price).toLocaleString()}` : 'Variant Based';
+          const waUrl = `https://wa.me/254700000000?text=${encodeURIComponent('Hello Apex-Hub Kenya, I am interested in: ' + (p.name || p.title) + ' - Price: ' + displayPrice)}`;
 
-            status.innerText = "⏳ Uploading image...";
+          return `
+            <div class="card">
+              <div>
+                <img src="${p.imageUrl || p.image || 'https://via.placeholder.com/260'}" alt="${p.name || p.title}">
+                <div class="card-title">${p.name || p.title}</div>
+                <div class="card-price">${displayPrice}</div>
+                <div class="card-desc">${p.description || p.desc || ''}</div>
+              </div>
+              <a href="${waUrl}" target="_blank" class="btn-wa">
+                <i class="fa-brands fa-whatsapp"></i> Order via WhatsApp
+              </a>
+            </div>
+          `;
+        }).join('');
 
-            const formData = new FormData();
-            formData.append("image", file);
+        // Render Admin List Items
+        list.innerHTML = Object.keys(currentProducts).map(id => {
+          const p = currentProducts[id];
+          if (p.category) existingCategories.add(p.category);
 
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                    method: "POST",
-                    body: formData
-                });
-                const data = await res.json();
-                if (data.success) {
-                    const url = data.data.url;
-                    document.getElementById("imageUrlInput").value = url;
-                    const preview = document.getElementById("imagePreview");
-                    preview.src = url;
-                    preview.style.display = "block";
-                    status.innerText = "✅ Image uploaded successfully!";
-                } else {
-                    status.innerText = "❌ Upload failed. Please paste direct URL.";
-                }
-            } catch (err) {
-                status.innerText = "❌ Upload failed. Check internet connection.";
-            }
+          return `
+            <div class="product-item">
+              <img src="${p.imageUrl || p.image || 'https://via.placeholder.com/60'}" alt="">
+              <div class="product-info">
+                <strong>${p.name || p.title}</strong>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Category: ${p.category || 'General'}</div>
+                <div style="font-size:0.85rem; color:var(--primary); font-weight:700;">KES ${p.price || 'Variant Based'}</div>
+              </div>
+              <div class="product-actions">
+                <button class="btn-sm btn-edit" onclick="editProduct('${id}')">Edit</button>
+                <button class="btn-sm btn-delete" onclick="deleteProduct('${id}')">Delete</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        refreshCategoryDropdown();
+      });
+    }
+
+    function refreshCategoryDropdown() {
+      const select = document.getElementById("prodCategory");
+      const currentSelected = select.value;
+
+      select.innerHTML = "";
+      existingCategories.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.innerText = cat;
+        select.appendChild(opt);
+      });
+
+      const newOpt = document.createElement("option");
+      newOpt.value = "_NEW_";
+      newOpt.innerText = "+ Add Custom Category...";
+      select.appendChild(newOpt);
+
+      if (existingCategories.has(currentSelected)) {
+        select.value = currentSelected;
+      }
+    }
+
+    // Save/Update Product
+    function saveProduct(event) {
+      event.preventDefault();
+
+      const productId = document.getElementById("editProductId").value;
+      const selectVal = document.getElementById("prodCategory").value;
+      const customVal = document.getElementById("customCategoryInput").value.trim();
+
+      let category = selectVal;
+      if (selectVal === "_NEW_") {
+        if (!customVal) {
+          alert("Please enter a custom category name!");
+          return;
         }
+        category = customVal;
+      }
 
-        // Variants UI Logic
-        function addVariantRow(name = '', price = '') {
-            const container = document.getElementById("variantsContainer");
-            const div = document.createElement("div");
-            div.className = "variant-row";
-            div.innerHTML = `
-                <input type="text" placeholder="Size/Capacity (e.g. 9kg)" value="${name}" class="var-name" required>
-                <input type="number" placeholder="Price (KES)" value="${price}" class="var-price" required>
-                <button type="button" class="btn-remove-variant" onclick="this.parentElement.remove()">X</button>
-            `;
-            container.appendChild(div);
+      const name = document.getElementById("prodName").value;
+      const price = document.getElementById("prodPrice").value;
+      const description = document.getElementById("prodDesc").value;
+      const imageUrl = document.getElementById("imageUrlInput").value;
+
+      // Collect Variants
+      const varNames = document.querySelectorAll(".var-name");
+      const varPrices = document.querySelectorAll(".var-price");
+      const variants = [];
+
+      varNames.forEach((el, index) => {
+        if (el.value.trim() !== "") {
+          variants.push({
+            name: el.value.trim(),
+            price: Number(varPrices[index].value)
+          });
         }
+      });
 
-        // Load Products and Populate Dynamic Category Dropdown
-        function loadProducts() {
-            db.ref('products').on('value', snapshot => {
-                currentProducts = snapshot.val() || {};
-                const list = document.getElementById("productList");
-                
-                // Build Dynamic Categories
-                existingCategories = new Set(["Kitchen Appliances", "Electronics", "Home & Office"]);
-                
-                if (Object.keys(currentProducts).length === 0) {
-                    list.innerHTML = "<p style='color:var(--text-muted);'>No products listed yet.</p>";
-                    return;
-                }
+      const productData = {
+        category,
+        name,
+        price: price ? Number(price) : (variants[0] ? variants[0].price : 0),
+        description,
+        imageUrl,
+        variants
+      };
 
-                list.innerHTML = Object.keys(currentProducts).map(id => {
-                    const p = currentProducts[id];
-                    if (p.category) existingCategories.add(p.category);
+      if (productId) {
+        db.ref('products/' + productId).update(productData, () => {
+          alert("Product updated successfully!");
+          resetForm();
+        });
+      } else {
+        db.ref('products').push(productData, () => {
+          alert("Product published live!");
+          resetForm();
+        });
+      }
+    }
 
-                    return `
-                        <div class="product-item">
-                            <img src="${p.imageUrl || 'https://via.placeholder.com/60'}" alt="">
-                            <div class="product-info">
-                                <strong>${p.name}</strong>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">Category: ${p.category || 'General'}</div>
-                                <div style="font-size:0.85rem; color:var(--primary); font-weight:700;">KES ${p.price || 'Variant Based'}</div>
-                            </div>
-                            <div class="product-actions">
-                                <button class="btn-sm btn-edit" onclick="editProduct('${id}')">Edit</button>
-                                <button class="btn-sm btn-delete" onclick="deleteProduct('${id}')">Delete</button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+    function editProduct(id) {
+      const p = currentProducts[id];
+      document.getElementById("editProductId").value = id;
+      document.getElementById("formTitle").innerText = "Edit Product: " + (p.name || p.title);
 
-                refreshCategoryDropdown();
-            });
-        }
+      if (p.category && existingCategories.has(p.category)) {
+        document.getElementById("prodCategory").value = p.category;
+        toggleCustomCategory(p.category);
+      } else if (p.category) {
+        document.getElementById("prodCategory").value = "_NEW_";
+        toggleCustomCategory("_NEW_");
+        document.getElementById("customCategoryInput").value = p.imageUrl || p.image || "";
 
-        function refreshCategoryDropdown() {
-            const select = document.getElementById("prodCategory");
-            const currentSelected = select.value;
-            
-            select.innerHTML = '';
-            existingCategories.forEach(cat => {
-                const opt = document.createElement("option");
-                opt.value = cat;
-                opt.innerText = cat;
-                select.appendChild(opt);
-            });
+      if (p.imageUrl || p.image) {
+        const preview = document.getElementById("imagePreview");
+        preview.src = p.imageUrl || p.image;
+        preview.style.display = "block";
+      }
 
-            const newOpt = document.createElement("option");
-            newOpt.value = "__NEW__";
-            newOpt.innerText = "+ Add Custom Category...";
-            select.appendChild(newOpt);
+      // Load Variants
+      document.getElementById("variantsContainer").innerHTML = "";
+      if (p.variants) {
+        p.variants.forEach(v => addVariantRow(v.name, v.price));
+      }
 
-            if (existingCategories.has(currentSelected)) {
-                select.value = currentSelected;
-            }
-        }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-        // Save/Update Product
-        function saveProduct(event) {
-            event.preventDefault();
+    function deleteProduct(id) {
+      if (confirm("Are you sure you want to delete this product from Apex-Hub?")) {
+        db.ref('products/' + id).remove();
+      }
+    }
 
-            const productId = document.getElementById("editProductId").value;
-            const selectVal = document.getElementById("prodCategory").value;
-            const customVal = document.getElementById("customCategoryInput").value.trim();
+    function resetForm() {
+      document.getElementById("productForm").reset();
+      document.getElementById("editProductId").value = "";
+      document.getElementById("formTitle").innerText = "Add / Edit Product";
+      document.getElementById("variantsContainer").innerHTML = "";
+      document.getElementById("imagePreview").style.display = "none";
+      document.getElementById("uploadStatus").innerText = "";
+      toggleCustomCategory();
+    }
 
-            let category = selectVal;
-            if (selectVal === "__NEW__") {
-                if (!customVal) {
-                    alert("Please enter a custom category name!");
-                    return;
-                }
-                category = customVal;
-            }
-
-            const name = document.getElementById("prodName").value;
-            const price = document.getElementById("prodPrice").value;
-            const description = document.getElementById("prodDesc").value;
-            const imageUrl = document.getElementById("imageUrlInput").value;
-
-            // Collect Variants
-            const varNames = document.querySelectorAll(".var-name");
-            const varPrices = document.querySelectorAll(".var-price");
-            const variants = [];
-
-            varNames.forEach((el, index) => {
-                if (el.value.trim() !== '') {
-                    variants.push({
-                        name: el.value.trim(),
-                        price: Number(varPrices[index].value)
-                    });
-                }
-            });
-
-            const productData = {
-                category,
-                name,
-                price: price ? Number(price) : (variants[0] ? variants[0].price : 0),
-                description,
-                imageUrl,
-                variants
-            };
-
-            if (productId) {
-                db.ref('products/' + productId).update(productData, () => {
-                    alert("Product updated successfully!");
-                    resetForm();
-                });
-            } else {
-                db.ref('products').push(productData, () => {
-                    alert("Product published live!");
-                    resetForm();
-                });
-            }
-        }
-
-        function editProduct(id) {
-            const p = currentProducts[id];
-            document.getElementById("editProductId").value = id;
-            document.getElementById("formTitle").innerText = "Edit Product: " + p.name;
-            
-            if (p.category && existingCategories.has(p.category)) {
-                document.getElementById("prodCategory").value = p.category;
-                toggleCustomCategory(p.category);
-            } else if (p.category) {
-                document.getElementById("prodCategory").value = "__NEW__";
-                toggleCustomCategory("__NEW__");
-                document.getElementById("customCategoryInput").value = p.category;
-            }
-
-            document.getElementById("prodName").value = p.name;
-            document.getElementById("prodPrice").value = p.price || '';
-            document.getElementById("prodDesc").value = p.description || '';
-            document.getElementById("imageUrlInput").value = p.imageUrl || '';
-            
-            if (p.imageUrl) {
-                const preview = document.getElementById("imagePreview");
-                preview.src = p.imageUrl;
-                preview.style.display = "block";
-            }
-
-            // Load Variants
-            document.getElementById("variantsContainer").innerHTML = '';
-            if (p.variants) {
-                p.variants.forEach(v => addVariantRow(v.name, v.price));
-            }
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function deleteProduct(id) {
-            if (confirm("Are you sure you want to delete this product from Apex-Hub?")) {
-                db.ref('products/' + id).remove();
-            }
-        }
-
-        function resetForm() {
-            document.getElementById("productForm").reset();
-            document.getElementById("editProductId").value = '';
-            document.getElementById("formTitle").innerText = "Add / Edit Product";
-            document.getElementById("variantsContainer").innerHTML = '';
-            document.getElementById("imagePreview").style.display = 'none';
-            document.getElementById("uploadStatus").innerText = '';
-            toggleCustomCategory('');
-        }
-    </script>
+    // Auto-load public products on page launch
+    loadProducts();
+  </script>
 </body>
 </html>
