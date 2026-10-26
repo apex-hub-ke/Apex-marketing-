@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex-Hub | Admin Portal & Storefront</title>
+  <title>Apex-Hub | Admin Portal</title>
 
   <!-- Google Fonts & Font Awesome Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -320,7 +320,7 @@
     <div class="login-card">
       <h2><i class="fa-solid fa-lock"></i> Admin Login</h2>
       <p>Enter your security passcode to access Apex-Hub Management</p>
-      <input type="password" id="passcodeInput" placeholder="Enter Passcode (Default: 1234)">
+      <input type="password" id="passcodeInput" placeholder="Enter Passcode">
       <button class="btn" onclick="unlockAdmin()">Unlock Dashboard</button>
       <button class="btn-sm" style="margin-top: 10px; background: transparent; color: var(--text-muted);" onclick="document.getElementById('lockScreen').style.display = 'none'">Cancel</button>
       <p id="loginError" style="color: var(--danger); margin-top: 10px; display: none;">Incorrect passcode!</p>
@@ -391,8 +391,8 @@
 
   <script>
     // CONFIGURATION
-    const PASSCODE = "Wilano254+"; // CHANGE YOUR PASSWORD HERE
-    const IMGBB_API_KEY = "8c668ef1d46b0a887a0fbca0a334d"; // Free public upload key
+    const PASSCODE = "Milano254+"; 
+    const IMGBB_API_KEY = "8c668ef1d46b0a887a0fbca0a334d";
 
     // Firebase Setup
     const firebaseConfig = {
@@ -634,7 +634,12 @@
       } else if (p.category) {
         document.getElementById("prodCategory").value = "_NEW_";
         toggleCustomCategory("_NEW_");
-        document.getElementById("customCategoryInput").value = p.imageUrl || p.image || "";
+        document.getElementById("customCategoryInput").value = p.category;
+      }
+
+      document.getElementById("prodName").value = p.price || "";
+      document.getElementById("prodDesc").value = p.description || p.desc || "";
+      document.getElementById("imageUrlInput").value = p.imageUrl || p.image || "";
 
       if (p.imageUrl || p.image) {
         const preview = document.getElementById("imagePreview");
