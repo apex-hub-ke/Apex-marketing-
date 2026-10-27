@@ -128,11 +128,20 @@
       height: 100vh;
       background-color: var(--bg-dark);
       z-index: 999;
-      display: flex;
+          #lockScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--bg-dark);
+      z-index: 999;
+      display: none; /* Keeps it hidden until unlocked */
       justify-content: center;
       align-items: center;
       padding: 20px;
-    }
+      }
+      
 
     .login-card {
       background-color: var(--bg-card);
