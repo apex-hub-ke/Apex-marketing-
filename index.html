@@ -1,15 +1,44 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex-Hub | Admin Portal</title>
+  <title>Apex-Hub KE | Storefront & Management Portal</title>
 
   <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Firebase SDKs -->
+  <!-- Tailwind CSS CDN for Layout & Utility Styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0f172a',
+              card: '#1e293b',
+              border: '#334155',
+              teal: '#0d9488',
+              tealHover: '#0f766e',
+              warning: '#f59e0b',
+              danger: '#ef4444',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Firebase SDKs (Compat version for simple single-file usage) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
@@ -26,664 +55,816 @@
       --border-color: #334155;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
     body {
       background-color: var(--bg-dark);
       color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
-      padding: 20px;
     }
 
-    /* Public Customer Storefront Styles */
-    .public-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 0;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 25px;
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
     }
 
-    .public-header h1 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--text-main);
-    }
-
-    .public-header h1 span {
-      color: var(--primary);
-    }
-
-    .public-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-
-    .card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 12px;
-    }
-
-    .card-title {
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 6px;
-    }
-
-    .card-price {
-      color: var(--primary);
-      font-weight: 800;
-      font-size: 1.1rem;
-      margin-bottom: 10px;
-    }
-
-    .card-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 15px;
-    }
-
-    .btn-wa {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background-color: #16a34a;
-      color: white;
-      text-decoration: none;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      text-align: center;
-    }
-
-    /* Lock Screen Modal */
-    #lockScreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: var(--bg-dark);
-      z-index: 999;
-          #lockScreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: var(--bg-dark);
-      z-index: 999;
-      display: none; /* Keeps it hidden until unlocked */
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      }
-      
-
-    .login-card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      padding: 30px;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 380px;
-      text-align: center;
-    }
-
-    .login-card h2 {
-      margin-bottom: 10px;
-      color: var(--text-main);
-    }
-
-    .login-card p {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-bottom: 20px;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      background-color: #0f172a;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      color: var(--text-main);
-      margin-bottom: 15px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--primary);
-    }
-
-    .btn {
-      width: 100%;
-      padding: 12px;
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .btn:hover {
-      background-color: var(--primary-hover);
-    }
-
-    /* Main Container */
-    .admin-container {
-      max-width: 900px;
-      margin: 0 auto;
-      display: none; /* Shown after unlock */
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-      padding-bottom: 15px;
+    .glass-nav {
+      background: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
     }
 
-    .section-card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 25px;
-    }
-
-    .section-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 15px;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Category Selector Layout */
-    .category-group {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .category-group select, .category-group input {
-      margin-bottom: 15px;
-    }
-
-    /* Variant Builder Row */
-    .variant-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .variant-row input {
-      margin-bottom: 0;
-    }
-
-    .btn-remove-variant {
-      background-color: var(--danger);
-      color: white;
-      border: none;
-      padding: 0 15px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    /* Existing Inventory List */
-    .product-item {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      padding: 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      margin-bottom: 10px;
-      background-color: #0f172a;
-    }
-
-    .product-item img {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
-
-    .product-info {
-      flex: 1;
-    }
-
-    .product-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 0.8rem;
-      border-radius: 6px;
-      cursor: pointer;
-      border: none;
-      font-weight: 600;
-    }
-
-    .btn-edit { background-color: var(--warning); color: #000; }
-    .btn-delete { background-color: var(--danger); color: #fff; }
-
-    .img-preview {
-      max-width: 100%;
-      max-height: 150px;
-      border-radius: 8px;
-      margin-top: 10px;
-      display: none;
+    .badge-teal {
+      background: rgba(13, 148, 136, 0.15);
+      color: #2dd4bf;
+      border: 1px solid rgba(45, 212, 191, 0.3);
     }
   </style>
 </head>
-<body>
+<body class="bg-brand-dark text-slate-100 flex flex-col min-h-screen">
 
-  <!-- Public Customer Storefront -->
-  <div class="public-header">
-    <h1>Apex-Hub <span>KE</span></h1>
-    <button class="btn-sm btn-edit" onclick="document.getElementById('lockScreen').style.display = 'flex'">
-      <i class="fa-solid fa-lock"></i> Admin Portal
-    </button>
-  </div>
-
-  <div id="customerGrid" class="public-grid">
-    <p style="color: var(--text-muted);">Loading storefront inventory...</p>
-  </div>
-
-  <!-- Lock Screen Modal -->
-  <div id="lockScreen" style="display: none;">
-    <div class="login-card">
-      <h2><i class="fa-solid fa-lock"></i> Admin Login</h2>
-      <p>Enter your security passcode to access Apex-Hub Management</p>
-      <input type="password" id="passcodeInput" placeholder="Enter Passcode">
-      <button class="btn" onclick="unlockAdmin()">Unlock Dashboard</button>
-      <button class="btn-sm" style="margin-top: 10px; background: transparent; color: var(--text-muted);" onclick="document.getElementById('lockScreen').style.display = 'none'">Cancel</button>
-      <p id="loginError" style="color: var(--danger); margin-top: 10px; display: none;">Incorrect passcode!</p>
-    </div>
-  </div>
-
-  <!-- Main Admin Dashboard -->
-  <div class="admin-container" id="adminContainer">
-    <header>
-      <h2><i class="fa-solid fa-gauge-high"></i> Apex-Hub Admin</h2>
-      <button class="btn-sm btn-delete" onclick="location.reload()"><i class="fa-solid fa-right-from-bracket"></i> Lock</button>
-    </header>
-
-    <!-- Product Form -->
-    <div class="section-card">
-      <div class="section-title">
-        <i class="fa-solid fa-plus"></i> <span id="formTitle">Add / Edit Product</span>
+  <!-- ==================== PUBLIC STOREFRONT HEADER ==================== -->
+  <header class="glass-nav sticky top-0 z-40 w-full px-4 sm:px-8 py-4">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-600 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-teal-900/30 font-extrabold text-xl">
+          AH
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">Apex-Hub <span class="text-teal-400">KE</span></h1>
+          <p class="text-xs text-slate-400">Premium Kenyan Electronics & Appliance Hub</p>
+        </div>
       </div>
 
-      <form id="productForm" onsubmit="saveProduct(event)">
-        <input type="hidden" id="editProductId">
+      <!-- Header Action Controls -->
+      <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+        <button type="button" onclick="openAdminModal()" class="flex items-center gap-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm hover:border-amber-400">
+          <i class="fa-solid fa-lock text-amber-400"></i>
+          <span>Admin Portal</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
-        <label style="font-size: 0.8rem; color: var(--text-muted);">Product Category</label>
-        <select id="prodCategory" onchange="toggleCustomCategory(this.value)">
-          <option value="Kitchen Appliances">Kitchen Appliances</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Home & Office">Home & Office</option>
-          <option value="_NEW_">+ Add Custom Category...</option>
-        </select>
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-8 py-8">
 
-        <input type="text" id="customCategoryInput" placeholder="Enter new category name (e.g. Washing Machines)" style="display: none;">
+    <!-- Storefront View -->
+    <section id="publicStorefrontView" class="space-y-6">
+      
+      <!-- Hero Banner -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-brand-card to-slate-900 border border-brand-border p-6 sm:p-10 shadow-2xl">
+        <div class="relative z-10 max-w-2xl space-y-3">
+          <span class="inline-block px-3 py-1 rounded-full badge-teal text-xs font-bold tracking-wide uppercase">Official Catalog</span>
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-white leading-tight">Authentic Appliances & Home Tech in Kenya</h2>
+          <p class="text-slate-400 text-sm sm:text-base">Order directly via WhatsApp for fast delivery, warranty coverage, and verified M-Pesa payments.</p>
+        </div>
+        <div class="absolute -right-10 -bottom-10 opacity-10 text-teal-400 text-9xl pointer-events-none">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+      </div>
 
-        <label style="font-size: 0.8rem; color: var(--text-muted);">Product Name</label>
-        <input type="text" id="prodName" placeholder="e.g., Nunix Glass Kettle or Hisense Washing Machine" required>
-
-        <label style="font-size: 0.8rem; color: var(--text-muted);">Base Price (KES) - Used if no variants added</label>
-        <input type="number" id="prodPrice" placeholder="e.g., 3000">
-
-        <label style="font-size: 0.8rem; color: var(--text-muted);">Description</label>
-        <textarea id="prodDesc" rows="3" placeholder="Enter product details..."></textarea>
-
-        <label style="font-size: 0.8rem; color: var(--text-muted);">Image Upload (Select File OR Paste Web URL)</label>
-        <input type="file" id="fileInput" accept="image/*" onchange="uploadImageToImgBB(event)">
-        <p id="uploadStatus" style="font-size: 0.8rem; color: var(--primary); margin-bottom: 8px;"></p>
-
-        <input type="url" id="imageUrlInput" placeholder="OR paste Direct Image URL (https://i.ibb.co/...)">
-        <img id="imagePreview" class="img-preview" alt="Preview">
-
-        <!-- Variants Section -->
-        <div style="margin-top: 20px; margin-bottom: 15px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <label style="font-size: 0.85rem; font-weight: 700;">Variants / Capacities (Optional)</label>
-            <button type="button" class="btn-sm btn-edit" onclick="addVariantRow()">+ Add Variant</button>
-          </div>
-          <div id="variantsContainer"></div>
+      <!-- Controls & Search Filter Bar -->
+      <div class="flex flex-col md:flex-row gap-4 items-center justify-between bg-brand-card p-4 rounded-xl border border-brand-border shadow-md">
+        <!-- Live Search -->
+        <div class="relative w-full md:w-80">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search products..." class="w-full pl-10 pr-4 py-2 bg-slate-900 border border-brand-border rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition-colors">
         </div>
 
-        <button type="submit" class="btn" id="saveBtn">Publish Product Live</button>
-      </form>
-    </div>
+        <!-- Dynamic Category Pills -->
+        <div id="categoryPills" class="flex flex-wrap gap-2 w-full md:w-auto items-center overflow-x-auto pb-1 md:pb-0">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
 
-    <!-- Inventory List -->
-    <div class="section-card">
-      <div class="section-title"><i class="fa-solid fa-boxes-stacked"></i> Live Products</div>
-      <div id="productList">Loading inventory...</div>
+      <!-- Customer Product Grid -->
+      <div id="customerGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Loaded via JS -->
+      </div>
+
+      <!-- Empty Search Result Alert -->
+      <div id="emptySearchResults" class="hidden text-center py-16 bg-brand-card rounded-2xl border border-brand-border">
+        <i class="fa-solid fa-box-open text-5xl text-slate-600 mb-3"></i>
+        <h3 class="text-lg font-bold text-slate-300">No matching products found</h3>
+        <p class="text-xs text-slate-500 mt-1">Try adjusting your filter or search query.</p>
+      </div>
+    </section>
+
+    <!-- Admin Dashboard View -->
+    <section id="adminContainer" class="hidden space-y-8">
+      
+      <!-- Admin Top Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-brand-card p-6 rounded-2xl border border-brand-border shadow-lg">
+        <div>
+          <div class="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <i class="fa-solid fa-shield-halved"></i> Security Verified Session
+          </div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-gauge-high text-teal-400"></i> Apex-Hub Management Console
+          </h2>
+        </div>
+        <div class="flex items-center gap-3">
+          <button type="button" onclick="exitAdminView()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-xl text-sm font-semibold transition-all">
+            <i class="fa-solid fa-store mr-1.5"></i> Exit to Store
+          </button>
+          <button type="button" onclick="lockAdminSession()" class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-sm font-semibold transition-all">
+            <i class="fa-solid fa-right-from-bracket mr-1.5"></i> Lock Portal
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin Grid Layout (Form & Live Inventory) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Product Creation / Editing Form -->
+        <div class="lg:col-span-5 bg-brand-card border border-brand-border rounded-2xl p-6 shadow-xl space-y-5">
+          <div class="flex justify-between items-center border-b border-brand-border pb-4">
+            <h3 class="text-lg font-bold text-teal-400 flex items-center gap-2">
+              <i class="fa-solid fa-pen-to-square"></i> <span id="formTitle">Add New Product</span>
+            </h3>
+            <button type="button" id="cancelEditBtn" onclick="resetForm()" class="hidden text-xs text-slate-400 hover:text-red-400 underline">
+              Cancel Editing
+            </button>
+          </div>
+
+          <form id="productForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+            <input type="hidden" id="editProductId">
+
+            <!-- Category Selector -->
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Product Category</label>
+              <select id="prodCategory" onchange="toggleCustomCategory(this.value)" class="w-full px-3 py-2.5 bg-slate-900 border border-brand-border rounded-lg text-sm text-slate-200 focus:border-teal-500 outline-none">
+                <!-- Dynamically Populated -->
+              </select>
+              <input type="text" id="customCategoryInput" placeholder="Enter new category name..." class="hidden mt-2 w-full px-3 py-2 bg-slate-900 border border-brand-border rounded-lg text-sm text-slate-200 focus:border-teal-500 outline-none">
+            </div>
+
+            <!-- Product Name -->
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Product Name *</label>
+              <input type="text" id="prodName" placeholder="e.g., Riki Electric Pressure Cooker" required class="w-full px-3 py-2.5 bg-slate-900 border border-brand-border rounded-lg text-sm text-slate-200 focus:border-teal-500 outline-none">
+            </div>
+
+            <!-- Base Price -->
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Base Price (KES)</label>
+              <input type="number" id="prodPrice" min="0" step="1" placeholder="e.g., 5500" class="w-full px-3 py-2.5 bg-slate-900 border border-brand-border rounded-lg text-sm text-slate-200 focus:border-teal-500 outline-none">
+              <p class="text-[11px] text-slate-500 mt-1">If variants exist below, they can override this base display price.</p>
+            </div>
+
+            <!-- Description -->
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Description</label>
+              <textarea id="prodDesc" rows="3" placeholder="Describe product features, specs, and details..." class="w-full px-3 py-2.5 bg-slate-900 border border-brand-border rounded-lg text-sm text-slate-200 focus:border-teal-500 outline-none resize-none"></textarea>
+            </div>
+
+            <!-- Image Upload & URL Section -->
+            <div class="space-y-2 border-t border-brand-border/60 pt-3">
+              <label class="block text-xs font-medium text-slate-400">Product Image (ImgBB Upload or Direct URL)</label>
+              
+              <div class="flex items-center gap-2">
+                <label class="flex-1 cursor-pointer bg-slate-900 hover:bg-slate-800 border border-dashed border-brand-border hover:border-teal-500 px-3 py-2 rounded-lg text-center text-xs text-slate-300 transition-colors">
+                  <i class="fa-solid fa-cloud-arrow-up text-teal-400 mr-1.5"></i> Choose Image File
+                  <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="uploadImageToImgBB(event)">
+                </label>
+              </div>
+              <p id="uploadStatus" class="text-xs text-teal-400 font-semibold hidden"></p>
+
+              <div class="relative">
+                <input type="url" id="imageUrlInput" oninput="updateImagePreview(this.value)" placeholder="https://example.com/image.jpg" class="w-full px-3 py-2 bg-slate-900 border border-brand-border rounded-lg text-xs text-slate-200 focus:border-teal-500 outline-none">
+              </div>
+
+              <!-- Image Live Preview -->
+              <div id="imagePreviewBox" class="hidden relative rounded-lg overflow-hidden border border-brand-border h-32 bg-slate-900 flex items-center justify-center">
+                <img id="imagePreview" src="" alt="Preview" class="max-h-full max-w-full object-contain">
+              </div>
+            </div>
+
+            <!-- Variants Management -->
+            <div class="border-t border-brand-border/60 pt-4 space-y-3">
+              <div class="flex justify-between items-center">
+                <label class="text-xs font-bold text-slate-300">Sizes / Capacities / Variants</label>
+                <button type="button" onclick="addVariantRow()" class="px-2.5 py-1 bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 rounded text-xs font-bold transition-all">
+                  + Add Variant
+                </button>
+              </div>
+
+              <div id="variantsContainer" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                <!-- Dynamic Rows Go Here -->
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="saveProductBtn" class="w-full py-3 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl shadow-lg shadow-teal-900/30 transition-all text-sm mt-4">
+              <i class="fa-solid fa-circle-check mr-1.5"></i> Publish Product Live
+            </button>
+          </form>
+        </div>
+
+        <!-- Live Inventory Section -->
+        <div class="lg:col-span-7 space-y-4">
+          <div class="bg-brand-card border border-brand-border rounded-2xl p-6 shadow-xl">
+            <div class="flex justify-between items-center border-b border-brand-border pb-4 mb-4">
+              <div>
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                  <i class="fa-solid fa-boxes-stacked text-teal-400"></i> Live Inventory Management
+                </h3>
+                <p class="text-xs text-slate-400">Real-time sync with database & customer storefront</p>
+              </div>
+              <span id="inventoryCountBadge" class="px-3 py-1 bg-slate-800 text-teal-400 border border-slate-700 rounded-full text-xs font-extrabold">0 Items</span>
+            </div>
+
+            <!-- Product Admin List -->
+            <div id="productList" class="space-y-3 max-h-[600px] overflow-y-auto pr-1">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== SECURITY LOCK SCREEN MODAL ==================== -->
+  <div id="lockScreen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 sm:p-8 w-full max-w-md shadow-2xl space-y-5 text-center relative">
+      
+      <button type="button" onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center mx-auto text-amber-400 text-2xl shadow-inner">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-extrabold text-white">Apex-Hub Admin Portal</h3>
+        <p class="text-xs text-slate-400 mt-1">Authorized personnel only. Please enter passcode.</p>
+      </div>
+
+      <form id="passcodeForm" onsubmit="unlockAdmin(event)" class="space-y-4">
+        <div>
+          <input type="password" id="passcodeInput" placeholder="Enter Security Passcode" required class="w-full px-4 py-3 bg-slate-900 border border-brand-border rounded-xl text-center text-lg tracking-widest text-slate-100 placeholder-slate-500 focus:border-teal-500 outline-none">
+          <p id="loginError" class="hidden text-xs text-red-400 font-semibold mt-2"><i class="fa-solid fa-circle-exclamation"></i> Incorrect security passcode.</p>
+        </div>
+
+        <button type="submit" id="unlockBtn" class="w-full py-3 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl shadow-lg transition-all text-sm">
+          Unlock Dashboard
+        </button>
+      </form>
+      
+      <p class="text-[11px] text-slate-500">Protected by Apex-Hub Security Framework</p>
     </div>
   </div>
 
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="mt-auto border-t border-brand-border/60 bg-brand-card py-6 text-center text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+      <p>&copy; 2026 <strong class="text-slate-200">Apex-Hub KE</strong>. All rights reserved.</p>
+      <div class="flex items-center gap-4 text-slate-400">
+        <span><i class="fa-solid fa-location-dot text-teal-400 mr-1"></i> Nairobi, Kenya</span>
+        <span><i class="fa-solid fa-shield text-teal-400 mr-1"></i> M-Pesa Verified</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== APPLICATION SCRIPT ==================== -->
   <script>
-    // CONFIGURATION
-    const PASSCODE = "Milano254!+"; 
+    // System Constants
+    const SECURITY_PASSCODE = "Milano254!+";
     const IMGBB_API_KEY = "8c668ef1d46b0a887a0fbca0a334d";
+    const WHATSAPP_PHONE = "254700000000"; // Kenya format (+254...)
 
-    // Firebase Setup
-    const firebaseConfig = {
-      databaseURL: "https://apex-hub-c6d50-default-rtdb.firebaseio.com"
+    // Preloaded Products Catalog
+    const defaultProducts = {
+      "prod_1": {
+        category: "Kitchen Appliances",
+        name: "Riki Multi-Function Digital Electric Pressure Cooker",
+        price: 5500,
+        description: "Cooks up to 80% faster while retaining natural flavor and nutrients. Features multi-cooker settings with digital controls.",
+        imageUrl: "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?auto=format&fit=crop&w=600&q=80",
+        variants: [
+          { name: "6-Litre (6-in-1)", price: 5000 },
+          { name: "8-Litre (10-in-1)", price: 6500 }
+        ]
+      },
+      "prod_2": {
+        category: "Kitchen Appliances",
+        name: "Nunix 2.0L Glass Electric Kettle",
+        price: 3000,
+        description: "Designed with high-grade heat-resistant borosilicate glass, clear water level markings, digital controls, and automatic safety shut-off.",
+        imageUrl: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f6?auto=format&fit=crop&w=600&q=80"
+      },
+      "prod_3": {
+        category: "Home & Office",
+        name: "Hisense Top Load Fully Automatic Washing Machine",
+        price: 35500,
+        description: "Features Smart Fuzzy Logic that automatically detects load weight to optimize water levels, ExtraCare Pulsator, and soft-close glass lid.",
+        imageUrl: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=600&q=80"
+      },
+      "prod_4": {
+        category: "Home & Office",
+        name: "Modern Nordic Nesting Coffee Table Set (Gold & Light Grey)",
+        price: 3000,
+        description: "Stylish space-saving double nesting coffee tables with marble-pattern finish, heavy-duty gold iron metal frame, and accent styling.",
+        imageUrl: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80"
+      }
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
 
-    let currentProducts = {};
-    let existingCategories = new Set(["Kitchen Appliances", "Electronics", "Home & Office"]);
+    // State Variables
+    let firebaseDb = null;
+    let productsData = {};
+    let activeCategoryFilter = "ALL";
+    let selectedVariantsMap = {}; // Stores selected variant index per product
 
-    // Passcode Unlock Function
-        function unlockAdmin() {
-      const input = document.getElementById("passcodeInput").value;
-      if (input === PASSCODE) {
-        document.getElementById("lockScreen").style.display = "none";
-        document.getElementById("publicStorefront").style.display = "none"; // <-- Add this line
-        document.getElementById("adminContainer").style.display = "block";
-      } else {
-        document.getElementById("loginError").style.display = "block";
-      }
+    // SVG Placeholder Generators (Fallbacks)
+    function generateFallbackSVG(text) {
+      const encodedText = encodeURIComponent(text || 'Apex-Hub Product');
+      return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="100%" height="100%" fill="%231e293b"/><rect x="10" y="10" width="380" height="280" rx="12" fill="%230f172a" stroke="%23334155" stroke-width="2"/><text x="50%" y="50%" font-family="sans-serif" font-size="16" font-weight="bold" fill="%230d9488" text-anchor="middle" dominant-baseline="middle">${encodedText}</text></svg>`;
+    }
+
+    // Initialize Database / Fallback Setup
+    function initDatabase() {
+      try {
+        if (typeof firebase !== 'undefined') {
+          firebase.initializeApp({
+            databaseURL: "https://apex-hub-c6d50-default-rtdb.firebaseio.com"
+          });
+          firebaseDb = firebase.database();
+          console.log("Connected to Firebase Realtime Database");
+
+          firebaseDb.ref('products').on('value', snapshot => {
+            const data = snapshot.val();
+            if (!data) {
+              firebaseDb.ref('products').set(defaultProducts);
+              productsData = defaultProducts;
+            } else {
+              productsData = data;
+            }
+            saveToLocalStorage(productsData);
+            renderAll();
+          }, error => {
+            console.warn("Firebase Read Error - Fallback to LocalStorage:", error);
+            loadLocalStorageFallback();
+          });
+        } else {
+          loadLocalStorageFallback();
         }
-    
-
-    // Allow pressing Enter key on login input
-    document.getElementById("passcodeInput").addEventListener("keyup", function(event) {
-      if (event.key === "Enter") {
-        unlockAdmin();
-      }
-    });
-
-    // Category Toggle
-    function toggleCustomCategory(val) {
-      const customInput = document.getElementById("customCategoryInput");
-      if (val === "_NEW_") {
-        customInput.style.display = "block";
-        customInput.focus();
-      } else {
-        customInput.style.display = "none";
-        customInput.value = "";
+      } catch (err) {
+        console.warn("Firebase Init Exception - Fallback to LocalStorage:", err);
+        loadLocalStorageFallback();
       }
     }
 
-    // Automatic ImgBB Image Upload
+    function saveToLocalStorage(data) {
+      try {
+        localStorage.setItem("apexhub_products_catalog", JSON.stringify(data));
+      } catch(e) {}
+    }
+
+    function loadLocalStorageFallback() {
+      const local = localStorage.getItem("apexhub_products_catalog");
+      if (local) {
+        try {
+          productsData = JSON.parse(local);
+        } catch(e) {
+          productsData = defaultProducts;
+        }
+      } else {
+        productsData = defaultProducts;
+        saveToLocalStorage(productsData);
+      }
+      renderAll();
+    }
+
+    function commitProductChanges() {
+      saveToLocalStorage(productsData);
+      if (firebaseDb) {
+        firebaseDb.ref('products').set(productsData);
+      }
+      renderAll();
+    }
+
+    // Rendering Engine
+    function renderAll() {
+      renderCategoryFilters();
+      renderCustomerGrid();
+      renderAdminInventory();
+    }
+
+    // Category Pills Rendering
+    function renderCategoryFilters() {
+      const categories = new Set(["Kitchen Appliances", "Electronics", "Home & Office"]);
+      Object.values(productsData).forEach(p => {
+        if (p.category) categories.add(p.category);
+      });
+
+      const container = document.getElementById("categoryPills");
+      let html = `
+        <button type="button" onclick="setCategoryFilter('ALL')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeCategoryFilter === 'ALL' ? 'bg-teal-600 text-white shadow-md' : 'bg-slate-900 text-slate-400 hover:text-white border border-brand-border'}">
+          All Products
+        </button>
+      `;
+
+      categories.forEach(cat => {
+        const isActive = activeCategoryFilter === cat;
+        html += `
+          <button type="button" onclick="setCategoryFilter('${cat}')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${isActive ? 'bg-teal-600 text-white shadow-md' : 'bg-slate-900 text-slate-400 hover:text-white border border-brand-border'}">
+            ${cat}
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+
+      // Also populate the form selector dropdown
+      const formSelect = document.getElementById("prodCategory");
+      const currentSelectedVal = formSelect.value;
+      formSelect.innerHTML = "";
+      categories.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.innerText = cat;
+        formSelect.appendChild(opt);
+      });
+      const customOpt = document.createElement("option");
+      customOpt.value = "_NEW_";
+      customOpt.innerText = "+ Add Custom Category...";
+      formSelect.appendChild(customOpt);
+
+      if (categories.has(currentSelectedVal)) {
+        formSelect.value = currentSelectedVal;
+      }
+    }
+
+    function setCategoryFilter(cat) {
+      activeCategoryFilter = cat;
+      renderCategoryFilters();
+      renderCustomerGrid();
+    }
+
+    function applyFilters() {
+      renderCustomerGrid();
+    }
+
+    // Customer Grid Renderer
+    function renderCustomerGrid() {
+      const grid = document.getElementById("customerGrid");
+      const emptyState = document.getElementById("emptySearchResults");
+      const searchQuery = document.getElementById("searchInput").value.toLowerCase().trim();
+
+      const filteredKeys = Object.keys(productsData).filter(key => {
+        const p = productsData[key];
+        const matchesCategory = (activeCategoryFilter === 'ALL') || (p.category === activeCategoryFilter);
+        const matchesSearch = !searchQuery || 
+          (p.name && p.name.toLowerCase().includes(searchQuery)) ||
+          (p.description && p.description.toLowerCase().includes(searchQuery)) ||
+          (p.category && p.category.toLowerCase().includes(searchQuery));
+        
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filteredKeys.length === 0) {
+        grid.innerHTML = "";
+        emptyState.classList.remove("hidden");
+        return;
+      }
+
+      emptyState.classList.add("hidden");
+
+      grid.innerHTML = filteredKeys.map(key => {
+        const p = productsData[key];
+        const hasVariants = p.variants && p.variants.length > 0;
+        
+        // Selected variant handling
+        const selectedVarIdx = selectedVariantsMap[key] !== undefined ? selectedVariantsMap[key] : 0;
+        const currentPrice = hasVariants ? p.variants[selectedVarIdx].price : (p.price || 0);
+        const displayPriceFormatted = `KES ${Number(currentPrice).toLocaleString()}`;
+        
+        const fallbackImg = generateFallbackSVG(p.name);
+        const imgSrc = p.imageUrl || p.image || fallbackImg;
+
+        // WhatsApp Custom Ordering Text
+        let selectedVariantText = hasVariants ? ` (Variant: ${p.variants[selectedVarIdx].name})` : '';
+        const orderMessage = `Hello Apex-Hub Kenya! I would like to order:\n\n*Product:* ${p.name}${selectedVariantText}\n*Price:* ${displayPriceFormatted}\n\nPlease advise on payment and delivery options.`;
+        const waLink = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(orderMessage)}`;
+
+        return `
+          <div class="bg-brand-card border border-brand-border rounded-2xl p-4 flex flex-col justify-between hover:border-teal-500/50 transition-all shadow-lg group">
+            <div class="space-y-3">
+              <!-- Image Container -->
+              <div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-900 border border-brand-border/60">
+                <img src="${imgSrc}" onerror="this.src='${fallbackImg}'" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                <span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md badge-teal text-[10px] font-bold tracking-wide backdrop-blur-md">
+                  ${p.category || 'General'}
+                </span>
+              </div>
+
+              <!-- Product Info -->
+              <div>
+                <h3 class="font-bold text-white text-base leading-snug line-clamp-2">${p.name}</h3>
+                <p class="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">${p.description || 'Premium quality verified item.'}</p>
+              </div>
+
+              <!-- Variant Selector (If available) -->
+              ${hasVariants ? `
+                <div class="space-y-1">
+                  <label class="text-[11px] font-semibold text-slate-400 block">Select Option / Capacity:</label>
+                  <select onchange="handleVariantSelect('${key}', this.value)" class="w-full px-2.5 py-1.5 bg-slate-900 border border-brand-border rounded-lg text-xs text-teal-300 focus:border-teal-500 outline-none">
+                    ${p.variants.map((v, i) => `
+                      <option value="${i}" ${i === selectedVarIdx ? 'selected' : ''}>
+                        ${v.name} - KES ${Number(v.price).toLocaleString()}
+                      </option>
+                    `).join('')}
+                  </select>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Price & Buy Button Footer -->
+            <div class="pt-4 mt-3 border-t border-brand-border/60 flex items-center justify-between gap-2">
+              <div>
+                <span class="text-[10px] text-slate-400 block font-medium">Price</span>
+                <span class="text-base font-extrabold text-teal-400">${displayPriceFormatted}</span>
+              </div>
+
+              <a href="${waLink}" target="_blank" rel="noopener font-bold" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-md hover:shadow-emerald-900/30">
+                <i class="fa-brands fa-whatsapp text-sm"></i> Order
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleVariantSelect(productKey, index) {
+      selectedVariantsMap[productKey] = parseInt(index);
+      renderCustomerGrid();
+    }
+
+    // Admin Inventory List Renderer
+    function renderAdminInventory() {
+      const container = document.getElementById("productList");
+      const countBadge = document.getElementById("inventoryCountBadge");
+      const keys = Object.keys(productsData);
+
+      countBadge.innerText = `${keys.length} Item${keys.length === 1 ? '' : 's'}`;
+
+      if (keys.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-slate-500 text-xs">
+            No products in inventory. Add one using the form on the left.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = keys.map(id => {
+        const p = productsData[id];
+        const fallbackImg = generateFallbackSVG(p.name);
+        const imgSrc = p.imageUrl || p.image || fallbackImg;
+        const hasVariants = p.variants && p.variants.length > 0;
+        const displayPrice = hasVariants ? `From KES ${Number(p.variants[0].price).toLocaleString()}` : `KES ${Number(p.price || 0).toLocaleString()}`;
+
+        return `
+          <div class="flex items-center gap-3 p-3 bg-slate-900 border border-brand-border rounded-xl hover:border-slate-700 transition-all">
+            <img src="${imgSrc}" onerror="this.src='${fallbackImg}'" class="w-14 h-14 object-cover rounded-lg bg-slate-800 border border-slate-700 flex-shrink-0">
+            <div class="flex-grow min-w-0">
+              <h4 class="text-xs font-bold text-white truncate">${p.name}</h4>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-[10px] text-slate-400">${p.category || 'General'}</span>
+                <span class="text-[10px] text-teal-400 font-bold">${displayPrice}</span>
+              </div>
+              ${hasVariants ? `<span class="text-[10px] text-amber-400 font-medium">${p.variants.length} Variants</span>` : ''}
+            </div>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <button type="button" onclick="editProduct('${id}')" title="Edit Product" class="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-lg text-xs font-bold transition-all">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button type="button" onclick="deleteProduct('${id}')" title="Delete Product" class="px-2.5 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-xs font-bold transition-all">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Dynamic Variant Form Rows
+    function addVariantRow(name = "", price = "") {
+      const container = document.getElementById("variantsContainer");
+      const rowId = "var_row_" + Date.now() + "_" + Math.floor(Math.random()*1000);
+      
+      const div = document.createElement("div");
+      div.id = rowId;
+      div.className = "flex items-center gap-2";
+      div.innerHTML = `
+        <input type="text" placeholder="Size (e.g. 6-Litre)" value="${name}" class="var-name flex-1 px-2.5 py-1.5 bg-slate-900 border border-brand-border rounded-lg text-xs text-slate-200 outline-none focus:border-teal-500">
+        <input type="number" placeholder="Price (KES)" value="${price}" class="var-price w-28 px-2.5 py-1.5 bg-slate-900 border border-brand-border rounded-lg text-xs text-slate-200 outline-none focus:border-teal-500">
+        <button type="button" onclick="document.getElementById('${rowId}').remove()" class="px-2 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-xs font-bold">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      `;
+      container.appendChild(div);
+    }
+
+    // Toggle Custom Category Input Field
+    function toggleCustomCategory(val) {
+      const input = document.getElementById("customCategoryInput");
+      if (val === "_NEW_") {
+        input.classList.remove("hidden");
+        input.focus();
+      } else {
+        input.classList.add("hidden");
+      }
+    }
+
+    // ImgBB Image Upload Handlers
     async function uploadImageToImgBB(event) {
       const file = event.target.files[0];
       const status = document.getElementById("uploadStatus");
       if (!file) return;
 
-      status.innerText = "⏳ Uploading image...";
+      status.classList.remove("hidden");
+      status.innerText = "⏳ Uploading to ImgBB...";
 
       const formData = new FormData();
       formData.append("image", file);
 
       try {
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
           method: "POST",
           body: formData
         });
-        const data = await res.json();
-        if (data.success) {
-          const url = data.data.url;
-          document.getElementById("imageUrlInput").value = url;
-          const preview = document.getElementById("imagePreview");
-          preview.src = url;
-          preview.style.display = "block";
-          status.innerText = "✅ Image uploaded successfully!";
+        const result = await response.json();
+
+        if (result.success) {
+          const uploadedUrl = result.data.url;
+          document.getElementById("imageUrlInput").value = uploadedUrl;
+          updateImagePreview(uploadedUrl);
+          status.innerText = "✅ Upload complete!";
         } else {
-          status.innerText = "❌ Upload failed. Please paste direct URL.";
+          status.innerText = "❌ Upload failed. Use direct image URL.";
         }
       } catch (err) {
-        status.innerText = "❌ Upload failed. Check internet connection.";
+        console.error(err);
+        status.innerText = "❌ Upload failed. Network error.";
       }
     }
 
-    // Variants UI Logic
-    function addVariantRow(name = "", price = "") {
-      const container = document.getElementById("variantsContainer");
-      const div = document.createElement("div");
-      div.className = "variant-row";
-      div.innerHTML = `
-        <input type="text" placeholder="Size/Capacity (e.g. 9kg)" value="${name}" class="var-name" required>
-        <input type="number" placeholder="Price (KES)" value="${price}" class="var-price" required>
-        <button type="button" class="btn-remove-variant" onclick="this.parentElement.remove()">X</button>
-      `;
-      container.appendChild(div);
-    }
-
-    // Load Products and Populate Dynamic Category Dropdown
-    function loadProducts() {
-      db.ref('products').on('value', snapshot => {
-        currentProducts = snapshot.val() || {};
-        const list = document.getElementById("productList");
-        const customerGrid = document.getElementById("customerGrid");
-
-        // Build Dynamic Categories
-        existingCategories = new Set(["Kitchen Appliances", "Electronics", "Home & Office"]);
-
-        if (Object.keys(currentProducts).length === 0) {
-          list.innerHTML = `<p style="color:var(--text-muted);">No products listed yet.</p>`;
-          customerGrid.innerHTML = `<p style="color:var(--text-muted);">No products available right now.</p>`;
-          refreshCategoryDropdown();
-          return;
-        }
-
-        // Render Public Customer Storefront Cards
-        customerGrid.innerHTML = Object.keys(currentProducts).map(id => {
-          const p = currentProducts[id];
-          const displayPrice = p.price ? `KES ${Number(p.price).toLocaleString()}` : 'Variant Based';
-          const waUrl = `https://wa.me/254700000000?text=${encodeURIComponent('Hello Apex-Hub Kenya, I am interested in: ' + (p.name || p.title) + ' - Price: ' + displayPrice)}`;
-
-          return `
-            <div class="card">
-              <div>
-                <img src="${p.imageUrl || p.image || 'https://via.placeholder.com/260'}" alt="${p.name || p.title}">
-                <div class="card-title">${p.name || p.title}</div>
-                <div class="card-price">${displayPrice}</div>
-                <div class="card-desc">${p.description || p.desc || ''}</div>
-              </div>
-              <a href="${waUrl}" target="_blank" class="btn-wa">
-                <i class="fa-brands fa-whatsapp"></i> Order via WhatsApp
-              </a>
-            </div>
-          `;
-        }).join('');
-
-        // Render Admin List Items
-        list.innerHTML = Object.keys(currentProducts).map(id => {
-          const p = currentProducts[id];
-          if (p.category) existingCategories.add(p.category);
-
-          return `
-            <div class="product-item">
-              <img src="${p.imageUrl || p.image || 'https://via.placeholder.com/60'}" alt="">
-              <div class="product-info">
-                <strong>${p.name || p.title}</strong>
-                <div style="font-size:0.8rem; color:var(--text-muted);">Category: ${p.category || 'General'}</div>
-                <div style="font-size:0.85rem; color:var(--primary); font-weight:700;">KES ${p.price || 'Variant Based'}</div>
-              </div>
-              <div class="product-actions">
-                <button class="btn-sm btn-edit" onclick="editProduct('${id}')">Edit</button>
-                <button class="btn-sm btn-delete" onclick="deleteProduct('${id}')">Delete</button>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        refreshCategoryDropdown();
-      });
-    }
-
-    function refreshCategoryDropdown() {
-      const select = document.getElementById("prodCategory");
-      const currentSelected = select.value;
-
-      select.innerHTML = "";
-      existingCategories.forEach(cat => {
-        const opt = document.createElement("option");
-        opt.value = cat;
-        opt.innerText = cat;
-        select.appendChild(opt);
-      });
-
-      const newOpt = document.createElement("option");
-      newOpt.value = "_NEW_";
-      newOpt.innerText = "+ Add Custom Category...";
-      select.appendChild(newOpt);
-
-      if (existingCategories.has(currentSelected)) {
-        select.value = currentSelected;
+    function updateImagePreview(url) {
+      const previewBox = document.getElementById("imagePreviewBox");
+      const previewImg = document.getElementById("imagePreview");
+      if (url && url.trim() !== "") {
+        previewImg.src = url;
+        previewBox.classList.remove("hidden");
+      } else {
+        previewBox.classList.add("hidden");
       }
     }
 
-    // Save/Update Product
-    function saveProduct(event) {
-      event.preventDefault();
+    // Product Submission Handler
+    function handleFormSubmit(e) {
+      e.preventDefault();
 
       const productId = document.getElementById("editProductId").value;
-      const selectVal = document.getElementById("prodCategory").value;
-      const customVal = document.getElementById("customCategoryInput").value.trim();
+      const categorySelect = document.getElementById("prodCategory").value;
+      const customCategoryVal = document.getElementById("customCategoryInput").value.trim();
+      const finalCategory = (categorySelect === "_NEW_") ? (customCategoryVal || "General") : categorySelect;
 
-      let category = selectVal;
-      if (selectVal === "_NEW_") {
-        if (!customVal) {
-          alert("Please enter a custom category name!");
-          return;
-        }
-        category = customVal;
-      }
+      // Extract variants
+      const varNameEls = document.querySelectorAll(".var-name");
+      const varPriceEls = document.querySelectorAll(".var-price");
+      const variantsArr = [];
 
-      const name = document.getElementById("prodName").value;
-      const price = document.getElementById("prodPrice").value;
-      const description = document.getElementById("prodDesc").value;
-      const imageUrl = document.getElementById("imageUrlInput").value;
-
-      // Collect Variants
-      const varNames = document.querySelectorAll(".var-name");
-      const varPrices = document.querySelectorAll(".var-price");
-      const variants = [];
-
-      varNames.forEach((el, index) => {
-        if (el.value.trim() !== "") {
-          variants.push({
-            name: el.value.trim(),
-            price: Number(varPrices[index].value)
-          });
+      varNameEls.forEach((el, idx) => {
+        const vName = el.value.trim();
+        const vPrice = parseFloat(varPriceEls[idx].value);
+        if (vName && !isNaN(vPrice)) {
+          variantsArr.push({ name: vName, price: vPrice });
         }
       });
 
-      const productData = {
-        category,
-        name,
-        price: price ? Number(price) : (variants[0] ? variants[0].price : 0),
-        description,
-        imageUrl,
-        variants
+      const basePriceVal = parseFloat(document.getElementById("prodPrice").value) || (variantsArr.length > 0 ? variantsArr[0].price : 0);
+
+      const productPayload = {
+        category: finalCategory,
+        name: document.getElementById("prodName").value.trim(),
+        price: basePriceVal,
+        description: document.getElementById("prodDesc").value.trim(),
+        imageUrl: document.getElementById("imageUrlInput").value.trim(),
+        variants: variantsArr
       };
 
-      if (productId) {
-        db.ref('products/' + productId).update(productData, () => {
-          alert("Product updated successfully!");
-          resetForm();
-        });
+      if (productId && productsData[productId]) {
+        productsData[productId] = productPayload;
       } else {
-        db.ref('products').push(productData, () => {
-          alert("Product published live!");
-          resetForm();
-        });
+        const newKey = "prod_" + Date.now();
+        productsData[newKey] = productPayload;
       }
+
+      commitProductChanges();
+      resetForm();
     }
 
     function editProduct(id) {
-      const p = currentProducts[id];
+      const p = productsData[id];
+      if (!p) return;
+
       document.getElementById("editProductId").value = id;
-      document.getElementById("formTitle").innerText = "Edit Product: " + (p.name || p.title);
+      document.getElementById("formTitle").innerText = "Edit Product";
+      document.getElementById("cancelEditBtn").classList.remove("hidden");
 
-      if (p.category && existingCategories.has(p.category)) {
-        document.getElementById("prodCategory").value = p.category;
-        toggleCustomCategory(p.category);
-      } else if (p.category) {
-        document.getElementById("prodCategory").value = "_NEW_";
-        toggleCustomCategory("_NEW_");
-        document.getElementById("customCategoryInput").value = p.category;
-      }
-
-      document.getElementById("prodName").value = p.price || "";
-      document.getElementById("prodDesc").value = p.description || p.desc || "";
+      document.getElementById("prodName").value = p.name || "";
+      document.getElementById("prodPrice").value = p.price || "";
+      document.getElementById("prodDesc").value = p.description || "";
       document.getElementById("imageUrlInput").value = p.imageUrl || p.image || "";
+      updateImagePreview(p.imageUrl || p.image || "");
 
-      if (p.imageUrl || p.image) {
-        const preview = document.getElementById("imagePreview");
-        preview.src = p.imageUrl || p.image;
-        preview.style.display = "block";
-      }
+      // Category
+      const categorySelect = document.getElementById("prodCategory");
+      categorySelect.value = p.category || "Kitchen Appliances";
 
-      // Load Variants
-      document.getElementById("variantsContainer").innerHTML = "";
-      if (p.variants) {
+      // Variants
+      const container = document.getElementById("variantsContainer");
+      container.innerHTML = "";
+      if (p.variants && p.variants.length > 0) {
         p.variants.forEach(v => addVariantRow(v.name, v.price));
       }
 
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: document.getElementById("adminContainer").offsetTop - 20, behavior: 'smooth' });
     }
 
     function deleteProduct(id) {
-      if (confirm("Are you sure you want to delete this product from Apex-Hub?")) {
-        db.ref('products/' + id).remove();
+      if (confirm("Are you sure you want to delete this product from Apex-Hub inventory?")) {
+        delete productsData[id];
+        commitProductChanges();
       }
     }
 
     function resetForm() {
       document.getElementById("productForm").reset();
       document.getElementById("editProductId").value = "";
-      document.getElementById("formTitle").innerText = "Add / Edit Product";
+      document.getElementById("formTitle").innerText = "Add New Product";
+      document.getElementById("cancelEditBtn").classList.add("hidden");
       document.getElementById("variantsContainer").innerHTML = "";
-      document.getElementById("imagePreview").style.display = "none";
-      document.getElementById("uploadStatus").innerText = "";
-      toggleCustomCategory();
+      document.getElementById("imagePreviewBox").classList.add("hidden");
+      document.getElementById("customCategoryInput").classList.add("hidden");
+      document.getElementById("uploadStatus").classList.add("hidden");
     }
 
-    // Auto-load public products on page launch
-    loadProducts();
+    // Modal & Lock Screen Controls
+    function openAdminModal() {
+      document.getElementById("lockScreen").classList.remove("hidden");
+      document.getElementById("passcodeInput").focus();
+    }
+
+    function closeAdminModal() {
+      document.getElementById("lockScreen").classList.add("hidden");
+      document.getElementById("loginError").classList.add("hidden");
+      document.getElementById("passcodeInput").value = "";
+    }
+
+    function unlockAdmin(e) {
+      if (e) e.preventDefault();
+      const inputVal = document.getElementById("passcodeInput").value;
+      const errorMsg = document.getElementById("loginError");
+
+      if (inputVal === SECURITY_PASSCODE) {
+        closeAdminModal();
+        document.getElementById("publicStorefrontView").classList.add("hidden");
+        document.getElementById("adminContainer").classList.remove("hidden");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        errorMsg.classList.remove("hidden");
+      }
+    }
+
+    function lockAdminSession() {
+      document.getElementById("adminContainer").classList.add("hidden");
+      document.getElementById("publicStorefrontView").classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function exitAdminView() {
+      document.getElementById("adminContainer").classList.add("hidden");
+      document.getElementById("publicStorefrontView").classList.remove("hidden");
+    }
+
+    // Window Init Event Listener
+    window.onload = function() {
+      initDatabase();
+    };
   </script>
 </body>
-</html>
