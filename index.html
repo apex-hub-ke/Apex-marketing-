@@ -405,16 +405,17 @@
     let existingCategories = new Set(["Kitchen Appliances", "Electronics", "Home & Office"]);
 
     // Passcode Unlock Function
-    function unlockAdmin() {
+        function unlockAdmin() {
       const input = document.getElementById("passcodeInput").value;
       if (input === PASSCODE) {
         document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("publicStorefront").style.display = "none"; // <-- Add this line
         document.getElementById("adminContainer").style.display = "block";
-        loadProducts();
       } else {
         document.getElementById("loginError").style.display = "block";
       }
-    }
+        }
+    
 
     // Allow pressing Enter key on login input
     document.getElementById("passcodeInput").addEventListener("keyup", function(event) {
